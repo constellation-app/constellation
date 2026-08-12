@@ -260,7 +260,8 @@ public class TOCGeneratorNGTest {
             assertNotNull(tempFileTOC);
             assertTrue(tempFileTOC.exists());
 
-            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFileTOC))) {
+            try (final FileReader fileReader = new FileReader(tempFileTOC);
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 assertEquals(reader.readLine(), String.format("<div class=\"%s\">", "container"));
                 assertEquals(reader.readLine(), String.format("<div id=\"%s\">", "accordion"));
 
@@ -332,7 +333,8 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFile))) {
+            try (final FileReader fileReader = new FileReader(tempFile);
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 String line;
 
                 int linecount = 0;
@@ -388,7 +390,8 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFile))) {
+            try (final FileReader fileReader = new FileReader(tempFile);
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 String line;
 
                 int linecount = 0;
@@ -433,7 +436,8 @@ public class TOCGeneratorNGTest {
                 });
             }
 
-            try (final BufferedReader reader = new BufferedReader(new FileReader(tempFile))) {
+            try (final FileReader fileReader = new FileReader(tempFile);
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 String line;
 
                 int linecount = 0;

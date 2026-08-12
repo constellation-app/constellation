@@ -139,51 +139,51 @@ public class VertexTypeIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, true);
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, true);
+            }
             
-            jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeObjectFieldStart("Type");
-            jsonGenerator.writeStringField("Name", "MD5 Hash");
-            jsonGenerator.writeStringField("Description", "A node representing an MD5 hash");
-            
-            jsonGenerator.writeObjectFieldStart("Color");
-            jsonGenerator.writeStringField("name", "Cyan");
-            jsonGenerator.writeEndObject();
-            
-            jsonGenerator.writeStringField("Foreground Icon", "Security.MD5");          
-            jsonGenerator.writeStringField("Background Icon", "Background.Flat Square");
-            jsonGenerator.writeStringField("Detection Regex", "[0-9a-fA-F]{32}");
-            jsonGenerator.writeStringField("Validation Regex", "^[0-9a-f]{32}$");
-            
-            jsonGenerator.writeObjectFieldStart("Super Type");
-            jsonGenerator.writeStringField("Name", "Hash");
-            jsonGenerator.writeStringField("Description", "A node representing a hash");
-            
-            jsonGenerator.writeObjectFieldStart("Color");
-            jsonGenerator.writeStringField("name", "Cyan");
-            jsonGenerator.writeEndObject();
-            
-            jsonGenerator.writeStringField("Foreground Icon", "Character.Hash");          
-            jsonGenerator.writeStringField("Background Icon", "Background.Flat Square");
-            
-            jsonGenerator.writeObjectFieldStart("Properties");
-            jsonGenerator.writeEndObject();
-            
-            jsonGenerator.writeBooleanField("Incomplete", false);
-            
-            jsonGenerator.writeEndObject();
-            
-            jsonGenerator.writeObjectFieldStart("Properties");
-            jsonGenerator.writeEndObject();
-            
-            jsonGenerator.writeBooleanField("Incomplete", false);
-            
-            jsonGenerator.writeEndObject();
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeObjectFieldStart("Type");
+                jsonGenerator.writeStringField("Name", "MD5 Hash");
+                jsonGenerator.writeStringField("Description", "A node representing an MD5 hash");
+
+                jsonGenerator.writeObjectFieldStart("Color");
+                jsonGenerator.writeStringField("name", "Cyan");
+                jsonGenerator.writeEndObject();
+
+                jsonGenerator.writeStringField("Foreground Icon", "Security.MD5");          
+                jsonGenerator.writeStringField("Background Icon", "Background.Flat Square");
+                jsonGenerator.writeStringField("Detection Regex", "[0-9a-fA-F]{32}");
+                jsonGenerator.writeStringField("Validation Regex", "^[0-9a-f]{32}$");
+
+                jsonGenerator.writeObjectFieldStart("Super Type");
+                jsonGenerator.writeStringField("Name", "Hash");
+                jsonGenerator.writeStringField("Description", "A node representing a hash");
+
+                jsonGenerator.writeObjectFieldStart("Color");
+                jsonGenerator.writeStringField("name", "Cyan");
+                jsonGenerator.writeEndObject();
+
+                jsonGenerator.writeStringField("Foreground Icon", "Character.Hash");          
+                jsonGenerator.writeStringField("Background Icon", "Background.Flat Square");
+
+                jsonGenerator.writeObjectFieldStart("Properties");
+                jsonGenerator.writeEndObject();
+
+                jsonGenerator.writeBooleanField("Incomplete", false);
+
+                jsonGenerator.writeEndObject();
+
+                jsonGenerator.writeObjectFieldStart("Properties");
+                jsonGenerator.writeEndObject();
+
+                jsonGenerator.writeBooleanField("Incomplete", false);
+
+                jsonGenerator.writeEndObject();
+            }
             
             assertEquals(actual.toString(), expected.toString());
         }
@@ -203,16 +203,16 @@ public class VertexTypeIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, true);
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, true);
+            }
             
-            jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeNullField("Type");
-            jsonGenerator.writeEndObject();
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeNullField("Type");
+                jsonGenerator.writeEndObject();
+            }
             
             assertEquals(actual.toString(), expected.toString());
         }
@@ -232,15 +232,15 @@ public class VertexTypeIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, false);
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                instance.writeObject(typeAttribute, vxId1, jsonGenerator, graph, null, false);
+            }
             
-            jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeEndObject();
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeEndObject();
+            }
             
             assertEquals(actual.toString(), expected.toString());
         }

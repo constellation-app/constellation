@@ -362,8 +362,6 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final InputOutput io = IOProvider.getDefault().getIO(title, true);
         io.select();
 
-        final OutputWriter output = io.getOut();
-
         final GraphRecordStore changes = new GraphRecordStore();
         result.reset();
         while (result.next()) {
@@ -398,135 +396,136 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             transaction.addAll(transactionRecordPrimaryValues.values());
             transaction.addAll(vertexDestinationRecordPrimaryValues.values());
             transaction.addAll(vertexSourceRecordPrimaryValues.values());
-
-            // vertex compare
-            final String originalSource = result.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL);
-            if (!seenVertices.contains(vertex) && !originalVertexKeysToIndex.containsKey(vertex) && compareVertexKeysToIndex.containsKey(vertex)) { // added
-                changes.add();
-                changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, ADDED);
-                changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, addedColor);
-
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
-                addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
-                output.println(String.format("Added node %s", originalSource));
-                seenVertices.add(vertex);
-            } else if (!seenVertices.contains(vertex) && originalVertexKeysToIndex.containsKey(vertex) && !compareVertexKeysToIndex.containsKey(vertex)) { // removed
-                changes.add();
-                changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, REMOVED);
-                changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, removedColor);
-
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
-                addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
-                output.println(String.format("Removed node %s", originalSource));
-                seenVertices.add(vertex);
-            } else if (!seenVertices.contains(vertex) && originalVertexKeysToIndex.containsKey(vertex) && compareVertexKeysToIndex.containsKey(vertex)) { // changed
-                boolean vertexChanged = false;
-                for (final String attribute : attributes) {
-                    final int dividerPosition = attribute.indexOf(SeparatorConstants.PERIOD);
-
-                    if (dividerPosition != -1) {
-                        final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
-                        final String keyAttribute = attribute.substring(dividerPosition + 1);
-
-                        if ("source".equals(keyType)) {
-                            final String originalValue = original.get(originalVertexKeysToIndex.get(vertex), attribute);
-                            final String compareValue = compare.get(compareVertexKeysToIndex.get(vertex), attribute);
-                            if ((originalValue != null && !originalValue.equals(compareValue))
-                                    || (compareValue != null && !compareValue.equals(originalValue))) {
-                                vertexChanged = true;
-                                output.println(String.format("Changed node %s, '%s' value was '%s' and now '%s'", originalSource, keyAttribute, originalValue, compareValue));
-                            }
-                        }
-                    }
-                }
-
-                if (vertexChanged) {
+            
+            try (final OutputWriter output = io.getOut()) {
+                // vertex compare
+                final String originalSource = result.get(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL);
+                if (!seenVertices.contains(vertex) && !originalVertexKeysToIndex.containsKey(vertex) && compareVertexKeysToIndex.containsKey(vertex)) { // added
                     changes.add();
-                    changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, CHANGED);
-                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, changedColor);
+                    changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, ADDED);
+                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, addedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
-                } else {
+                    output.println(String.format("Added node %s", originalSource));
+                    seenVertices.add(vertex);
+                } else if (!seenVertices.contains(vertex) && originalVertexKeysToIndex.containsKey(vertex) && !compareVertexKeysToIndex.containsKey(vertex)) { // removed
                     changes.add();
-                    changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, UNCHANGED);
-                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, unchangedColor);
+                    changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, REMOVED);
+                    changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, removedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
-                }
+                    output.println(String.format("Removed node %s", originalSource));
+                    seenVertices.add(vertex);
+                } else if (!seenVertices.contains(vertex) && originalVertexKeysToIndex.containsKey(vertex) && compareVertexKeysToIndex.containsKey(vertex)) { // changed
+                    boolean vertexChanged = false;
+                    for (final String attribute : attributes) {
+                        final int dividerPosition = attribute.indexOf(SeparatorConstants.PERIOD);
 
-                seenVertices.add(vertex);
-            }
+                        if (dividerPosition != -1) {
+                            final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
+                            final String keyAttribute = attribute.substring(dividerPosition + 1);
 
-            // transaction compare
-            final String originalDestination = result.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL);
-            if (!seenTransactions.contains(transaction) && !originalTransactionKeysToIndex.containsKey(transaction) && compareTransactionKeysToIndex.containsKey(transaction)) { // added
-                changes.add();
-                changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, ADDED);
-                changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, addedColor);
-
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.TRANSACTION, transactionRecordPrimaryValues);
-                addAttributesToRecord(result, changes, GraphRecordStoreUtilities.TRANSACTION, result.index());
-                seenTransactions.add(transaction);
-                output.println(String.format("Added transaction connecting %s to %s", originalSource, originalDestination));
-            } else if (!seenTransactions.contains(transaction) && originalTransactionKeysToIndex.containsKey(transaction) && !compareTransactionKeysToIndex.containsKey(transaction)) { // removed
-                changes.add();
-                changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, REMOVED);
-                changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, removedColor);
-
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
-                addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.TRANSACTION, transactionRecordPrimaryValues);
-                addAttributesToRecord(result, changes, GraphRecordStoreUtilities.TRANSACTION, result.index());
-                seenTransactions.add(transaction);
-                output.println(String.format("Removed transaction connecting %s to %s", originalSource, originalDestination));
-            } else if (!seenTransactions.contains(transaction) && originalTransactionKeysToIndex.containsKey(transaction) && compareTransactionKeysToIndex.containsKey(transaction)) { // changed
-                boolean transactionChanged = false;
-                for (final String attribute : attributes) {
-                    final int dividerPosition = attribute.indexOf(SeparatorConstants.PERIOD);
-
-                    if (dividerPosition != -1) {
-                        final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
-                        final String keyAttribute = attribute.substring(dividerPosition + 1);
-
-                        if ("transaction".equals(keyType)) {
-                            final Integer originalTransactionIndex = originalTransactionKeysToIndex.get(transaction);
-                            final Integer compareTransactionIndex = compareTransactionKeysToIndex.get(transaction);
-                            final String originalTransactionValue = original.get(originalTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
-                            final String compareTransactionValue = compare.get(compareTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
-                            if ((originalTransactionValue != null && !originalTransactionValue.equals(compareTransactionValue))
-                                    || (compareTransactionValue != null && !compareTransactionValue.equals(originalTransactionValue))) {
-                                transactionChanged = true;
-                                output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
+                            if ("source".equals(keyType)) {
+                                final String originalValue = original.get(originalVertexKeysToIndex.get(vertex), attribute);
+                                final String compareValue = compare.get(compareVertexKeysToIndex.get(vertex), attribute);
+                                if ((originalValue != null && !originalValue.equals(compareValue))
+                                        || (compareValue != null && !compareValue.equals(originalValue))) {
+                                    vertexChanged = true;
+                                    output.println(String.format("Changed node %s, '%s' value was '%s' and now '%s'", originalSource, keyAttribute, originalValue, compareValue));
+                                }
                             }
                         }
                     }
-                }
 
-                if (transactionChanged) {
+                    if (vertexChanged) {
+                        changes.add();
+                        changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, CHANGED);
+                        changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, changedColor);
+
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
+                        addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
+                    } else {
+                        changes.add();
+                        changes.set(GraphRecordStoreUtilities.SOURCE + COMPARE_ATTRIBUTE, UNCHANGED);
+                        changes.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, unchangedColor);
+
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
+                        addAttributesToRecord(result, changes, GraphRecordStoreUtilities.SOURCE, result.index());
+                    }
+
+                    seenVertices.add(vertex);
+                }
+                // transaction compare
+                final String originalDestination = result.get(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL);
+                if (!seenTransactions.contains(transaction) && !originalTransactionKeysToIndex.containsKey(transaction) && compareTransactionKeysToIndex.containsKey(transaction)) { // added
                     changes.add();
-                    changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, CHANGED);
-                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, changedColor);
+                    changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, ADDED);
+                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, addedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.TRANSACTION, transactionRecordPrimaryValues);
                     addAttributesToRecord(result, changes, GraphRecordStoreUtilities.TRANSACTION, result.index());
-                } else {
+                    seenTransactions.add(transaction);
+                    output.println(String.format("Added transaction connecting %s to %s", originalSource, originalDestination));
+                } else if (!seenTransactions.contains(transaction) && originalTransactionKeysToIndex.containsKey(transaction) && !compareTransactionKeysToIndex.containsKey(transaction)) { // removed
                     changes.add();
-                    changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, UNCHANGED);
-                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, unchangedColor);
+                    changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, REMOVED);
+                    changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, removedColor);
 
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
                     addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.TRANSACTION, transactionRecordPrimaryValues);
                     addAttributesToRecord(result, changes, GraphRecordStoreUtilities.TRANSACTION, result.index());
-                }
+                    seenTransactions.add(transaction);
+                    output.println(String.format("Removed transaction connecting %s to %s", originalSource, originalDestination));
+                } else if (!seenTransactions.contains(transaction) && originalTransactionKeysToIndex.containsKey(transaction) && compareTransactionKeysToIndex.containsKey(transaction)) { // changed
+                    boolean transactionChanged = false;
+                    for (final String attribute : attributes) {
+                        final int dividerPosition = attribute.indexOf(SeparatorConstants.PERIOD);
 
-                seenTransactions.add(transaction);
+                        if (dividerPosition != -1) {
+                            final String keyType = attribute.substring(0, dividerPosition).toLowerCase();
+                            final String keyAttribute = attribute.substring(dividerPosition + 1);
+
+                            if ("transaction".equals(keyType)) {
+                                final Integer originalTransactionIndex = originalTransactionKeysToIndex.get(transaction);
+                                final Integer compareTransactionIndex = compareTransactionKeysToIndex.get(transaction);
+                                final String originalTransactionValue = original.get(originalTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
+                                final String compareTransactionValue = compare.get(compareTransactionIndex, GraphRecordStoreUtilities.TRANSACTION + keyAttribute);
+                                if ((originalTransactionValue != null && !originalTransactionValue.equals(compareTransactionValue))
+                                        || (compareTransactionValue != null && !compareTransactionValue.equals(originalTransactionValue))) {
+                                    transactionChanged = true;
+                                    output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
+                                }
+                            }
+                        }
+                    }
+
+                    if (transactionChanged) {
+                        changes.add();
+                        changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, CHANGED);
+                        changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, changedColor);
+
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.TRANSACTION, transactionRecordPrimaryValues);
+                        addAttributesToRecord(result, changes, GraphRecordStoreUtilities.TRANSACTION, result.index());
+                    } else {
+                        changes.add();
+                        changes.set(GraphRecordStoreUtilities.TRANSACTION + COMPARE_ATTRIBUTE, UNCHANGED);
+                        changes.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.OVERLAY_COLOR, unchangedColor);
+
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.SOURCE, vertexSourceRecordPrimaryValues);
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.DESTINATION, vertexDestinationRecordPrimaryValues);
+                        addPrimaryKeyValuesToRecord(changes, GraphRecordStoreUtilities.TRANSACTION, transactionRecordPrimaryValues);
+                        addAttributesToRecord(result, changes, GraphRecordStoreUtilities.TRANSACTION, result.index());
+                    }
+
+                    seenTransactions.add(transaction);
+                }
             }
         }
 
