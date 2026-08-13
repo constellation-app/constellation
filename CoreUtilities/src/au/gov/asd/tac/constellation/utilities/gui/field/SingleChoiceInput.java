@@ -69,7 +69,8 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
         
         addListener(newValue -> {
             if (!getTextArea().isInFocus() && !isValid()) {
-                setText("");
+                setValue(null);
+                setChoice(null);
             }
         });
     }
@@ -170,7 +171,7 @@ public class SingleChoiceInput<C extends Object> extends ChoiceInputField<C, C> 
 
     @Override
     public boolean isValidContent() {
-        return getText().isBlank() || getChoice() != null;
+        return getChoice() != null || getOptions().contains(getChoice());
     }
     
     @Override

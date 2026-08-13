@@ -443,13 +443,14 @@ public class AnalyticConfigurationPane extends VBox {
             } else {
                 try {
                     final Path path = Paths.get(documentationURL);
-                    final InputStream pageInput = new FileInputStream(path.toString());
-                    final String pageString = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
-                    final Parser parser = Parser.builder().build();
-                    final HtmlRenderer renderer = HtmlRenderer.builder().build();
-                    final Node tocDocument = parser.parse(pageString);
-                    final String pageHtml = renderer.render(tocDocument);
-                    documentationView.getEngine().loadContent(pageHtml, "text/html");
+                    try (final InputStream pageInput = new FileInputStream(path.toString())) {
+                        final String pageString = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+                        final Parser parser = Parser.builder().build();
+                        final HtmlRenderer renderer = HtmlRenderer.builder().build();
+                        final Node tocDocument = parser.parse(pageString);
+                        final String pageHtml = renderer.render(tocDocument);
+                        documentationView.getEngine().loadContent(pageHtml, "text/html");
+                    }
                 } catch (final IOException ex) {
                     LOGGER.log(Level.WARNING, ex.getMessage());
                 }

@@ -28,7 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import org.testng.Assert;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -80,13 +82,13 @@ public class IONGTest {
         int nameAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nameAttrLabel, nameAttrLabel, "", null);
         final int nndAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nndAttrLabel, "All nulls", defaultValue, null);
         int v0 = graph.addVertex();
-        Assert.assertEquals(graph.getStringValue(nameAttrId, v0), "");
-        Assert.assertNotNull(graph.getStringValue(nndAttrId, v0));
-        Assert.assertEquals(graph.getStringValue(nndAttrId, v0), defaultValue);
+        assertEquals(graph.getStringValue(nameAttrId, v0), "");
+        assertNotNull(graph.getStringValue(nndAttrId, v0));
+        assertEquals(graph.getStringValue(nndAttrId, v0), defaultValue);
         int v1 = graph.addVertex();
         graph.setStringValue(nameAttrId, v1, "V1");
         graph.setStringValue(nndAttrId, v1, null);
-        Assert.assertNull(graph.getStringValue(nndAttrId, v1));
+        assertNull(graph.getStringValue(nndAttrId, v1));
 
         GraphJsonWriter writer = new GraphJsonWriter();
         writer.writeGraphToZip(graph, graphFile.getPath(), new TextIoProgress(false));
@@ -98,14 +100,14 @@ public class IONGTest {
                 final int nattrId = rg.getAttribute(GraphElementType.VERTEX, nndAttrLabel);
 
                 v0 = rg.getVertex(0);
-                Assert.assertEquals(rg.getStringValue(nameAttrId, v0), "");
+                assertEquals(rg.getStringValue(nameAttrId, v0), "");
                 final String val0 = rg.getStringValue(nattrId, v0);
-                Assert.assertEquals(val0, defaultValue);
+                assertEquals(val0, defaultValue);
 
                 v1 = rg.getVertex(1);
-                Assert.assertEquals(rg.getStringValue(nameAttrId, v1), "V1");
+                assertEquals(rg.getStringValue(nameAttrId, v1), "V1");
                 final String nval1 = rg.getStringValue(nattrId, v1);
-                Assert.assertNull(nval1, "Expecting the default non-null value");               
+                assertNull(nval1, "Expecting the default non-null value");               
             }
         } finally {
             graphFile.delete();
@@ -128,18 +130,20 @@ public class IONGTest {
         storeGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMergerAttribute", null, null, ConcatenatedSetGraphAttributeMerger.ID);
         storeGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "noMergerAttribute", null, null, null);
         final GraphJsonWriter writer = new GraphJsonWriter();
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writer.writeGraphToStream(storeGraph, out, false, Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION, GraphElementType.META));
-        final ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        GraphJsonReader reader = new GraphJsonReader();
-        final Graph graph = reader.readGraph(in, -1, null);
-        try (final ReadableGraph rg = graph.getReadableGraph()) {
-            final int defaultMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "defaultMergerAttribute");
-            assert rg.getAttributeMerger(defaultMergerAttributeId) == GraphAttributeMerger.getDefault();
-            final int customMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "customMergerAttribute");
-            assert rg.getAttributeMerger(customMergerAttributeId) == GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID);
-            final int noMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "noMergerAttribute");
-            assert rg.getAttributeMerger(noMergerAttributeId) == null;
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            writer.writeGraphToStream(storeGraph, out, false, Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION, GraphElementType.META));
+            final GraphJsonReader reader = new GraphJsonReader();
+            try (final ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray())) {
+                final Graph graph = reader.readGraph(in, -1, null);
+                try (final ReadableGraph rg = graph.getReadableGraph()) {
+                    final int defaultMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "defaultMergerAttribute");
+                    assertEquals(rg.getAttributeMerger(defaultMergerAttributeId), GraphAttributeMerger.getDefault());
+                    final int customMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "customMergerAttribute");
+                    assertEquals(rg.getAttributeMerger(customMergerAttributeId), GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID));
+                    final int noMergerAttributeId = rg.getAttribute(GraphElementType.VERTEX, "noMergerAttribute");
+                    assertNull(rg.getAttributeMerger(noMergerAttributeId));
+                }
+            }
         }
     }
 }

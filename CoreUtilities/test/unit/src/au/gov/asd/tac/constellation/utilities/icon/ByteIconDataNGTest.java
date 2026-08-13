@@ -58,10 +58,12 @@ public class ByteIconDataNGTest {
     @Test
     public void testCreateRasterInputStream() throws IOException {
         final byte[] b = new byte[] {(byte)0xe0};
-        ByteArrayInputStream bais = new ByteArrayInputStream(b);
-        ByteIconData bid = new ByteIconData(b);
-        InputStream is = bid.createRasterInputStream();
-        assertEquals(bais.readAllBytes(),is.readAllBytes());
+        final ByteIconData bid = new ByteIconData(b);
+        try (final ByteArrayInputStream bais = new ByteArrayInputStream(b);
+                final InputStream is = bid.createRasterInputStream()) {
+            assertEquals(bais.readAllBytes(),is.readAllBytes());
+            
+        }
     }
 
     /**

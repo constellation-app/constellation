@@ -59,8 +59,7 @@ public abstract class IconData {
     }
     
     protected SVGData createSVGData(final int size, final Color color) {
-        try {
-            final InputStream is = createVectorInputStream();
+        try (final InputStream is = createVectorInputStream()) {
             final SVGObject svg = SVGObject.loadFromInputStream(is);
             if (svg != null){
                 svg.setDimension(size, size);
@@ -86,8 +85,9 @@ public abstract class IconData {
      *
      * @return An array of bytes representing the data of a
      * {@link ConstellationIcon}.
+     * @throws java.io.IOException
      */
-    public byte[] getData() {
+    public byte[] getData() throws IOException {
         return getData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
     }
 
@@ -103,8 +103,9 @@ public abstract class IconData {
      * @param color A {@link Color} representing the color of the icon.
      * @return An array of bytes representing the data of a
      * {@link ConstellationIcon}.
+     * @throws java.io.IOException
      */
-    public byte[] getData(final int size, final Color color) {
+    public byte[] getData(final int size, final Color color) throws IOException {
         if (size != ConstellationIcon.DEFAULT_ICON_SIZE || color != null) {
             return createData(size, color);
         }
@@ -126,11 +127,11 @@ public abstract class IconData {
      * @param color A {@link Color} representing the color of the icon.
      * @return An array of bytes representing the data of a
      * {@link ConstellationIcon}.
+     * @throws java.io.IOException
      */
-    protected byte[] createData(final int size, final Color color) {
+    protected byte[] createData(final int size, final Color color) throws IOException {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try {
-            final InputStream is = createRasterInputStream();
+        try (final InputStream is = createRasterInputStream()) {
             if (is != null) {
                 BufferedImage image = ImageIO.read(is);
                 if (color != null) {
@@ -142,11 +143,11 @@ public abstract class IconData {
                 if (image != null) {
                     ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
                 }
-
-                is.close();
             }
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        } finally {
+            os.close();
         }
 
         return os.toByteArray();

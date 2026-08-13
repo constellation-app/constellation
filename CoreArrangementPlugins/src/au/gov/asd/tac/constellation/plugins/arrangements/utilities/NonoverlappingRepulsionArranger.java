@@ -34,7 +34,6 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods graph) throws InterruptedException {
-
         final int xAttr = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         final int radiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(graph);

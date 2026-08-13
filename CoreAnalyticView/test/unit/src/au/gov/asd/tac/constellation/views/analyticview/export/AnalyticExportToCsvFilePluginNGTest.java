@@ -87,7 +87,7 @@ public class AnalyticExportToCsvFilePluginNGTest {
         final PluginInteraction pluginInteraction = mock(PluginInteraction.class);
 
         File tmpFile = null;
-        try ( MockedStatic<AnalyticExportUtilities> tableViewUtilsMockedStatic = Mockito.mockStatic(AnalyticExportUtilities.class)) {
+        try (final MockedStatic<AnalyticExportUtilities> tableViewUtilsMockedStatic = Mockito.mockStatic(AnalyticExportUtilities.class)) {
             tmpFile = File.createTempFile("constellationTest", ".csv");
             final String csv = "COLUMN_1,COLUMN_2\nrow1Column1,row1Column2\nrow2Column1,row2Column2\n";
 
@@ -96,11 +96,12 @@ public class AnalyticExportToCsvFilePluginNGTest {
             final AnalyticExportToCsvFilePlugin plugin = new AnalyticExportToCsvFilePlugin(tmpFile, table);
             plugin.execute(null, pluginInteraction, null);
 
-            final String outputtedFile = new String(IOUtils.toByteArray(new FileInputStream(tmpFile)), StandardCharsets.UTF_8);
+            try (final FileInputStream inputStream = new FileInputStream(tmpFile)) {
+                final String outputtedFile = new String(IOUtils.toByteArray(inputStream), StandardCharsets.UTF_8);
 
-            assertEquals(csv, outputtedFile);
-            assertEquals(plugin.getName(), "Analytic View: Export to CSV");
-
+                assertEquals(csv, outputtedFile);
+                assertEquals(plugin.getName(), "Analytic View: Export to CSV");
+            }
         } finally {
             if (tmpFile != null) {
                 tmpFile.delete();

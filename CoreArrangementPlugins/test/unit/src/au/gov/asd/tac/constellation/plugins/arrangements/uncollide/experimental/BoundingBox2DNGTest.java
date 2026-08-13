@@ -64,12 +64,12 @@ public class BoundingBox2DNGTest {
     public void testConstructor() {
         BoundingBox2D actual = new BoundingBox2D(baseGraph);
 
-        assertEquals(actual.minX, -1.0f);
-        assertEquals(actual.midX, 0.0f);
-        assertEquals(actual.maxX, 1.0f);
-        assertEquals(actual.minY, -1.0f);
-        assertEquals(actual.midY, 0.0f);
-        assertEquals(actual.maxY, 1.0f);
+        assertEquals(actual.getMinX(), -1.0f);
+        assertEquals(actual.getMidX(), 0.0f);
+        assertEquals(actual.getMaxX(), 1.0f);
+        assertEquals(actual.getMinY(), -1.0f);
+        assertEquals(actual.getMidY(), 0.0f);
+        assertEquals(actual.getMaxY(), 1.0f);
     }
 
     /**
@@ -92,12 +92,12 @@ public class BoundingBox2DNGTest {
         System.out.println("getTopLeftQuadrant");
         BoundingBox2D base = new BoundingBox2D(baseGraph);
         BoundingBox2D actualResult = base.topLeftQuadrant();
-        assertEquals(actualResult.minX, -1.0f);
-        assertEquals(actualResult.midX, -0.5f);
-        assertEquals(actualResult.maxX, 0.0f);
-        assertEquals(actualResult.minY, 0.0f);
-        assertEquals(actualResult.midY, 0.5f);
-        assertEquals(actualResult.maxY, 1.0f);
+        assertEquals(actualResult.getMinX(), -1.0f);
+        assertEquals(actualResult.getMidX(), -0.5f);
+        assertEquals(actualResult.getMaxX(), 0.0f);
+        assertEquals(actualResult.getMinY(), 0.0f);
+        assertEquals(actualResult.getMidY(), 0.5f);
+        assertEquals(actualResult.getMaxY(), 1.0f);
     }
 
     /**
@@ -108,12 +108,12 @@ public class BoundingBox2DNGTest {
         System.out.println("getTopRightQuadrant");
         BoundingBox2D base = new BoundingBox2D(baseGraph);
         BoundingBox2D actualResult = base.topRightQuadrant();
-        assertEquals(actualResult.minX, 0.0f);
-        assertEquals(actualResult.midX, 0.5f);
-        assertEquals(actualResult.maxX, 1.0f);
-        assertEquals(actualResult.minY, 0.0f);
-        assertEquals(actualResult.midY, 0.5f);
-        assertEquals(actualResult.maxY, 1.0f);
+        assertEquals(actualResult.getMinX(), 0.0f);
+        assertEquals(actualResult.getMidX(), 0.5f);
+        assertEquals(actualResult.getMaxX(), 1.0f);
+        assertEquals(actualResult.getMinY(), 0.0f);
+        assertEquals(actualResult.getMidY(), 0.5f);
+        assertEquals(actualResult.getMaxY(), 1.0f);
     }
 
     /**
@@ -124,12 +124,12 @@ public class BoundingBox2DNGTest {
         System.out.println("getBottomLeftQuadrant");
         BoundingBox2D base = new BoundingBox2D(baseGraph);
         BoundingBox2D actualResult = base.bottomLeftQuadrant();
-        assertEquals(actualResult.minX, -1.0f);
-        assertEquals(actualResult.midX, -0.5f);
-        assertEquals(actualResult.maxX, 0.0f);
-        assertEquals(actualResult.minY, -1.0f);
-        assertEquals(actualResult.midY, -0.5f);
-        assertEquals(actualResult.maxY, 0.0f);
+        assertEquals(actualResult.getMinX(), -1.0f);
+        assertEquals(actualResult.getMidX(), -0.5f);
+        assertEquals(actualResult.getMaxX(), 0.0f);
+        assertEquals(actualResult.getMinY(), -1.0f);
+        assertEquals(actualResult.getMidY(), -0.5f);
+        assertEquals(actualResult.getMaxY(), 0.0f);
     }
 
     /**
@@ -140,11 +140,11 @@ public class BoundingBox2DNGTest {
         System.out.println("getBottomRightQuadrant");
         BoundingBox2D base = new BoundingBox2D(baseGraph);
         BoundingBox2D actualResult = base.bottomRightQuadrant();
-        assertEquals(actualResult.minX, 0.0f);
-        assertEquals(actualResult.midX, 0.5f);
-        assertEquals(actualResult.maxX, 1.0f);
-        assertEquals(actualResult.minY, -1.0f);
-        assertEquals(actualResult.midY, -0.5f);
-        assertEquals(actualResult.maxY, 0.0f);
+        assertEquals(actualResult.getMinX(), 0.0f);
+        assertEquals(actualResult.getMidX(), 0.5f);
+        assertEquals(actualResult.getMaxX(), 1.0f);
+        assertEquals(actualResult.getMinY(), -1.0f);
+        assertEquals(actualResult.getMidY(), -0.5f);
+        assertEquals(actualResult.getMaxY(), 0.0f);
     }
 }

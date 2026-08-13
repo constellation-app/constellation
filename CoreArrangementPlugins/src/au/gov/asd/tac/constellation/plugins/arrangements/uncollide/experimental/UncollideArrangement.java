@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
 import au.gov.asd.tac.constellation.graph.GraphConstants;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -89,7 +88,6 @@ public class UncollideArrangement implements Arranger {
         }
 
         for (int i = 0; i < iter && tree.hasCollision(); i++) {
-
             PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
 
             tree = TreeFactory.create(wg, dimensions);
@@ -125,10 +123,10 @@ public class UncollideArrangement implements Arranger {
      * edges of each neighbor.
      */
     private void nudgeTwins(final GraphWriteMethods wg, final int subject, final int twin) {
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
+        final int rId = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
 
         double[] deltas;
         float deltaX = wg.getFloatValue(xId, subject) - wg.getFloatValue(xId, twin);

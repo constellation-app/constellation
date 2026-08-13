@@ -85,12 +85,14 @@ public class PasswordDeobfuscator {
      * @throws IOException
      */
     public static void main(final String[] args) throws IOException {
-        final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
-        LOGGER.log(Level.INFO, "Enter the obfuscated password to decrypt: ");
-        final String password = input.readLine();
-        if (password != null) {
-            final String deobfuscatedPassword = deobfuscate(new ObfuscatedPassword(password));
-            LOGGER.log(Level.INFO, "The password is: {0}", deobfuscatedPassword);
+        try (final InputStreamReader reader = new InputStreamReader(System.in, StandardCharsets.UTF_8.name());
+                final BufferedReader input = new BufferedReader(reader)) {
+            LOGGER.log(Level.INFO, "Enter the obfuscated password to decrypt: ");
+            final String password = input.readLine();
+            if (password != null) {
+                final String deobfuscatedPassword = deobfuscate(new ObfuscatedPassword(password));
+                LOGGER.log(Level.INFO, "The password is: {0}", deobfuscatedPassword);
+            }
         }
     }
 }

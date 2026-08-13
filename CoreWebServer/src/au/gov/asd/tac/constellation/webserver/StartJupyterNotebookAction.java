@@ -83,13 +83,12 @@ public class StartJupyterNotebookAction implements ActionListener {
             final Process jupyter = pb.start();
 
             final Thread out = new Thread(() -> {
-                final InputStream fromProcess = jupyter.getInputStream();
                 final OutputWriter ow = io.getOut();
                 ow.format("Starting %s in directory %s ...\n\n", JUPYTER_NOTEBOOK, dir);
 
                 final byte[] buf = new byte[1024];
                 while (!Thread.currentThread().isInterrupted()) {
-                    try {
+                    try (final InputStream fromProcess = jupyter.getInputStream()) {
                         final int len = fromProcess.read(buf);
                         if (len == -1) {
                             break;

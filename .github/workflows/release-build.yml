@@ -9,7 +9,7 @@ jobs:
 
     env:
       RELEASE_VERSION: "v3.4.0"
-      RUNNER_IMAGE: constellationapplication/netbeans-runner:21.0.2
+      RUNNER_IMAGE: constellationapplication/netbeans-runner:21.0.3
 
     steps:
       - name: Checkout Constellation repository

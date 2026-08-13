@@ -42,10 +42,7 @@ public class QuadTree {
     public QuadTree(final Box2D box) {
         this(0, box);
     }
-
-    /*
-     * Constructor
-     */
+    
     public QuadTree(final int level, final Box2D box) {
         this.level = level;
         this.box = box;
@@ -53,50 +50,16 @@ public class QuadTree {
         nodes = null;
     }
 
-    public List<Box2D> getSubs() {
-        final List<Box2D> boxes = new ArrayList<>();
-        getSubs(boxes);
-
-        return boxes;
-    }
-
-    private void getSubs(final List<Box2D> boxes) {
-        boxes.add(box);
-        if (nodes != null) {
-            for (final QuadTree qt : nodes) {
-                qt.getSubs(boxes);
-            }
-        }
-    }
-
-    /*
-     * Clears the quadtree.
-     * <p>
-     * Recursively clear all objects from all nodes.
-     */
-    public void clear() {
-        objects.clear();
-
-        if (nodes != null) {
-            for (int i = 0; i < nodes.length; i++) {
-                nodes[i].clear();
-                nodes[i] = null;
-            }
-
-            nodes = null;
-        }
-    }
-
-    /*
+    /**
      * Splits the node into four subnodes.
      * <p>
      * Divide the node into four equal parts and initialise the four subnodes with the new bounds.
      */
     private void split() {
-        final float minx = box.minx;
-        final float miny = box.miny;
-        final float maxx = box.maxx;
-        final float maxy = box.maxy;
+        final float minx = box.minx();
+        final float miny = box.miny();
+        final float maxx = box.maxx();
+        final float maxy = box.maxy();
         final float midx = minx + (maxx - minx) / 2;
         final float midy = miny + (maxy - miny) / 2;
 
@@ -107,7 +70,7 @@ public class QuadTree {
         nodes[BOT_R] = new QuadTree(level + 1, new Box2D(midx, midy, maxx, maxy));
     }
 
-    /*
+    /**
      * Determine which node the object belongs to.
      * <p>
      * -1 means object cannot completely fit within a child node and is part of the parent node.
@@ -116,21 +79,21 @@ public class QuadTree {
      */
     private int getIndex(final Orb2D orb) {
         int index = -1;
-        final double midx = box.minx + ((box.maxx - box.minx) / 2F);
-        final double midy = box.miny + ((box.maxy - box.miny) / 2F);
+        final double midx = box.minx()+ ((box.maxx()- box.minx()) / 2F);
+        final double midy = box.miny()+ ((box.maxy()- box.miny()) / 2F);
 
         // Object can completely fit within the top/bottom quadrants.
-        final boolean topQuadrant = orb.getY() + orb.r < midy;
-        final boolean bottomQuadrant = orb.getY() - orb.r > midy;
+        final boolean topQuadrant = orb.getY() + orb.getR() < midy;
+        final boolean bottomQuadrant = orb.getY() - orb.getR() > midy;
 
         // Object can completely fit within the left quadrants.
-        if (orb.getX() + orb.r < midx) {
+        if (orb.getX() + orb.getR() < midx) {
             if (topQuadrant) {
                 index = TOP_L;
             } else if (bottomQuadrant) {
                 index = BOT_L;
             }
-        } else if (orb.getX() - orb.r > midx) {
+        } else if (orb.getX() - orb.getR() > midx) {
             // Object can completely fit within the right quadrants.
             if (topQuadrant) {
                 index = TOP_R;
@@ -145,7 +108,7 @@ public class QuadTree {
         return index;
     }
 
-    /*
+    /**
      * Insert the object into the quadtree. If the node exceeds the capacity, it will split and add
      * objects that fit to their corresponding nodes.
      */
@@ -155,7 +118,6 @@ public class QuadTree {
 
             if (index != -1) {
                 nodes[index].insert(orb);
-
                 return;
             }
         }
@@ -179,10 +141,10 @@ public class QuadTree {
         }
     }
 
-    /*
+    /**
      * Return all objects that could collide with the given object.
      */
-    public List<Orb2D> getPossibleColliders(final List<Orb2D> colliders, final Orb2D orb) {
+    private List<Orb2D> getPossibleColliders(final List<Orb2D> colliders, final Orb2D orb) {
         // Recursively find all child colliders...
         final int index = getIndex(orb);
         if (index != -1 && nodes != null) {
@@ -217,7 +179,7 @@ public class QuadTree {
                 float x = orb.getX() - possible.getX();
                 float y = orb.getY() - possible.getY();
                 final double ll = x * x + y * y;
-                final double r = possible.r + orb.r + padding;
+                final double r = possible.getR() + orb.getR() + padding;
                 if (ll <= r * r) {
                     final double l = Math.sqrt(ll);
                     collided++;

@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.GlobalParametersPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -36,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -181,12 +179,10 @@ public class DataAccessParametersIoProviderNGTest {
         when(globalParametersPane1.getParams()).thenReturn(globalPluginParameters1);
         when(globalParametersPane2.getParams()).thenReturn(globalPluginParameters2);
 
-        try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class)) {
+        try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class);
+                final FileInputStream inputStream = new FileInputStream(getClass().getResource("resources/preferences.json").getPath())) {
             final ObjectMapper objectMapper = new ObjectMapper();
-            final String json = IOUtils.toString(
-                    new FileInputStream(getClass().getResource("resources/preferences.json").getPath()),
-                    StandardCharsets.UTF_8
-            );
+            final String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 
             // We do not know the mockito plugin names ahead of time so substitute them in now
             final StringSubstitutor substitutor = new StringSubstitutor(
@@ -277,12 +273,10 @@ public class DataAccessParametersIoProviderNGTest {
         when(globalParametersPane1.getParams()).thenReturn(globalPluginParameters1);
         when(globalParametersPane2.getParams()).thenReturn(globalPluginParameters2);
 
-        try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class)) {
+        try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class);
+                final FileInputStream inputStream = new FileInputStream(getClass().getResource("resources/preferences.json").getPath())) {
             final ObjectMapper objectMapper = new ObjectMapper();
-            final String json = IOUtils.toString(
-                    new FileInputStream(getClass().getResource("resources/preferences.json").getPath()),
-                    StandardCharsets.UTF_8
-            );
+            final String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 
             // We do not know the mockito plugin names ahead of time so substitute them in now
             final StringSubstitutor substitutor = new StringSubstitutor(

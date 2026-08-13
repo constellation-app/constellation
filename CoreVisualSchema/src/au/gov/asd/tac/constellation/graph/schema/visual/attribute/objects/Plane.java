@@ -210,9 +210,11 @@ public final class Plane {
 
         final String reference = jnode.get("plane_ref").textValue();
         final byte[] bytes = byteReader.read(reference).getData();
-        final BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
+        try (final ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
+            final BufferedImage image = ImageIO.read(stream);
 
-        return new Plane(label, x, y, z, width, height, image, imageWidth, imageHeight);
+            return new Plane(label, x, y, z, width, height, image, imageWidth, imageHeight);
+        }
     }
 
     public void writeNode(final JsonGenerator jg, final GraphByteWriter byteWriter) throws IOException {
@@ -225,13 +227,17 @@ public final class Plane {
         jg.writeNumberField("image_width", imageWidth);
         jg.writeNumberField("image_height", imageHeight);
 
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(image, "png", os);
-        final byte[] bytes = os.toByteArray();
-        final String reference = byteWriter.write(new ByteArrayInputStream(bytes));
-        jg.writeStringField("plane_ref", reference);
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            ImageIO.write(image, "png", os);
+            final byte[] bytes = os.toByteArray();
+            try (final ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
+                final String reference = byteWriter.write(stream);
 
-        LOGGER.log(Level.INFO, "{0}", String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
+                jg.writeStringField("plane_ref", reference);
+
+                LOGGER.log(Level.INFO, "{0}", String.format("Write plane '%s', byteLabel '%s', size %d", label, reference, bytes.length));
+            }
+        }
     }
 
     @Override

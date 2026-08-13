@@ -202,35 +202,35 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
      * Saves a text representation of this PluginReport to the clipboard.
      */
     private void saveToClipboard() {
-        final CharArrayWriter writer = new CharArrayWriter();
-        try (final PrintWriter out = new PrintWriter(writer)) {
-            out.append("Name: " + pluginReport.getPluginName() + SeparatorConstants.NEWLINE);
-            out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
-            out.append("All Messages: " + SeparatorConstants.NEWLINE + pluginReport.getAllMessages() + SeparatorConstants.NEWLINE + SeparatorConstants.NEWLINE);
-            out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + SeparatorConstants.NEWLINE);
-            out.append("Start: " + dateFormat.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
-            out.append("Stop: " + dateFormat.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);
+        try (final CharArrayWriter writer = new CharArrayWriter()) {
+            try (final PrintWriter out = new PrintWriter(writer)) {
+                out.append("Name: " + pluginReport.getPluginName() + SeparatorConstants.NEWLINE);
+                out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
+                out.append("All Messages: " + SeparatorConstants.NEWLINE + pluginReport.getAllMessages() + SeparatorConstants.NEWLINE + SeparatorConstants.NEWLINE);
+                out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + SeparatorConstants.NEWLINE);
+                out.append("Start: " + dateFormat.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
+                out.append("Stop: " + dateFormat.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);
 
-            if (pluginReport.getError() != null) {
-                out.append("Error: " + pluginReport.getError().getMessage() + "\n\n");
-                pluginReport.getError().printStackTrace(out);
+                if (pluginReport.getError() != null) {
+                    out.append("Error: " + pluginReport.getError().getMessage() + "\n\n");
+                    pluginReport.getError().printStackTrace(out);
+                }
             }
+
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            content.putString(writer.toString());
+            clipboard.setContent(content);
+
+            // TODO: can't do this because of circular dependancy
+    //        ClipboardUtilities.copyToClipboard(writer.toString());
+            PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
+                @Override
+                protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                    ConstellationLoggerHelper.copyPropertyBuilder(this, writer.toString().length(), ConstellationLoggerHelper.SUCCESS);
+                }
+            }).executeLater(null);
         }
-
-        final Clipboard clipboard = Clipboard.getSystemClipboard();
-        final ClipboardContent content = new ClipboardContent();
-        content.putString(writer.toString());
-        clipboard.setContent(content);
-
-        // TODO: can't do this because of circular dependancy
-//        ClipboardUtilities.copyToClipboard(writer.toString());
-        PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
-            @Override
-            protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-                ConstellationLoggerHelper.copyPropertyBuilder(this, writer.toString().length(), ConstellationLoggerHelper.SUCCESS);
-            }
-        }).executeLater(null);
-
     }
 
     /**

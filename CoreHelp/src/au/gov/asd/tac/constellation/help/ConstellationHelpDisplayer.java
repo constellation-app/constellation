@@ -136,16 +136,17 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     }
 
     public static void copy(final String filePath, final OutputStream out) throws IOException {
-        final InputStream pageInput = getInputStream(filePath);
-        final InputStream tocInput = getInputStream(Generator.getTOCDirectory());
+        try (final InputStream pageInput = getInputStream(filePath);
+                final InputStream tocInput = getInputStream(Generator.getTOCDirectory());) {
+            // avoid parsing utility files or images into html
+            if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
+                out.write(pageInput.readAllBytes());
+                return;
+            }
 
-        // avoid parsing utility files or images into html
-        if (filePath.contains(".css") || filePath.contains(".js") || filePath.contains(".png") || filePath.contains(".jpg")) {
-            out.write(pageInput.readAllBytes());
-            return;
+            out.write(generateHTMLOutput(tocInput, pageInput).getBytes());
         }
 
-        out.write(generateHTMLOutput(tocInput, pageInput).getBytes());
     }
 
     protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
@@ -169,9 +170,10 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     protected static String generateHTMLOutput(final InputStream tocInput, final InputStream pageInput) throws IOException {
         final StringBuilder html = new StringBuilder();
         
-        final InputStream htmlTemplate = getInputStream(Generator.getBaseDirectory() + SEP + "ext" + SEP + "bootstrap" + SEP + "assets" + SEP + "HelpTemplate.html");
-        final String templateHtml =  new String(htmlTemplate.readAllBytes(), StandardCharsets.UTF_8);
-        html.append(templateHtml);
+        try (final InputStream htmlTemplate = getInputStream(Generator.getBaseDirectory() + SEP + "ext" + SEP + "bootstrap" + SEP + "assets" + SEP + "HelpTemplate.html")) {
+            final String templateHtml =  new String(htmlTemplate.readAllBytes(), StandardCharsets.UTF_8);
+            html.append(templateHtml);
+        }
         
         // Create the css and js links and scripts
         final String stylesheetLink = "<link href=\"\\%s\" rel='stylesheet'></link>";

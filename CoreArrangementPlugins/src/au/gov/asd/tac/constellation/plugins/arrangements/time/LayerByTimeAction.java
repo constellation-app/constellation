@@ -58,7 +58,6 @@ public final class LayerByTimeAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-
         final Plugin plugin = PluginRegistry.get(ArrangementPluginRegistry.TIME);
         final PluginParameters params = plugin.createParameters();
         final Graph graph = context.getGraph();
@@ -70,6 +69,5 @@ public final class LayerByTimeAction extends AbstractAction {
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             PluginExecution.withPlugin(plugin).withParameters(params).executeLater(graph);
         }
-
     }
 }

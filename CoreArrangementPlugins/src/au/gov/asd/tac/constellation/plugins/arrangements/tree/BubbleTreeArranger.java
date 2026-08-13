@@ -16,9 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.tree.SpanningTree;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -26,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3d;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
@@ -106,15 +105,11 @@ public class BubbleTreeArranger implements Arranger {
         final SpanningTree st = new SpanningTree(wg);
 
         tree = st.createSpanningTree(isMinimal, false, rootVxId);
-
-        tree.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
-        tree.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
-        tree.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
-
-        xId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        yId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        zId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        nradiusId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        
+        xId = VisualConcept.VertexAttribute.X.ensure(tree);
+        yId = VisualConcept.VertexAttribute.Y.ensure(tree);
+        zId = VisualConcept.VertexAttribute.Z.ensure(tree);
+        nradiusId = VisualConcept.VertexAttribute.NODE_RADIUS.get(tree);
 
         vxDepth = new int[tree.getVertexCapacity()];
 
@@ -131,12 +126,12 @@ public class BubbleTreeArranger implements Arranger {
         float maxy = -Float.MAX_VALUE;
         float maxRadius = 0;
         int maxDepth = 1;
-        final int wgxId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int wgyId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int wgzId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int wgx2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        final int wgy2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        final int wgz2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+        final int wgxId = VisualConcept.VertexAttribute.X.get(wg);
+        final int wgyId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int wgzId = VisualConcept.VertexAttribute.Z.get(wg);
+        final int wgx2Id = VisualConcept.VertexAttribute.X2.ensure(wg);
+        final int wgy2Id = VisualConcept.VertexAttribute.Y2.ensure(wg);
+        final int wgz2Id = VisualConcept.VertexAttribute.Z2.ensure(wg);
         final int vxCount = tree.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
             // Make the layout 3D in x,y,z, 2D in x2,y2,z2.
@@ -281,7 +276,6 @@ public class BubbleTreeArranger implements Arranger {
                     return -1;
                 } else {
                     return 0;
-                    // Do nothing
                 }
             });
 
@@ -314,7 +308,7 @@ public class BubbleTreeArranger implements Arranger {
         }
 
         double angle = 0;
-        final ArrayList<BoundingCircle> circles = new ArrayList<>(nc);
+        final List<BoundingCircle> circles = new ArrayList<>(nc);
         for (int i = 0; i < nc; i++) {
             circles.add(new BoundingCircle());
         }
@@ -340,22 +334,6 @@ public class BubbleTreeArranger implements Arranger {
         }
 
         final BoundingCircle circleH = BoundingCircle.enclosingCircle(circles);
-        final double[] relpos = relativePositions[vxId];
-        relpos[2] = -circleH.getX();
-        relpos[3] = -circleH.getY();
-        relpos[4] = Math.sqrt(circleH.getRadius() * circleH.getRadius() - circleH.getY() * circleH.getY()) - Math.abs(circleH.getX());
-
-        // Set relative position of all children
-        // according to the centre of the enclosing circle.
-        final int nOut = tree.getVertexTransactionCount(vxId, Graph.OUTGOING);
-        for (int position = 0; position < nOut; position++) {
-            final int txId = tree.getVertexTransaction(vxId, Graph.OUTGOING, position);
-
-            final int outVxId = tree.getTransactionDestinationVertex(txId);
-            final double[] outrelpos = relativePositions[outVxId];
-            outrelpos[0] = circles.get(position + 1).getX() - circleH.getX();
-            outrelpos[1] = circles.get(position + 1).getY() - circleH.getY();
-        }
 
         return circleH.getRadius();
     }

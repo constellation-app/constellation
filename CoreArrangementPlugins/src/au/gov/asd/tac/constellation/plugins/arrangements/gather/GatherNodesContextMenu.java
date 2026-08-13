@@ -82,7 +82,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
      * @return A BitSet where selected vertex ids in the graph are set.
      */
     private static BitSet selectedVertexBits(final GraphReadMethods graph) {
-        final int selectedAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(graph);
         final int vertexCount = graph.getVertexCount();
         final BitSet vertexBits = new BitSet();
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {

@@ -51,22 +51,7 @@ public class UncollidePlugin extends SimpleEditPlugin {
     public String getDescription() {
         return "Uncollide all nodes whilst attempting to maintaing graph structure.";
     }
-
-    @Override
-    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final Map<String, PluginParameter<?>> params = parameters.getParameters();
-        final Dimensions dimensions = Dimensions.valueOf(params.get(DIMENSION_PARAMETER_ID).getStringValue());
-        final int maxExpansions = params.get(MAX_EXPANSIONS_PARAMETR_ID).getIntegerValue();
-
-        final Arranger arranger = new UncollideArrangement(dimensions, maxExpansions);
-        ((UncollideArrangement) arranger).setInteraction(interaction);
-
-        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
-        arranger.setMaintainMean(!selectedGraph.isArrangingAll());
-        arranger.arrange(selectedGraph.getInclusionGraph());
-        selectedGraph.retrieveCoords();
-    }
-
+    
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -84,5 +69,20 @@ public class UncollidePlugin extends SimpleEditPlugin {
         maxExpansionsParam.setIntegerValue(20);
         parameters.addParameter(maxExpansionsParam);
         return parameters;
+    }
+
+    @Override
+    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+        final Map<String, PluginParameter<?>> params = parameters.getParameters();
+        final Dimensions dimensions = Dimensions.valueOf(params.get(DIMENSION_PARAMETER_ID).getStringValue());
+        final int maxExpansions = params.get(MAX_EXPANSIONS_PARAMETR_ID).getIntegerValue();
+
+        final Arranger arranger = new UncollideArrangement(dimensions, maxExpansions);
+        ((UncollideArrangement) arranger).setInteraction(interaction);
+
+        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
+        arranger.setMaintainMean(!selectedGraph.isArrangingAll());
+        arranger.arrange(selectedGraph.getInclusionGraph());
+        selectedGraph.retrieveCoords();
     }
 }

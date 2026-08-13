@@ -261,7 +261,8 @@ public class ProjectUpdater extends Task {
     }
 
     private void extractMatchingPackages(final File jarFile, final List<String> expressions, final Set<String> publicPackages) throws IOException {
-        try (final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile))) {
+        try (final FileInputStream stream = new FileInputStream(jarFile);
+                final ZipInputStream zip = new ZipInputStream(stream)) {
             ZipEntry entry = zip.getNextEntry();
             while (entry != null) {
                 final String path = entry.getName();

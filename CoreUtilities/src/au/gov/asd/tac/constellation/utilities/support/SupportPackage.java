@@ -60,8 +60,8 @@ public class SupportPackage {
     public void zipFolder(final String sourceFolder, final Iterable<String> files, final String destinationZipFilename) throws IOException {
         final byte[] buffer = new byte[1024];
 
-        final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
-        try (final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
+        try (final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
+                final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             for (final String filename : files) {
                 if (!filesToIgnore(filename)) {
                     final ZipEntry zipEntry = new ZipEntry(filename);
