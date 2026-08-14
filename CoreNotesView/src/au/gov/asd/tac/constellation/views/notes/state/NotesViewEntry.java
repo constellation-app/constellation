@@ -120,11 +120,19 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public void setNodesSelected(final List<Integer> nodesSelected) {
-        this.nodesSelected = nodesSelected;
+        if (userCreated) {
+            this.nodesSelected = nodesSelected != null ? nodesSelected : new ArrayList<>();
+        } else {
+            this.nodesSelected = nodesSelected;
+        }
     }
 
     public void setTransactionsSelected(final List<Integer> transactionsSelected) {
-        this.transactionsSelected = transactionsSelected;
+        if (userCreated) {
+            this.transactionsSelected = transactionsSelected != null ? transactionsSelected : new ArrayList<>();
+        } else {
+            this.transactionsSelected = transactionsSelected;
+        }
     }
 
     public void setNoteTitle(final String noteTitle) {

@@ -132,6 +132,30 @@ public class NotesViewEntryNGTest {
     }
 
     /**
+     * User-created notes must always retain non-null selection lists.
+     */
+    @Test
+    public void testUserCreatedSettersRejectNullSelectionLists() {
+        final NotesViewEntry entry = new NotesViewEntry(
+                "0",
+                "title",
+                "content",
+                true,
+                false,
+                "#123456",
+                false
+        );
+
+        entry.setNodesSelected(null);
+        entry.setTransactionsSelected(null);
+
+        assertNotNull(entry.getNodesSelected());
+        assertNotNull(entry.getTransactionsSelected());
+        assertEquals(entry.getNodesSelected().size(), 0);
+        assertEquals(entry.getTransactionsSelected().size(), 0);
+    }
+
+    /**
      * Plugin report updates with a null last message must not store null content.
      */
     @Test
