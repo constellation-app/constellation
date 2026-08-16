@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in July 2026
+-   Fixed a NullPointerException in the Notes View when rendering notes with null content, colour, or selection lists (e.g. auto notes from plugin reports).
+
 ## Changes in June 2026
 -   Removed `ArrangeInScatter3dComponentsPlugin` which was unused.
 -   Updated `AbstractBoundingBox` to be an abstract class to reflect its intended use.
