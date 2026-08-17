@@ -15,29 +15,76 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author algol
  */
 public final class Config {
+    
+    private static final double TELEPORTATION_PROBABILITY = 0.15;
+    private static final long SEED_TO_RANDOM_NUMBER_GENERATOR = 123;
+    
+    private static final double MIN_CODE_LENGTH_IMPROVEMENT = 1e-10;
+    
+    // Core algorithm
+    private boolean directed;
+    private boolean undirdir;
+    private boolean outdirdir;
+    private boolean rawdir;
+    //TODO: this variable isn't set anywhere, but its value is used for some important checks
+    private boolean recordedTeleportation;
+
+    // Performance and accuracy
+    private int numTrials;
+    private boolean randomizeCoreLoopLimit;
+    private int coreLoopLimit;
+    private int levelAggregationLimit;
+    private int tuneIterationLimit; // num iterations of fine-tune/coarse-tune in two-level partition)
+    private double minimumRelativeTuneIterationImprovement;
+    private boolean fastCoarseTunePartition;
+    private boolean alternateCoarseTuneLevel;
+    private int coarseTuneLevel;
+    private int fastHierarchicalSolution;
+    
+    // Custom for Graph.
+    private ConnectionType connectionType;
 
     public enum ConnectionType {
-        TRANSACTIONS, EDGES, LINKS
+        
+        LINKS("Links"),
+        EDGES("Edges"), 
+        TRANSACTIONS("Transactions");
+        
+        private final String value;
+        
+        private static final Map<String, ConnectionType> STRING_MAP = new HashMap<>();
+        static {
+            for (final ConnectionType conn : ConnectionType.values()) {
+                STRING_MAP.put(conn.toString(), conn);
+            }
+        }
+        
+        private ConnectionType(final String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+        
+        public static ConnectionType fromString(final String str) {
+            return STRING_MAP.get(str);
+        }
     }
 
     public Config() {
-        noInfomap = false;
-        noFileOutput = true;
-        verbosity = 0;
-
-        teleportationProbability = 0.15;
-        selfTeleportationProbability = -1;
-        seedToRandomNumberGenerator = 123;
         numTrials = 1;
-        minimumCodelengthImprovement = 1e-10;
         minimumRelativeTuneIterationImprovement = 1e-5;
         coarseTuneLevel = 1;
-        verboseNumberPrecision = 6;
 
         connectionType = ConnectionType.LINKS;
 
@@ -101,102 +148,7 @@ public final class Config {
     public boolean isUndirected() {
         return !directed && !undirdir && !outdirdir && !rawdir;
     }
-
-    public boolean haveModularResultOutput() {
-        return printTree
-                || printMap
-                || printClu
-                || printBinaryTree
-                || printBinaryFlowTree;
-    }
-
-    // Input
-    private String networkFile;
-    private boolean includeSelfLinks;
-    private String clusterDataFile;
-    private boolean noInfomap;
-
-    // Core algorithm
-    private boolean twoLevel;
-    private boolean directed;
-    private boolean undirdir;
-    private boolean outdirdir;
-    private boolean rawdir;
-    private boolean recordedTeleportation;
-    private boolean teleportToNodes;
-    private double teleportationProbability;
-    private double selfTeleportationProbability;
-    private long seedToRandomNumberGenerator;
-
-    // Performance and accuracy
-    private int numTrials;
-    private double minimumCodelengthImprovement;
-    private boolean randomizeCoreLoopLimit;
-    private int coreLoopLimit;
-    private int levelAggregationLimit;
-    private int tuneIterationLimit; // num iterations of fine-tune/coarse-tune in two-level partition)
-    private double minimumRelativeTuneIterationImprovement;
-    private boolean fastCoarseTunePartition;
-    private boolean alternateCoarseTuneLevel;
-    private int coarseTuneLevel;
-    private int fastHierarchicalSolution;
-
-    // Output
-    private String outDirectory;
-    private boolean printTree;
-    private boolean printMap;
-    private boolean printClu;
-    private boolean printNodeRanks;
-    private boolean printFlowNetwork;
-    private boolean printBinaryTree;
-    private boolean printBinaryFlowTree; // tree including horizontal links (hierarchical network)
-    private boolean noFileOutput;
-    private int verbosity;
-    private int verboseNumberPrecision;
-
-    // Custom for Graph.
-    private ConnectionType connectionType;
-
-    public String getNetworkFile() {
-        return networkFile;
-    }
-
-    public void setNetworkFile(final String networkFile) {
-        this.networkFile = networkFile;
-    }
-
-    public boolean isIncludeSelfLinks() {
-        return includeSelfLinks;
-    }
-
-    public void setIncludeSelfLinks(final boolean includeSelfLinks) {
-        this.includeSelfLinks = includeSelfLinks;
-    }
-
-    public String getClusterDataFile() {
-        return clusterDataFile;
-    }
-
-    public void setClusterDataFile(final String clusterDataFile) {
-        this.clusterDataFile = clusterDataFile;
-    }
-
-    public boolean isNoInfomap() {
-        return noInfomap;
-    }
-
-    public void setNoInfomap(final boolean noInfomap) {
-        this.noInfomap = noInfomap;
-    }
-
-    public boolean isTwoLevel() {
-        return twoLevel;
-    }
-
-    public void setTwoLevel(final boolean twoLevel) {
-        this.twoLevel = twoLevel;
-    }
-
+    
     public boolean isDirected() {
         return directed;
     }
@@ -237,36 +189,12 @@ public final class Config {
         this.recordedTeleportation = recordedTeleportation;
     }
 
-    public boolean isTeleportToNodes() {
-        return teleportToNodes;
-    }
-
-    public void setTeleportToNodes(final boolean teleportToNodes) {
-        this.teleportToNodes = teleportToNodes;
-    }
-
     public double getTeleportationProbability() {
-        return teleportationProbability;
+        return TELEPORTATION_PROBABILITY;
     }
-
-    public void setTeleportationProbability(final double teleportationProbability) {
-        this.teleportationProbability = teleportationProbability;
-    }
-
-    public double getSelfTeleportationProbability() {
-        return selfTeleportationProbability;
-    }
-
-    public void setSelfTeleportationProbability(final double selfTeleportationProbability) {
-        this.selfTeleportationProbability = selfTeleportationProbability;
-    }
-
+    
     public long getSeedToRandomNumberGenerator() {
-        return seedToRandomNumberGenerator;
-    }
-
-    public void setSeedToRandomNumberGenerator(final long seedToRandomNumberGenerator) {
-        this.seedToRandomNumberGenerator = seedToRandomNumberGenerator;
+        return SEED_TO_RANDOM_NUMBER_GENERATOR;
     }
 
     public int getNumTrials() {
@@ -278,173 +206,49 @@ public final class Config {
     }
 
     public double getMinimumCodelengthImprovement() {
-        return minimumCodelengthImprovement;
-    }
-
-    public void setMinimumCodelengthImprovement(final double minimumCodelengthImprovement) {
-        this.minimumCodelengthImprovement = minimumCodelengthImprovement;
+        return MIN_CODE_LENGTH_IMPROVEMENT;
     }
 
     public boolean isRandomizeCoreLoopLimit() {
         return randomizeCoreLoopLimit;
     }
 
-    public void setRandomizeCoreLoopLimit(final boolean randomizeCoreLoopLimit) {
-        this.randomizeCoreLoopLimit = randomizeCoreLoopLimit;
-    }
-
     public int getCoreLoopLimit() {
         return coreLoopLimit;
     }
-
-    public void setCoreLoopLimit(final int coreLoopLimit) {
-        this.coreLoopLimit = coreLoopLimit;
-    }
-
+    
     public int getLevelAggregationLimit() {
         return levelAggregationLimit;
     }
-
-    public void setLevelAggregationLimit(final int levelAggregationLimit) {
-        this.levelAggregationLimit = levelAggregationLimit;
-    }
-
+    
     public int getTuneIterationLimit() {
         return tuneIterationLimit;
     }
-
-    public void setTuneIterationLimit(final int tuneIterationLimit) {
-        this.tuneIterationLimit = tuneIterationLimit;
-    }
-
+    
     public double getMinimumRelativeTuneIterationImprovement() {
         return minimumRelativeTuneIterationImprovement;
     }
-
-    public void setMinimumRelativeTuneIterationImprovement(final double minimumRelativeTuneIterationImprovement) {
-        this.minimumRelativeTuneIterationImprovement = minimumRelativeTuneIterationImprovement;
-    }
-
+    
     public boolean isFastCoarseTunePartition() {
         return fastCoarseTunePartition;
     }
-
-    public void setFastCoarseTunePartition(final boolean fastCoarseTunePartition) {
-        this.fastCoarseTunePartition = fastCoarseTunePartition;
-    }
-
+    
     public boolean isAlternateCoarseTuneLevel() {
         return alternateCoarseTuneLevel;
     }
-
-    public void setAlternateCoarseTuneLevel(final boolean alternateCoarseTuneLevel) {
-        this.alternateCoarseTuneLevel = alternateCoarseTuneLevel;
-    }
-
+    
     public int getCoarseTuneLevel() {
         return coarseTuneLevel;
     }
-
-    public void setCoarseTuneLevel(final int coarseTuneLevel) {
-        this.coarseTuneLevel = coarseTuneLevel;
-    }
-
+    
     public int getFastHierarchicalSolution() {
         return fastHierarchicalSolution;
     }
-
+    
     public void setFastHierarchicalSolution(final int fastHierarchicalSolution) {
         this.fastHierarchicalSolution = fastHierarchicalSolution;
     }
-
-    public String getOutDirectory() {
-        return outDirectory;
-    }
-
-    public void setOutDirectory(final String outDirectory) {
-        this.outDirectory = outDirectory;
-    }
-
-    public boolean isPrintTree() {
-        return printTree;
-    }
-
-    public void setPrintTree(final boolean printTree) {
-        this.printTree = printTree;
-    }
-
-    public boolean isPrintMap() {
-        return printMap;
-    }
-
-    public void setPrintMap(final boolean printMap) {
-        this.printMap = printMap;
-    }
-
-    public boolean isPrintClu() {
-        return printClu;
-    }
-
-    public void setPrintClu(final boolean printClu) {
-        this.printClu = printClu;
-    }
-
-    public boolean isPrintNodeRanks() {
-        return printNodeRanks;
-    }
-
-    public void setPrintNodeRanks(final boolean printNodeRanks) {
-        this.printNodeRanks = printNodeRanks;
-    }
-
-    public boolean isPrintFlowNetwork() {
-        return printFlowNetwork;
-    }
-
-    public void setPrintFlowNetwork(final boolean printFlowNetwork) {
-        this.printFlowNetwork = printFlowNetwork;
-    }
-
-    public boolean isPrintBinaryTree() {
-        return printBinaryTree;
-    }
-
-    public void setPrintBinaryTree(final boolean printBinaryTree) {
-        this.printBinaryTree = printBinaryTree;
-    }
-
-    public boolean isPrintBinaryFlowTree() {
-        return printBinaryFlowTree;
-    }
-
-    public void setPrintBinaryFlowTree(final boolean printBinaryFlowTree) {
-        this.printBinaryFlowTree = printBinaryFlowTree;
-    }
-
-    public boolean isNoFileOutput() {
-        return noFileOutput;
-    }
-
-    public void setNoFileOutput(final boolean noFileOutput) {
-        this.noFileOutput = noFileOutput;
-    }
-
-    public int getVerbosity() {
-        return verbosity;
-    }
-
-    public void setVerbosity(final int verbosity) {
-        this.verbosity = verbosity;
-    }
-
-    public int getVerboseNumberPrecision() {
-        return verboseNumberPrecision;
-    }
-
-    public void setVerboseNumberPrecision(final int verboseNumberPrecision) {
-        this.verboseNumberPrecision = verboseNumberPrecision;
-    }
-
+    
     public ConnectionType getConnectionType() {
         return connectionType;
     }

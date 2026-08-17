@@ -489,7 +489,7 @@ public abstract class InfomapGreedy extends InfomapBase {
      *
      * @return The number of nodes moved.
      */
-    public int tryMoveEachNodeIntoBestModule() {
+    private int tryMoveEachNodeIntoBestModule() {
         if (DEBUG) {
             LOGGER.log(Level.INFO, "{0}.tryMoveEachNodeIntoBestModule", getClass().getSimpleName());
         }
@@ -526,14 +526,11 @@ public abstract class InfomapGreedy extends InfomapBase {
             // If no links connecting this node with other nodes, it won't move into others,
             // and others won't move into this. TODO: always best leave it alone?
             if (current.getDegree() == 0
-                    || (config.isIncludeSelfLinks()
-                    && (current.getOutDegree() == 1 && current.getInDegree() == 1)
+                    || (current.getOutDegree() == 1 && current.getInDegree() == 1
                     && current.getOutEdges().get(0).getTarget().equals(current))) {
                 if (DEBUG) {
                     LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
                 }
-                //TODO: if not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
-                assert !config.isIncludeSelfLinks();
                 continue;
             }
 

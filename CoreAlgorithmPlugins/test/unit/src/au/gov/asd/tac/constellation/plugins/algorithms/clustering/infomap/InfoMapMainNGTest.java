@@ -99,19 +99,10 @@ public class InfoMapMainNGTest {
             graph = new GraphJsonReader().readGraphZip(fnam, inStream, new TextIoProgress(true));
         }
         final Config conf = new Config();
-        conf.setNoFileOutput(false);
-        conf.setVerbosity(1);
-
-        conf.setNetworkFile(fnam);
-        conf.setOutDirectory(System.getProperty("java.io.tmpdir"));
-        conf.setPrintClu(true);
-        conf.setPrintNodeRanks(true);
-        conf.setPrintFlowNetwork(true);
-        conf.setVerbosity(1);
         conf.setNumTrials(5);
 
         System.out.printf("fastHierarchicalSolution %d\n", conf.getFastHierarchicalSolution());
-        System.out.printf("Parsing %s network from file '%s'... ", conf.isUndirected() ? "undirected" : "directed", conf.getNetworkFile());
+        System.out.printf("Parsing %s network from file... ", conf.isUndirected() ? "undirected" : "directed");
 
         conf.setConnectionType(Config.ConnectionType.TRANSACTIONS);
 

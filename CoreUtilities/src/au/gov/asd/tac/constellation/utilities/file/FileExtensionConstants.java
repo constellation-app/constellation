@@ -29,13 +29,7 @@ public class FileExtensionConstants {
     public static final String STAR = ".star";
     public static final String NEBULA = ".nebula";
     public static final String STAR_AUTOSAVE = ".star_auto";
-
-    // Infomap extensions
-    public static final String TREE = ".tree";
-    public static final String CLUSTER = ".clu";
-    public static final String RANK = ".rank";
-    public static final String FLOW = ".flow";
-
+    
     // Value file extensions
     public static final String TAB_SEPARATED_VALUE = ".tsv";
     public static final String COMMA_SEPARATED_VALUE = ".csv";

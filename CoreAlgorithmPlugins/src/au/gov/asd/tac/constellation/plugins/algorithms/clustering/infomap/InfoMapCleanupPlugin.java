@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
@@ -24,13 +25,17 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtiliti
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Color the clusters and arrange graph after clustering has been performed.
  *
  * @author antares
  */
+@ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
+@NbBundle.Messages("InfoMapCleanupPlugin=Info Map: Cleanup")
 public class InfoMapCleanupPlugin extends SimpleEditPlugin {
     
     @Override

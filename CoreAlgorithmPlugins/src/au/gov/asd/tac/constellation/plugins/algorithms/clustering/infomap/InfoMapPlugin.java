@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.NbBundle;
@@ -61,25 +62,13 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     // Connection Type
     public static final String CONNECTION_TYPE_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "connection_type");
-    private static final String CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT = "Links";
-    private static final String CONNECTION_TYPE_PARAMETER_ID_DEFAULT = CONNECTION_TYPE_PARAMETER_ID_INTERVAL_DEFAULT;
-
-    private static final String CONNECTION_TYPE_LINKS = "Links";
-    private static final String CONNECTION_TYPE_EDGES = "Edges";
-    private static final String CONNECTION_TYPE_TRANSACTIONS = "Transactions";
-
-    private static final List<String> CONNECTION_TYPE_PARAM_VALUES = Arrays.asList(
-            CONNECTION_TYPE_LINKS,
-            CONNECTION_TYPE_EDGES,
-            CONNECTION_TYPE_TRANSACTIONS
-    );
 
     // Dynamics
     public static final String DYNAMICS_PARAMETER_ID = PluginParameter.buildId(InfoMapPlugin.class, "dynamics");
     private static final String DYNAMICS_PARAMETER_UNDIRECTED = "Undirected";
     private static final String DYNAMICS_PARAMETER_DIRECTED = "Directed";
     private static final String DYNAMICS_PARAMETER_UNDIRECTED_FLOW = "Undirected flow, directed codelength";
-    private static final String DYNAMICS_PARAMETER_INCLOMING_FLOW = "Incoming flow, all codelength";
+    private static final String DYNAMICS_PARAMETER_INCOMING_FLOW = "Incoming flow, all codelength";
     private static final String DYNAMICS_PARAMETER_DIRECTED_WEIGHT = "Directed, weight as flow";
     private static final String DYNAMICS_PARAMETER_ID_DEFAULT = DYNAMICS_PARAMETER_UNDIRECTED;
 
@@ -87,7 +76,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
             DYNAMICS_PARAMETER_UNDIRECTED,
             DYNAMICS_PARAMETER_DIRECTED,
             DYNAMICS_PARAMETER_UNDIRECTED_FLOW,
-            DYNAMICS_PARAMETER_INCLOMING_FLOW,
+            DYNAMICS_PARAMETER_INCOMING_FLOW,
             DYNAMICS_PARAMETER_DIRECTED_WEIGHT
     );
 
@@ -125,10 +114,12 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
         
+        final List<String> connectionTypes = Stream.of(Config.ConnectionType.values()).map(Config.ConnectionType::toString).toList();
+        
         final PluginParameter<SingleChoiceParameterValue> connectionParam = SingleChoiceParameterType.build(CONNECTION_TYPE_PARAMETER_ID);
         connectionParam.setName("Connection Type");
-        SingleChoiceParameterType.setOptions(connectionParam, CONNECTION_TYPE_PARAM_VALUES);
-        SingleChoiceParameterType.setChoice(connectionParam, CONNECTION_TYPE_PARAMETER_ID_DEFAULT);
+        SingleChoiceParameterType.setOptions(connectionParam, connectionTypes);
+        SingleChoiceParameterType.setChoice(connectionParam, Config.ConnectionType.LINKS.toString());
         parameters.addParameter(connectionParam);
         
         final PluginParameter<SingleChoiceParameterValue> dynamicsParam = SingleChoiceParameterType.build(DYNAMICS_PARAMETER_ID);
@@ -194,27 +185,21 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         final Config config = new Config();
 
         // Connection type.
-        switch (parameters.getParameters().get(CONNECTION_TYPE_PARAMETER_ID).getStringValue()) {
-            case CONNECTION_TYPE_TRANSACTIONS ->
-                config.setConnectionType(Config.ConnectionType.TRANSACTIONS);
-            case CONNECTION_TYPE_EDGES ->
-                config.setConnectionType(Config.ConnectionType.EDGES);
-            case CONNECTION_TYPE_LINKS ->
-                config.setConnectionType(Config.ConnectionType.LINKS);
-        }
+        final String connectionType = parameters.getStringValue(CONNECTION_TYPE_PARAMETER_ID);
+        config.setConnectionType(Config.ConnectionType.fromString(connectionType));
 
         // Dynamic type
         // Note: DYNAMICS_PARAMETER_UNDIRECTED is unused here because the config will set undirected if no other dynamic is set true
         switch (parameters.getParameters().get(DYNAMICS_PARAMETER_ID).getStringValue()) {
             case DYNAMICS_PARAMETER_DIRECTED -> config.setDirected(true);
             case DYNAMICS_PARAMETER_UNDIRECTED_FLOW -> config.setUndirdir(true);
-            case DYNAMICS_PARAMETER_INCLOMING_FLOW -> config.setOutdirdir(true);
+            case DYNAMICS_PARAMETER_INCOMING_FLOW -> config.setOutdirdir(true);
             case DYNAMICS_PARAMETER_DIRECTED_WEIGHT -> config.setRawdir(true);
         }
 
-        config.setOptimizationLevel(OPTIMISATION_LEVELS.get(parameters.getParameters().get(OPTIMISATION_PARAMETER_ID).getStringValue()));
-        config.setFastHierarchicalSolution(FAST_HIERARCHICAL_LEVELS.get(parameters.getParameters().get(FAST_HIERARCHICAL_PARAMETER_ID).getStringValue()));
-        config.setNumTrials(parameters.getParameters().get(NUM_TRIALS_PARAMETER_ID).getIntegerValue());
+        config.setOptimizationLevel(OPTIMISATION_LEVELS.get(parameters.getStringValue(OPTIMISATION_PARAMETER_ID)));
+        config.setFastHierarchicalSolution(FAST_HIERARCHICAL_LEVELS.get(parameters.getStringValue(FAST_HIERARCHICAL_PARAMETER_ID)));
+        config.setNumTrials(parameters.getIntegerValue(NUM_TRIALS_PARAMETER_ID));
 
         return config;
     }
