@@ -124,12 +124,7 @@ public class InfomapUndirected extends InfomapGreedy {
     }
 
     public static class NodeFactoryUndirected implements NodeFactoryBase {
-
-        @Override
-        public NodeBase createNode() {
-            return createNode("", 0, 0);
-        }
-
+        
         @Override
         public NodeBase createNode(final String name, final double flow, final double teleportWeight) {
             final FlowUndirected data = new FlowUndirected(flow);

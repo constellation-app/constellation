@@ -21,7 +21,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util;
  */
 public class InfoMath {
 
-    public static final double M_LOG2E = 1.4426950408889634074;
+    private static final double M_LOG2E = 1.4426950408889634074;
 
     public static double log2(final double p) {
         return Math.log(p) * M_LOG2E;
@@ -29,26 +29,5 @@ public class InfoMath {
 
     public static double plogp(final double p) {
         return p > 0 ? p * log2(p) : 0;
-    }
-
-    /**
-     * Get a random permutation of indices of the size of the input vector.
-     *
-     * @param randomOrder the array that will be filled with randomly permuted
-     * integers.
-     * @param randGen the random number generator.
-     */
-    public static void getRandomizedIndexVector(final int[] randomOrder, final Lcg randGen) {
-        final int size = randomOrder.length;
-        for (int i = 0; i < size; ++i) {
-            randomOrder[i] = i;
-        }
-
-        for (int i = 0; i < size; ++i) {
-            final int i2 = i + randGen.nextInt(size - i - 1);
-            final int t = randomOrder[i];
-            randomOrder[i] = randomOrder[i2];
-            randomOrder[i2] = t;
-        }
     }
 }

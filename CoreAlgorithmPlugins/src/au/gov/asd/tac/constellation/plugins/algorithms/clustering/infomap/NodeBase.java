@@ -92,17 +92,9 @@ public class NodeBase {
     public NodeBase getParent() {
         return parent;
     }
-
-    public void setParent(final NodeBase parent) {
-        this.parent = parent;
-    }
-
+    
     public NodeBase getFirstChild() {
         return firstChild;
-    }
-
-    public void setFirstChild(final NodeBase firstChild) {
-        this.firstChild = firstChild;
     }
 
     public double getCodelength() {

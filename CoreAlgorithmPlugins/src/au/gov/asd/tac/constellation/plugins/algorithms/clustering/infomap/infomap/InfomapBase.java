@@ -25,12 +25,12 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.flow.N
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Lcg;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,8 +41,6 @@ import java.util.logging.Logger;
 public abstract class InfomapBase {
     
     private static final Logger LOGGER = Logger.getLogger(InfomapBase.class.getName());
-
-    protected static final boolean DEBUG = false;
 
     protected final Config config;
     protected final GraphReadMethods rg;
@@ -75,9 +73,12 @@ public abstract class InfomapBase {
     private static final String NINE_FORMAT2 = "%.9f]";
     private static final String NINE_FORMAT3 = " (sum: %.9f)%n";
     private static final String FOUR_FORMAT = "%.4f%% ";
+    private static final long SEED_TO_RANDOM_NUMBER_GENERATOR = 123;
+    
+    protected static final double MIN_CODE_LENGTH_IMPROVEMENT = 1e-10;
 
     // Use a custom random number generator so we can compare the results to the C++ code.
-    protected Lcg rand;
+    protected Random rand;
 
     protected InfomapBase(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
         this.config = config;
@@ -93,8 +94,7 @@ public abstract class InfomapBase {
 
         bestHierarchicalCodelength = Double.MAX_VALUE;
         bestIntermediateCodelength = Double.MAX_VALUE;
-        rand = new Lcg();
-        rand.seed(config.getSeedToRandomNumberGenerator());
+        rand = new Random(SEED_TO_RANDOM_NUMBER_GENERATOR);
     }
 
     /**
@@ -115,8 +115,7 @@ public abstract class InfomapBase {
         getRoot().setCodelength(indexCodelength);
         LOGGER.log(Level.INFO, "One-level codelength: {0}", indexCodelength);
         oneLevelCodelength = indexCodelength;
-
-        final double[] codelengths = new double[config.getNumTrials()];
+        
         final StringBuilder bestSolutionStatistics = new StringBuilder();
 
         for (int iTrial = 0; iTrial < config.getNumTrials(); iTrial++) {
@@ -129,40 +128,12 @@ public abstract class InfomapBase {
             }
 
             runPartition();
-            
-            codelengths[iTrial] = hierarchicalCodelength;
 
             if (hierarchicalCodelength < bestHierarchicalCodelength) {
                 bestHierarchicalCodelength = hierarchicalCodelength;
                 bestSolutionStatistics.setLength(0);
                 printPerLevelCodelength(bestSolutionStatistics);
             }
-        }
-
-        if (DEBUG) {
-            if (config.getNumTrials() > 1) {
-                double averageCodelength = 0;
-                double minCodelength = codelengths[0];
-                double maxCodelength = 0;
-                LOGGER.log(Level.INFO, "Codelengths for %d trials: [{0}", config.getNumTrials());
-                for (final double mdl : codelengths) {
-                    LOGGER.log(Level.INFO, NINE_FORMAT1, mdl);
-                    averageCodelength += mdl;
-                    minCodelength = Math.min(minCodelength, mdl);
-                    maxCodelength = Math.max(maxCodelength, mdl);
-                }
-
-                averageCodelength /= config.getNumTrials();
-                
-                final String formattedString = String.format("[min, average, max] codelength: [%.9f, %.9f, %.9f]%n%n",
-                        minCodelength, averageCodelength, maxCodelength);
-                LOGGER.log(Level.INFO, formattedString);
-            }
-
-            if (bestIntermediateStatistics != null) {
-                LOGGER.log(Level.INFO, "Best intermediate solution: {0}", bestIntermediateStatistics);
-            }
-            LOGGER.log(Level.INFO, "Best end solution: {0}", bestSolutionStatistics);
         }
     }
 
@@ -228,11 +199,6 @@ public abstract class InfomapBase {
     }
 
     private double partitionAndQueueNextLevel(final PartitionQueue partitionQueue, final boolean tryIndexing) {
-        if (DEBUG) {
-            final String log = String.format("%s.hierarchicalPartition(%s)...%n", getClass().getSimpleName(), tryIndexing);
-            LOGGER.log(Level.INFO, log);
-        }
-
         codelength = getRoot().getCodelength();
         hierarchicalCodelength = codelength;
 
@@ -280,11 +246,6 @@ public abstract class InfomapBase {
     }
 
     private void tryIndexingIteratively() {
-        if (DEBUG) {
-            final String log = String.format("%s.tryIndexingIteratively%n", getClass().getSimpleName());
-            LOGGER.log(Level.INFO, log);
-        }
-
         final boolean verbose = subLevel == 0;
 
         if (verbose) {
@@ -304,7 +265,7 @@ public abstract class InfomapBase {
 
             // Break if trivial super structure.
             if (superInfomap.numNonTrivialTopModules == 1 || superInfomap.getNumTopModules() == getNumTopModules()
-                    || superInfomap.codelength > indexCodelength - config.getMinimumCodelengthImprovement()) {
+                    || superInfomap.codelength > indexCodelength - MIN_CODE_LENGTH_IMPROVEMENT) {
                 break;
             }
 
@@ -379,7 +340,7 @@ public abstract class InfomapBase {
             initConstantInfomapTerms();
             initModuleOptimization();
 
-            boolean acceptSolution = codelength < oldIndexLength - config.getMinimumCodelengthImprovement();
+            boolean acceptSolution = codelength < oldIndexLength - MIN_CODE_LENGTH_IMPROVEMENT;
 
             // Force at least one modular level!
             final boolean acceptByForce = !acceptSolution && numLevelsCreated == 0;
@@ -507,7 +468,7 @@ public abstract class InfomapBase {
             final boolean nonTrivialSubstructure = subInfomap.getNumTopModules() > 1
                     && subInfomap.getNumTopModules() < subInfomap.getNumLeafNodes();
             final boolean improvement = nonTrivialSubstructure
-                    && (subInfomap.hierarchicalCodelength < module.getCodelength() - config.getMinimumCodelengthImprovement());
+                    && (subInfomap.hierarchicalCodelength < module.getCodelength() - MIN_CODE_LENGTH_IMPROVEMENT);
 
             if (improvement) {
                 indexCodelengths[moduleIndex] = subInfomap.indexCodelength;
@@ -558,19 +519,10 @@ public abstract class InfomapBase {
     }
 
     private void partition() {
-        partition(0, false, true);
+        partition(0, false);
     }
 
     private void partition(final int recursiveCount, final boolean fast) {
-        partition(recursiveCount, fast, true);
-    }
-
-    private void partition(final int recursiveCount, final boolean fast, final boolean forceConsolidation) {
-        if (DEBUG) {
-            final String log = String.format("%s.partition(%d,%s,%s)%n", getClass().getSimpleName(), recursiveCount, fast, forceConsolidation);
-            LOGGER.log(Level.INFO, log);
-        }
-        
         if (treeData.getFirstLeaf().getParent() != getRoot()) {
             final String log = String.format("Already partitioned with codelength %f in %d modules.%n", codelength, getNumTopModules());
             LOGGER.log(Level.INFO, log);
@@ -582,13 +534,8 @@ public abstract class InfomapBase {
         initConstantInfomapTerms();
         initModuleOptimization();
 
-        mergeAndConsolidateRepeatedly(forceConsolidation, fast);
-
-        if (DEBUG) {
-            final String log = String.format("[codelength, initialCodelength = %f,%f]%n", codelength, codelength);
-            LOGGER.log(Level.INFO, log);
-        }
-
+        mergeAndConsolidateRepeatedly();
+        
         if (!fast && config.getTuneIterationLimit() != 1 && getNumTopModules() != getNumLeafNodes()) {
             int tuneIterationCount = 1;
             int coarseTuneLevel = config.getCoarseTuneLevel() - 1;
@@ -637,19 +584,6 @@ public abstract class InfomapBase {
     }
 
     private void mergeAndConsolidateRepeatedly() {
-        mergeAndConsolidateRepeatedly(false, false);
-    }
-
-    private void mergeAndConsolidateRepeatedly(final boolean forceConsolidation) {
-        mergeAndConsolidateRepeatedly(forceConsolidation, false);
-    }
-
-    private void mergeAndConsolidateRepeatedly(final boolean forceConsolidation, final boolean fast) {
-        if (DEBUG) {
-            final String log = String.format("%s.mergeAndConsolidateRepeatedly(%s,%s)%n", getClass().getSimpleName(), forceConsolidation, fast);
-            LOGGER.log(Level.INFO, log);
-        }
-
         iterationCount++;
 
         // Force create modules even if worse (don't mix modules and leaf nodes under the same parent).
@@ -666,7 +600,7 @@ public abstract class InfomapBase {
             initModuleOptimization();
 
             // If no improvement, revert codelength terms to the actual structure.
-            if (codelength >= consolidatedCodelength - config.getMinimumCodelengthImprovement()) {
+            if (codelength >= consolidatedCodelength - MIN_CODE_LENGTH_IMPROVEMENT) {
                 indexCodelength = consolidatedIndexLength;
                 moduleCodelength = consolidatedModuleLength;
                 codelength = consolidatedCodelength;
@@ -686,11 +620,6 @@ public abstract class InfomapBase {
     }
 
     private void fineTune() {
-        if (DEBUG) {
-            final String log = String.format("%s.fineTune(%s)\n", getClass().getSimpleName(), getRoot());
-            LOGGER.log(Level.INFO, log);
-        }
-
         isCoarseTune = false;
         setActiveNetworkFromLeafs();
 
@@ -720,11 +649,6 @@ public abstract class InfomapBase {
      * Consolidate the result.
      */
     private void coarseTune(final int recursiveCount) {
-        if (DEBUG) {
-            final String log = String.format("%s.coarseTune(%s)\n", getClass().getSimpleName(), getRoot());
-            LOGGER.log(Level.INFO, log);
-        }
-
         if (getNumTopModules() == 1) {
             return;
         }
@@ -759,7 +683,7 @@ public abstract class InfomapBase {
         initModuleOptimization();
         moveNodesToPredefinedModules();
 
-        mergeAndConsolidateRepeatedly(true);
+        mergeAndConsolidateRepeatedly();
     }
 
     private void partitionEachModule(final int recursiveCount) {
@@ -784,12 +708,7 @@ public abstract class InfomapBase {
                 moduleIndexOffset += 1;
                 continue;
             }
-
-            if (DEBUG) {
-                final String log = String.format(">>>>>>>>>>>>>>>>>> RUN SUB_INFOMAP on node n%d with childDegree: %d >>>>>>>>>>>>\n", module.getId(), module.getChildDegree());
-                LOGGER.log(Level.INFO, log);
-            }
-
+            
             final InfomapBase subInfomap = getNewInfomapInstance(config, rg);
 
             // To not happen to get back the same network with the same seed.
@@ -797,13 +716,7 @@ public abstract class InfomapBase {
             subInfomap.subLevel = subLevel + 1;
             subInfomap.initSubNetwork(module);
             subInfomap.partition(recursiveCount, fast);
-
-            if (DEBUG) {
-                LOGGER.log(Level.INFO, "<<<<<<<<<<<<<<<<<<< BACK FROM SUB_INFOMAP!!!! <<<<<<<<<<<<<<<<<<<%n");
-                final String log = String.format("Node n%d with %d leaf-nodes gave %d sub-clusters%n", module.getId(), subInfomap.treeData.getNumLeafNodes(), subInfomap.treeData.getRoot().getChildDegree());
-                LOGGER.log(Level.INFO, log);
-            }
-
+            
             final Iterator<NodeBase> originalLeafNodeIt = module.getChildren().iterator();
             for (final NodeBase node : subInfomap.treeData.getLeaves()) {
                 originalLeafNodeIt.next().setIndex(node.getParent().getIndex() + moduleIndexOffset);
@@ -814,22 +727,12 @@ public abstract class InfomapBase {
     }
 
     private void initSubNetwork(final NodeBase parent) {
-        if (DEBUG) {
-            final String log = String.format("%s.initSubNetwork()%n", getClass().getSimpleName());
-            LOGGER.log(Level.INFO, log);
-        }
-
         cloneFlowData(parent, getRoot());
         generateNetworkFromChildren(parent); // Updates the exitNetworkFlow for the nodes
         getRoot().setChildDegree(getNumLeafNodes());
     }
 
     private void initSuperNetwork(final NodeBase parent) {
-        if (DEBUG) {
-            final String log = String.format("%s.initSuperNetwork()...%n", getClass().getSimpleName());
-            LOGGER.log(Level.INFO, log);
-        }
-
         generateNetworkFromChildren(parent);
         getRoot().setChildDegree(getNumLeafNodes());
 
@@ -837,12 +740,6 @@ public abstract class InfomapBase {
     }
 
     private void setActiveNetworkFromChildrenOfRoot() {
-        if (DEBUG) {
-            final String log = String.format("%s.setActiveNetworkFromChildrenOfRoot() with child degree %d...\n",
-                    getClass().getSimpleName(), getRoot().getChildDegree());
-            LOGGER.log(Level.INFO, log);
-        }
-
         final int numNodes = getRoot().getChildDegree();
         activeNetwork = nonLeafActiveNetwork;
         Resizer.resize(activeNetwork, numNodes, null);
@@ -856,11 +753,6 @@ public abstract class InfomapBase {
     }
 
     private void setActiveNetworkFromLeafs() {
-        if (DEBUG) {
-            final String log = String.format("%s.setActiveNetworkFromLeafs(), numNodes: %d\n", getClass().getSimpleName(), treeData.getNumLeafNodes());
-            LOGGER.log(Level.INFO, log);
-        }
-
         activeNetwork = treeData.getLeaves();
         Resizer.resize(moveTo, activeNetwork.size(), 0);
         assert moveTo.size() == treeData.getLeaves().size();
@@ -995,7 +887,7 @@ public abstract class InfomapBase {
     }
 
     private void reseed(final long seed) {
-        rand.seed(seed);
+        rand.setSeed(seed);
     }
 
     /**
@@ -1068,15 +960,6 @@ public abstract class InfomapBase {
 
     protected abstract void moveNodesToPredefinedModules();
 
-    /**
-     * Loop through each node and move it to the module that reduces the total
-     * codelength the most. Start over until converged.
-     *
-     * @return The number of effective optimization rounds, i.e. zero if no move
-     * was made.
-     */
-    protected abstract int optimizeModules();
-
     protected abstract double calcCodelengthFromFlowWithinOrExit(final NodeBase parent);
 
     protected abstract void generateNetworkFromChildren(final NodeBase parent);
@@ -1088,15 +971,9 @@ public abstract class InfomapBase {
     protected abstract void transformNodeFlowToEnterFlow(final NodeBase parent);
 
     protected abstract void cloneFlowData(final NodeBase source, final NodeBase target);
-
-    protected abstract void printNodeRanks(final PrintWriter out);
-
-    protected abstract void printFlowNetwork(final PrintWriter out);
-
+    
     protected abstract void sortTree(final NodeBase parent);
-
-    protected abstract int getNumDynamicModules();
-
+    
     @Override
     public String toString() {
         return String.format("[%s: %s]", this.getClass().getName(), rg);

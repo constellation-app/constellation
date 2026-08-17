@@ -157,12 +157,7 @@ public class InfomapDirected extends InfomapGreedy {
     }
 
     protected static class NodeFactoryDirected implements NodeFactoryBase {
-
-        @Override
-        public NodeBase createNode() {
-            return createNode("", 0, 0);
-        }
-
+        
         @Override
         public NodeBase createNode(final String name, final double flow, final double teleportWeight) {
             final FlowDirectedWithTeleportation data = new FlowDirectedWithTeleportation(flow, teleportWeight);

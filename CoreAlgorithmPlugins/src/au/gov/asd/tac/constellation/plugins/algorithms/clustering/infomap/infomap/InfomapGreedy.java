@@ -22,17 +22,13 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBa
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath;
 import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath.plogp;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.MultiMap;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
@@ -41,9 +37,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
  * @author algol
  */
 public abstract class InfomapGreedy extends InfomapBase {
-
-    private static final Logger LOGGER = Logger.getLogger(InfomapGreedy.class.getName());
-
+    
     protected FlowBase[] moduleFlowData;
     protected int[] moduleMembers;
     protected MutableIntList emptyModules;
@@ -67,10 +61,6 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     @Override
     public void initEnterExitFlow() {
-        if (DEBUG) {
-            LOGGER.log(Level.INFO, "initEnterExitFlow() {0}", getClass().getSimpleName());
-        }
-
         for (final NodeBase node : treeData.getLeaves()) {
             for (final Edge<NodeBase> edge : node.getOutEdges()) {
                 // Possible self-links should not add to enter and exit flow in its enclosing module.
@@ -117,11 +107,6 @@ public abstract class InfomapGreedy extends InfomapBase {
     }
 
     protected void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
-        if (DEBUG) {
-            final String log = String.format("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
-            LOGGER.log(Level.INFO, log);
-        }
-
         flowLogFlow = 0;
         exitLogExit = 0;
         enterFlow = 0;
@@ -169,26 +154,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             codelength = indexCodelength + moduleCodelength;
         }
     }
-
-    @Override
-    protected int optimizeModules() {
-        int numOptimizationRounds = 0;
-        final double oldCodelength = codelength;
-        int loopLimit = config.getCoreLoopLimit();
-        if (config.getCoreLoopLimit() > 0 && config.isRandomizeCoreLoopLimit()) {
-            loopLimit = (int) (rand.nextDouble() * config.getCoreLoopLimit()) + 1;
-        }
-
-        // Iterate while the optimization loop moves some nodes within the dynamic modular structure.
-        do {
-            tryMoveEachNodeIntoBestModule(); // returns numNodesMoved
-            ++numOptimizationRounds;
-        } while (numOptimizationRounds != loopLimit
-                && codelength < oldCodelength - config.getMinimumCodelengthImprovement());
-
-        return numOptimizationRounds;
-    }
-
+    
     protected void addTeleportationDeltaFlowOnOldModuleIfMove(final Node nodeToMove, final DeltaFlow oldModuleDeltaFlow) {
         // This method intentionally left blank.
         // Specialized implementation for InfomapDirected.
@@ -342,10 +308,6 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     @Override
     protected void generateNetworkFromChildren(final NodeBase parent) {
-        if (DEBUG) {
-            LOGGER.log(Level.INFO, "{0}.generateNetworkFromChildren", getClass().getSimpleName());
-        }
-
         exitNetworkFlow = 0;
 
         // Clone all nodes.
@@ -394,21 +356,11 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     @Override
     protected void moveNodesToPredefinedModules() {
-        if (DEBUG) {
-            LOGGER.log(Level.INFO, "{0}.moveNodesToPredefinedModules", getClass().getSimpleName());
-        }
-
         // Size of active network and cluster array should match.
         assert moveTo.size() == activeNetwork.size();
 
         final int numNodes = activeNetwork.size();
-
-        if (DEBUG) {
-            final String log = String.format("Begin moving %d nodes to predefined modules, starting with codelength %f...\n",
-                    numNodes, codelength);
-            LOGGER.log(Level.INFO, log);
-        }
-
+        
         int numMoved = 0;
         for (int k = 0; k < numNodes; k++) {
             final Node current = getNode(activeNetwork.get(k));
@@ -470,209 +422,10 @@ public abstract class InfomapGreedy extends InfomapBase {
                 numMoved++;
             }
         }
-
-        if (DEBUG) {
-            final String log = String.format("Done! Moved %d nodes into %d modules to codelength: %.5f%n",
-                    numMoved, getNumActiveModules(), codelength);
-            LOGGER.log(Level.INFO, log);
-        }
     }
-
-    /**
-     * Try to minimize the codelength by trying to move nodes into the same modules as neighbouring nodes.
-     *
-     * For each node: 1. Calculate the change in codelength for a move to each of its neighbouring modules or to an
-     * empty module 2. Move to the one that reduces the codelength the most, if any.
-     *
-     * The first step would require O(d^2), where d is the degree, if calculating the full change at each neighbour, but
-     * a special data structure is used to accumulate the marginal effect of each link on its target, giving O(d).
-     *
-     * @return The number of nodes moved.
-     */
-    private int tryMoveEachNodeIntoBestModule() {
-        if (DEBUG) {
-            LOGGER.log(Level.INFO, "{0}.tryMoveEachNodeIntoBestModule", getClass().getSimpleName());
-        }
-
-        final int numNodes = activeNetwork.size();
-        if (DEBUG) {
-            dumpActiveNetwork("in");
-        }
-
-        // Get random enumeration of nodes.
-        final int[] randomOrder = new int[numNodes];
-        InfoMath.getRandomizedIndexVector(randomOrder, rand);
-
-        final DeltaFlow[] moduleDeltaEnterExit = new DeltaFlow[numNodes];
-        Arrays.fill(moduleDeltaEnterExit, new DeltaFlow());
-
-        final int[] redirect = new int[numNodes];
-        Arrays.fill(redirect, 0);
-        int offset = 1;
-        final int maxOffset = Integer.MAX_VALUE - 1 - numNodes;
-
-        int numMoved = 0;
-        for (int i = 0; i < numNodes; i++) {
-            // Reset offset before overflow.
-            if (offset > maxOffset) {
-                Arrays.fill(redirect, 0);
-                offset = 1;
-            }
-
-            // Pick nodes in random order.
-            final int flip = randomOrder[i];
-            final Node current = getNode(activeNetwork.get(flip));
-
-            // If no links connecting this node with other nodes, it won't move into others,
-            // and others won't move into this. TODO: always best leave it alone?
-            if (current.getDegree() == 0
-                    || (current.getOutDegree() == 1 && current.getInDegree() == 1
-                    && current.getOutEdges().get(0).getTarget().equals(current))) {
-                if (DEBUG) {
-                    LOGGER.log(Level.INFO, "SKIPPING isolated node {0}", current);
-                }
-                continue;
-            }
-
-            // Create vector with module links.
-            int numModuleLinks = 0;
-            if (current.isDangling()) {
-                redirect[current.getIndex()] = offset + numModuleLinks;
-                moduleDeltaEnterExit[numModuleLinks].setModule(current.getIndex());
-                moduleDeltaEnterExit[numModuleLinks].setDeltaExit(0);
-                moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(0);
-                numModuleLinks++;
-            } else {
-                // For all outlinks.
-                for (final Edge<NodeBase> edge : current.getOutEdges()) {
-                    if (edge.isSelfPointing()) {
-                        continue;
-                    }
-
-                    final NodeBase neighbour = edge.getTarget();
-
-                    if (redirect[neighbour.getIndex()] >= offset) {
-                        moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].setDeltaExit(
-                                moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].getDeltaExit() + edge.getFlow());
-                    } else {
-                        redirect[neighbour.getIndex()] = offset + numModuleLinks;
-                        moduleDeltaEnterExit[numModuleLinks].setModule(neighbour.getIndex());
-                        moduleDeltaEnterExit[numModuleLinks].setDeltaExit(edge.getFlow());
-                        moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(0);
-                        numModuleLinks++;
-                    }
-                }
-            }
-
-            // For all inlinks.
-            for (final Edge<NodeBase> edge : current.getInEdges()) {
-                if (edge.isSelfPointing()) {
-                    continue;
-                }
-
-                final Node neighbour = getNode(edge.getSource());
-
-                if (redirect[neighbour.getIndex()] >= offset) {
-                    moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].setDeltaEnter(
-                            moduleDeltaEnterExit[redirect[neighbour.getIndex()] - offset].getDeltaEnter() + edge.getFlow());
-                } else {
-                    redirect[neighbour.getIndex()] = offset + numModuleLinks;
-                    moduleDeltaEnterExit[numModuleLinks].setModule(neighbour.getIndex());
-                    moduleDeltaEnterExit[numModuleLinks].setDeltaExit(0);
-                    moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(edge.getFlow());
-                    numModuleLinks++;
-                }
-            }
-
-            // If alone in the module, add virtual link to the module (used when adding teleportation).
-            if (redirect[current.getIndex()] < offset) {
-                redirect[current.getIndex()] = offset + numModuleLinks;
-                moduleDeltaEnterExit[numModuleLinks].setModule(current.getIndex());
-                moduleDeltaEnterExit[numModuleLinks].setDeltaExit(0);
-                moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(0);
-                numModuleLinks++;
-            }
-
-            // Empty function if no teleportation coding model.
-            addTeleportationDeltaFlowIfMove(current, moduleDeltaEnterExit, numModuleLinks);
-
-            // Option to move to empty module (if node not already alone).
-            if (moduleMembers[current.getIndex()] > 1 && !emptyModules.isEmpty()) {
-                moduleDeltaEnterExit[numModuleLinks].setModule(emptyModules.get(emptyModules.size() - 1));
-                moduleDeltaEnterExit[numModuleLinks].setDeltaExit(0);
-                moduleDeltaEnterExit[numModuleLinks].setDeltaEnter(0);
-                numModuleLinks++;
-            }
-
-            // Store the DeltaFlow of the current module.
-            final DeltaFlow oldModuleDelta = new DeltaFlow(moduleDeltaEnterExit[redirect[current.getIndex()] - offset]);
-
-            if (DEBUG) {
-                for (int j = 0; j < numModuleLinks - 1; ++j) {
-                    LOGGER.log(Level.INFO, "{0}", moduleDeltaEnterExit[j].getModule());
-                }
-            }
-
-            // Randomize link order for optimized search.
-            for (int j = 0; j < numModuleLinks - 1; ++j) {
-                final int randPos = j + rand.randInt(numModuleLinks - j - 1);
-                final DeltaFlow t = moduleDeltaEnterExit[j];
-                moduleDeltaEnterExit[j] = moduleDeltaEnterExit[randPos];
-                moduleDeltaEnterExit[randPos] = t;
-            }
-
-            DeltaFlow bestDeltaModule = new DeltaFlow(oldModuleDelta);
-            double bestDeltaCodelength = 0;
-
-            // Find the move that minimizes the description length.
-            for (int j = 0; j < numModuleLinks; ++j) {
-                final int otherModule = moduleDeltaEnterExit[j].getModule();
-                if (otherModule != current.getIndex()) {
-                    double deltaCodelength = getDeltaCodelength(current, oldModuleDelta, moduleDeltaEnterExit[j]);
-
-                    if (deltaCodelength < bestDeltaCodelength) {
-                        bestDeltaModule = new DeltaFlow(moduleDeltaEnterExit[j]);
-                        bestDeltaCodelength = deltaCodelength;
-                    }
-
-                }
-            }
-
-            // Make best possible move.
-            if (bestDeltaModule.getModule() != current.getIndex()) {
-                final int bestModuleIndex = bestDeltaModule.getModule();
-                // Update empty module vector.
-                if (moduleMembers[bestModuleIndex] == 0) {
-                    emptyModules.removeAtIndex(emptyModules.size() - 1);
-                }
-                if (moduleMembers[current.getIndex()] == 1) {
-                    emptyModules.add(current.getIndex());
-                }
-
-                updateCodelength(current, oldModuleDelta, bestDeltaModule);
-
-                moduleMembers[current.getIndex()] -= 1;
-                moduleMembers[bestModuleIndex] += 1;
-
-                current.setIndex(bestModuleIndex);
-                numMoved++;
-            }
-
-            offset += numNodes;
-        }
-        if (DEBUG) {
-            dumpActiveNetwork("");
-        }
-        return numMoved;
-    }
-
+    
     @Override
     protected int consolidateModules(final boolean replaceExistingStructure, final boolean asSubModules) {
-        if (DEBUG) {
-            final String log = String.format("%s.consolidateModules(%s,%s)%n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
-            LOGGER.log(Level.INFO, log);
-        }
-
         final int numNodes = activeNetwork.size();
         final NodeBase[] modules = new NodeBase[numNodes];
 
@@ -689,11 +442,6 @@ public abstract class InfomapGreedy extends InfomapBase {
         } else {
             // Happens after optimizing fine-tune and when moving leaf nodes to super clusters.
             if (activeNetworkAlreadyHaveModuleLevel) {
-                if (DEBUG) {
-                    final String log = String.format("Replace existing %d modules with its children before consolidating the %d dynamic modules...%n",
-                            getNumTopModules(), getNumActiveModules());
-                    LOGGER.log(Level.INFO, log);
-                }
                 getRoot().replaceChildrenWithGrandChildren();
                 assert activeNetwork.get(0).getParent() == getRoot();
             }
@@ -715,12 +463,6 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         if (asSubModules) {
-            if (DEBUG) {
-                final String log = String.format("Consolidated %d submodules under %d modules, store module structure before releasing it...%n",
-                        getNumActiveModules(), getNumTopModules());
-                LOGGER.log(Level.INFO, log);
-            }
-
             // Store the module structure on the submodules.
             int moduleIndex = 0;
             for (final NodeBase module : getRoot().getChildren()) {
@@ -811,28 +553,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         return getNumActiveModules();
     }
-
-    @Override
-    protected void printNodeRanks(final PrintWriter out) {
-        out.printf("#node-flow%n");
-        for (final NodeBase node : treeData.getLeaves()) {
-            out.printf("%f\n", getNode(node).getData().getFlow());
-        }
-    }
-
-    @Override
-    protected void printFlowNetwork(final PrintWriter out) {
-        for (final NodeBase node : treeData.getLeaves()) {
-            out.printf("%d (%s)\n", node.getOriginalIndex(), getNode(node).getData());
-            for (final Edge<NodeBase> edge : node.getOutEdges()) {
-                out.printf("  --> %d (%.9f)\n", edge.getTarget().getOriginalIndex(), edge.getFlow());
-            }
-            for (final Edge<NodeBase> edge : node.getInEdges()) {
-                out.printf("  <-- %d (%.9f)\n", edge.getSource().getOriginalIndex(), edge.getFlow());
-            }
-        }
-    }
-
+    
     @Override
     protected void sortTree(final NodeBase parent) {
         if (parent.getSubInfomap() != null) {
@@ -840,13 +561,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         }
 
         final MultiMap<Double, NodeBase> sortedModules = new MultiMap<>((d1, d2) -> (int) Math.signum(d2 - d1));
-
-        if (DEBUG && parent.getChildDegree() > 0) {
-            for (final NodeBase child : parent.getChildren()) {
-                LOGGER.log(Level.INFO, "{0}", child.getId());
-            }
-        }
-
+        
         for (final NodeBase child : parent.getChildren()) {
             sortTree(child);
             final double rank = getNode(child).getData().getFlow();
@@ -867,12 +582,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     protected int getNumActiveModules() {
         return activeNetwork.size() - emptyModules.size();
     }
-
-    @Override
-    protected int getNumDynamicModules() {
-        return activeNetwork.size() - emptyModules.size();
-    }
-
+    
     protected Node getNode(final NodeBase node) {
         return (Node) node;
     }
@@ -880,11 +590,5 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected FlowBase getNodeData(final NodeBase node) {
         return getNode(node).getData();
-    }
-
-    private void dumpActiveNetwork(final String prefix) {
-        for (final NodeBase node : activeNetwork) {
-            LOGGER.log(Level.INFO, () -> prefix + " " + node);
-        }
     }
 }

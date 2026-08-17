@@ -25,9 +25,6 @@ import java.util.Map;
 public final class Config {
     
     private static final double TELEPORTATION_PROBABILITY = 0.15;
-    private static final long SEED_TO_RANDOM_NUMBER_GENERATOR = 123;
-    
-    private static final double MIN_CODE_LENGTH_IMPROVEMENT = 1e-10;
     
     // Core algorithm
     private boolean directed;
@@ -43,7 +40,6 @@ public final class Config {
     private int coreLoopLimit;
     private int levelAggregationLimit;
     private int tuneIterationLimit; // num iterations of fine-tune/coarse-tune in two-level partition)
-    private double minimumRelativeTuneIterationImprovement;
     private boolean fastCoarseTunePartition;
     private boolean alternateCoarseTuneLevel;
     private int coarseTuneLevel;
@@ -83,7 +79,6 @@ public final class Config {
 
     public Config() {
         numTrials = 1;
-        minimumRelativeTuneIterationImprovement = 1e-5;
         coarseTuneLevel = 1;
 
         connectionType = ConnectionType.LINKS;
@@ -105,7 +100,6 @@ public final class Config {
                 coreLoopLimit = 0;
                 levelAggregationLimit = 0;
                 tuneIterationLimit = 0;
-                minimumRelativeTuneIterationImprovement = 1.0e-6;
                 fastCoarseTunePartition = false;
                 alternateCoarseTuneLevel = true;
                 coarseTuneLevel = 3;
@@ -116,7 +110,6 @@ public final class Config {
                 coreLoopLimit = 10;
                 levelAggregationLimit = 0;
                 tuneIterationLimit = 0;
-                minimumRelativeTuneIterationImprovement = 1.0e-5;
                 fastCoarseTunePartition = true;
                 alternateCoarseTuneLevel = false;
                 coarseTuneLevel = 1;
@@ -193,10 +186,6 @@ public final class Config {
         return TELEPORTATION_PROBABILITY;
     }
     
-    public long getSeedToRandomNumberGenerator() {
-        return SEED_TO_RANDOM_NUMBER_GENERATOR;
-    }
-
     public int getNumTrials() {
         return numTrials;
     }
@@ -204,11 +193,7 @@ public final class Config {
     public void setNumTrials(final int numTrials) {
         this.numTrials = numTrials;
     }
-
-    public double getMinimumCodelengthImprovement() {
-        return MIN_CODE_LENGTH_IMPROVEMENT;
-    }
-
+    
     public boolean isRandomizeCoreLoopLimit() {
         return randomizeCoreLoopLimit;
     }
@@ -223,10 +208,6 @@ public final class Config {
     
     public int getTuneIterationLimit() {
         return tuneIterationLimit;
-    }
-    
-    public double getMinimumRelativeTuneIterationImprovement() {
-        return minimumRelativeTuneIterationImprovement;
     }
     
     public boolean isFastCoarseTunePartition() {

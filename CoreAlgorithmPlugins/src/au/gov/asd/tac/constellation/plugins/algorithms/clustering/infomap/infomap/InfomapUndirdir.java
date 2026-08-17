@@ -51,11 +51,6 @@ public class InfomapUndirdir extends InfomapGreedy {
     public static class NodeFactoryUndirdir implements NodeFactoryBase {
 
         @Override
-        public NodeBase createNode() {
-            return createNode("", 0, 0);
-        }
-
-        @Override
         public NodeBase createNode(final String name, final double flow, final double teleportWeight) {
             final FlowDirectedNonDetailedBalance data = new FlowDirectedNonDetailedBalance(flow, teleportWeight);
             return new Node(name, data);

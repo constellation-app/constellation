@@ -29,12 +29,10 @@ public class TreeData {
     private final NodeFactoryBase nodeFactory;
     private final NodeBase root;
     private final List<NodeBase> leafNodes;
-    private int nLeafEdges;
 
     public TreeData(final NodeFactoryBase nodeFactory) {
         this.nodeFactory = nodeFactory;
-
-        nLeafEdges = 0;
+        
         root = nodeFactory.createNode("root", 1, 1);
         leafNodes = new ArrayList<>();
     }
@@ -58,28 +56,14 @@ public class TreeData {
         final NodeBase source = leafNodes.get(sourceIndex);
         final NodeBase target = leafNodes.get(targetIndex);
         source.addOutEdge(target, weight, flow);
-        nLeafEdges++;
     }
 
     public int getNumLeafNodes() {
         return leafNodes.size();
     }
 
-    public int getNumLeafEdges() {
-        return nLeafEdges;
-    }
-
     public NodeBase getRoot() {
         return root;
-    }
-
-    public NodeBase getLeafNode(final int index) {
-        if (index < leafNodes.size()) {
-            return leafNodes.get(index);
-        } else {
-            throw new IllegalArgumentException();
-        }
-
     }
 
     public NodeBase getFirstLeaf() {
