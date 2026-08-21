@@ -78,6 +78,8 @@ public class GraphRecordStoreUtilities {
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
     private static final String FALSE = "false";
     private static final String NUMBER_STRING_STRING_FORMAT = "%d:%s:%s";
+    private static final String IDENTIFIER = "Identifier";
+    private static final String STRING_TYPE = "<string>";
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
@@ -454,6 +456,37 @@ public class GraphRecordStoreUtilities {
             } else if (!sourceValues.isEmpty() && !destinationValues.isEmpty()) {
                 final int source = addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 final int destination = addVertex(graph, destinationValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
+                final boolean directed = Boolean.parseBoolean(transactionValues.get("directed<boolean>"));
+                // if source > destination, swap the compositeTransactionId source and destination as well (if it's a composite)
+                // as the addTransaction will be swapping them automatically. This way, when the composite gets reconstituted,
+                // the composite source/destination will be the right one 
+                if (source > destination && !directed) {
+                    final String compoTxId = recordStore.get(TRANSACTION + IDENTIFIER);
+                    final CompositeTransactionId compositeTransactionId = CompositeTransactionId.fromString(compoTxId);
+                    compositeTransactionId.setDestContracted(!compositeTransactionId.isDestContracted());
+                    compositeTransactionId.setSourceContracted(!compositeTransactionId.isSourceContracted());
+                    String originalSourceNode = compositeTransactionId.getOriginalSourceNode();
+                    String originalDestNode = compositeTransactionId.getOriginalDestinationNode();
+                    compositeTransactionId.setOriginalDestinationNode(originalSourceNode);
+                    compositeTransactionId.setOriginalSourceNode(originalDestNode);
+                    // We need to change the transactionValues for the transaction identifier
+                    // as well as swap the source and destination fpr this record
+                    if (recordStore.hasValue(TRANSACTION + IDENTIFIER + STRING_TYPE)) {
+                        recordStore.set(TRANSACTION + IDENTIFIER + STRING_TYPE, compositeTransactionId.toString());
+                        if (transactionValues.containsKey(IDENTIFIER + STRING_TYPE)) {
+                            transactionValues.put(IDENTIFIER + STRING_TYPE, compositeTransactionId.toString());
+                        }
+                        if (transactionValues.containsKey(ID)) {
+                            final String[] tranx = transactionValues.get(ID).split(":");
+                            if (tranx.length == 3) {
+                                transactionValues.put(ID, String.format("%s:%s:%s", tranx[0], tranx[1], tranx[2]));
+                            }
+                        }
+                    }
+                    transactionValues.put(SOURCE, originalDestNode);
+                    transactionValues.put(DESTINATION, originalSourceNode);
+                }
+                // addTransaction will copy the transactionValues over to the new transaction
                 addTransaction(graph, source, destination, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
                 transactionsAdded = true;
             } else if (!sourceValues.isEmpty()) {
