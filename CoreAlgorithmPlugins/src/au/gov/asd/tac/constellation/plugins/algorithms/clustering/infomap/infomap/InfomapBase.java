@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -76,8 +75,7 @@ public abstract class InfomapBase {
     private static final long SEED_TO_RANDOM_NUMBER_GENERATOR = 123;
     
     protected static final double MIN_CODE_LENGTH_IMPROVEMENT = 1e-10;
-
-    // Use a custom random number generator so we can compare the results to the C++ code.
+    
     protected Random rand;
 
     protected InfomapBase(final Config config, final NodeFactoryBase nodeFactory, final GraphReadMethods rg) {
@@ -583,6 +581,9 @@ public abstract class InfomapBase {
         }
     }
 
+    /**
+     * Merge and collapse repeatedly until no code improvement or only one big cluster left.
+     */
     private void mergeAndConsolidateRepeatedly() {
         iterationCount++;
 
@@ -963,8 +964,6 @@ public abstract class InfomapBase {
     protected abstract double calcCodelengthFromFlowWithinOrExit(final NodeBase parent);
 
     protected abstract void generateNetworkFromChildren(final NodeBase parent);
-
-    protected abstract boolean isDirected();
 
     protected abstract boolean hasDetailedBalance();
 

@@ -34,11 +34,6 @@ public class InfomapDirectedUnrecordedTeleportation extends InfomapGreedy {
     }
 
     @Override
-    protected boolean isDirected() {
-        return true;
-    }
-
-    @Override
     protected boolean hasDetailedBalance() {
         return false;
     }

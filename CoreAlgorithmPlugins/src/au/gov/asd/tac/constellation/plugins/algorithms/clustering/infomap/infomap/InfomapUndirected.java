@@ -35,11 +35,6 @@ public class InfomapUndirected extends InfomapGreedy {
     }
 
     @Override
-    protected boolean isDirected() {
-        return false;
-    }
-
-    @Override
     protected boolean hasDetailedBalance() {
         return true;
     }
@@ -48,37 +43,7 @@ public class InfomapUndirected extends InfomapGreedy {
     protected InfomapBase getNewInfomapInstance(final Config config, final GraphReadMethods rg) {
         return new InfomapUndirected(config, rg);
     }
-
-    @Override
-    protected double getDeltaCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.getModule();
-        final int newModule = newModuleDelta.getModule();
-        double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
-        double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
-
-        // Double the effect as each link works in both directions.
-        deltaEnterExitOldModule *= 2;
-        deltaEnterExitNewModule *= 2;
-
-        final double deltaExit = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
-
-        final double deltaExitLogExit
-                = -plogp(moduleFlowData[oldModule].getExitFlow())
-                - plogp(moduleFlowData[newModule].getExitFlow())
-                + plogp(moduleFlowData[oldModule].getExitFlow() - current.getData().getExitFlow() + deltaEnterExitOldModule)
-                + plogp(moduleFlowData[newModule].getExitFlow() + current.getData().getExitFlow() - deltaEnterExitNewModule);
-
-        final double deltaFlowLogFlow
-                = -plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
-                - plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow())
-                + plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow()
-                        - current.getData().getExitFlow() - current.getData().getFlow() + deltaEnterExitOldModule)
-                + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
-                        + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
-
-        return deltaExit - 2.0 * deltaExitLogExit + deltaFlowLogFlow;
-    }
-
+    
     @Override
     protected void updateCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
         final int oldModule = oldModuleDelta.getModule();

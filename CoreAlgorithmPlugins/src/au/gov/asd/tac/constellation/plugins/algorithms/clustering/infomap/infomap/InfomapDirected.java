@@ -46,11 +46,6 @@ public class InfomapDirected extends InfomapGreedy {
     }
 
     @Override
-    protected boolean isDirected() {
-        return true;
-    }
-
-    @Override
     protected boolean hasDetailedBalance() {
         return true;
     }
@@ -77,45 +72,7 @@ public class InfomapDirected extends InfomapGreedy {
         newModuleDeltaFlow.setDeltaExit(newModuleDeltaFlow.getDeltaExit() + ((alpha * nodeToMoveData.getTeleportSourceFlow() + beta * nodeToMoveData.getDanglingFlow()) * newModuleFlowData.getTeleportWeight()));
         newModuleDeltaFlow.setDeltaEnter(newModuleDeltaFlow.getDeltaEnter() + ((alpha * newModuleFlowData.getTeleportSourceFlow() + beta * newModuleFlowData.getDanglingFlow()) * nodeToMoveData.getTeleportWeight()));
     }
-
-    @Override
-    protected void addTeleportationDeltaFlowIfMove(final Node current, final DeltaFlow[] moduleDeltaExits, final int numModuleLinks) {
-        for (int j = 0; j < numModuleLinks; ++j) {
-            final int moduleIndex = moduleDeltaExits[j].getModule();
-            if (moduleIndex == current.getIndex()) {
-                addTeleportationDeltaFlowOnOldModuleIfMove(current, moduleDeltaExits[j]);
-            } else {
-                addTeleportationDeltaFlowOnNewModuleIfMove(current, moduleDeltaExits[j]);
-            }
-        }
-    }
-
-    @Override
-    protected double getDeltaCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.getModule();
-        final int newModule = newModuleDelta.getModule();
-        final double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
-        final double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
-
-        final double deltaExit = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
-
-        final double deltaExitLogExit
-                = -plogp(moduleFlowData[oldModule].getExitFlow())
-                - plogp(moduleFlowData[newModule].getExitFlow())
-                + plogp(moduleFlowData[oldModule].getExitFlow() - current.getData().getExitFlow() + deltaEnterExitOldModule)
-                + plogp(moduleFlowData[newModule].getExitFlow() + current.getData().getExitFlow() - deltaEnterExitNewModule);
-
-        final double deltaFlowLogFlow
-                = -plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
-                - plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow())
-                + plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow()
-                        - current.getData().getExitFlow() - current.getData().getFlow() + deltaEnterExitOldModule)
-                + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
-                        + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
-
-        return deltaExit - 2.0 * deltaExitLogExit + deltaFlowLogFlow;
-    }
-
+    
     @Override
     protected void updateCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
         final int oldModule = oldModuleDelta.getModule();
