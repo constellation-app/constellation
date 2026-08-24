@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
 import java.util.Locale;
@@ -26,12 +29,14 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
@@ -93,7 +98,9 @@ public class TemplateListDialog {
         final VBox vbox = new VBox(nameList, prompt);
 
         dialog.setResizable(false);
-        dialog.setGraphic(null);
+
+        setIcon(dialog, isLoading);
+
         dialog.setTitle("Import template names");
         dialog.setHeaderText(String.format("Select an import template to %s.", isLoading ? "load" : "save"));
         dialog.getDialogPane().setContent(vbox);
@@ -110,6 +117,8 @@ public class TemplateListDialog {
                 alert.setContentText(msg);
                 alert.initModality(Modality.WINDOW_MODAL);
                 alert.initOwner(owner);
+                alert.setGraphic(IconManager.createBlueDialogIcon(UserInterfaceIconProvider.WARNING.buildImage(), 25));
+
                 final Optional<ButtonType> confirm = alert.showAndWait();
                 go = confirm.isPresent() && confirm.get() == ButtonType.OK;
             }
@@ -120,5 +129,15 @@ public class TemplateListDialog {
         }
 
         return null;
+    }
+
+    /**
+     * Set the Icon of the pop up dialog
+     *
+     */
+    private static void setIcon(final Dialog td, final boolean isLoading) {
+        td.setGraphic(IconManager.createBlueDialogIcon(isLoading ? AnalyticIconProvider.MOUSE.buildImage() : AnalyticIconProvider.KEYBOARD.buildImage(), 30));
+        Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
     }
 }

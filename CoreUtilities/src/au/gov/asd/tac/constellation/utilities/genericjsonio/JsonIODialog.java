@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
@@ -59,12 +61,12 @@ public class JsonIODialog {
         return "Select a " + dialogType.toLowerCase() + " to load.";
     }
 
-    private static String getNameDialogTitle(final String dialogType) {
-        return dialogType + " Name";
+    private static String getSaveDialogTitle(final String dialogType) {
+        return "Save " + dialogType;
     }
 
-    private static String getNameDialogHeaderText(final String dialogType) {
-        return "Enter a " + dialogType.toLowerCase() + " name.";
+    private static String getSaveDialogHeaderText(final String dialogType) {
+        return "Enter a new " + dialogType.toLowerCase() + " name.";
     }
     /**
      * Present a dialog allowing the user to select an entry from a list of
@@ -103,7 +105,7 @@ public class JsonIODialog {
         dialog.setResizable(false);
         dialog.setTitle(getSelectionDialogTitle(type));
         dialog.setHeaderText(getSelectionDialogHeaderText(type));
-        setUI(dialog);
+        setIcon(dialog, true);
 
 
         // The remove button has been wrapped inside the removeButtonType, this
@@ -147,17 +149,18 @@ public class JsonIODialog {
      */
     public static Optional<String> getPreferenceFileName(final String type) {
         final TextInputDialog td = new TextInputDialog();
-        td.setGraphic(null);
-        td.setTitle(getNameDialogTitle(type));
-        td.setHeaderText(getNameDialogHeaderText(type));
-        setUI(td);
+        td.setTitle(getSaveDialogTitle(type));
+        td.setHeaderText(getSaveDialogHeaderText(type));
+        setIcon(td, false);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         return td.showAndWait();
     }
-
-    private static void setUI(final Dialog td) {
-        td.setGraphic(null);
-        td.getDialogPane().setGraphic(null);
+    /**
+     * Set the Icon of the pop up dialog
+     *
+     */
+    private static void setIcon(final Dialog td, final boolean isLoading) {
+        td.setGraphic(IconManager.createBlueDialogIcon(isLoading ? AnalyticIconProvider.MOUSE.buildImage() : AnalyticIconProvider.KEYBOARD.buildImage(), 30));
         Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
     }
@@ -170,8 +173,8 @@ public class JsonIODialog {
      * @return
      */
     public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow, final String type) {
-        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("", getNameDialogTitle(type), getNameDialogHeaderText(type), preferenceDirectory, ks, parentWindow);
-        setUI(td);
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("", getSaveDialogTitle(type), getSaveDialogHeaderText(type), preferenceDirectory, ks, parentWindow);
+        setIcon(td, false);
         td.showPopUp(new JDialog());
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
@@ -185,8 +188,8 @@ public class JsonIODialog {
      * @return 
      */
     public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileNameTest(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow, final String type) {
-        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("", getNameDialogTitle(type), getNameDialogHeaderText(type), preferenceDirectory, ks, parentWindow);
-        setUI(td);
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("", getSaveDialogTitle(type), getSaveDialogHeaderText(type), preferenceDirectory, ks, parentWindow);
+        setIcon(td, false);
         td.showPopUp();
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }

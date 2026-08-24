@@ -24,6 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -199,5 +208,31 @@ public class IconManager {
         final ConstellationIcon missingIcon = new ConstellationIcon.Builder(name, DefaultIconProvider.UNKNOWN.getIconData()).build();
         cache.put(name, missingIcon);
         return missingIcon;
+    }
+
+    public static StackPane createBlueDialogIcon(final Image image, final double size) {
+        final ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(size);
+        imageView.setFitHeight(size);
+
+        imageView.setPreserveRatio(true);
+        imageView.setTranslateY(-1);
+
+        final Circle background = new Circle(20);
+        background.setFill(
+                new RadialGradient(
+                        0, 0,
+                        0.35, 0.35,
+                        0.8,
+                        true,
+                        CycleMethod.NO_CYCLE,
+                        new Stop(0.0, Color.web("#69B6FF")),
+                        new Stop(1.0, Color.web("#0A64C9"))
+                )
+        );
+        background.setStroke(Color.WHITE);
+        background.setStrokeWidth(3);
+        background.setEffect(new DropShadow(4, Color.rgb(0, 0, 0, 0.25)));
+        return new StackPane(background, imageView);
     }
 }

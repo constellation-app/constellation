@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -147,7 +149,7 @@ public class JsonIO {
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
+                    String.format("Can't create the directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
 
@@ -180,7 +182,7 @@ public class JsonIO {
             final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText(getFileExistsAlertTitle(type));
             alert.setContentText(String.format(PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT, prefixedFileName));
-            alert.setGraphic(null);
+            alert.setGraphic(IconManager.createBlueDialogIcon(UserInterfaceIconProvider.DELETE.buildImage(), 28));
 
             final Optional<ButtonType> option = alert.showAndWait();
             go = option.isPresent() && option.get() == ButtonType.OK;
@@ -266,10 +268,10 @@ public class JsonIO {
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
+                    String.format("Can't create the directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
-            LOGGER.log(Level.WARNING, "Can't create preference directory {}.", preferenceDirectory);
+            LOGGER.log(Level.WARNING, "Can't create the directory {}.", preferenceDirectory);
             return;
         }
 
@@ -323,7 +325,8 @@ public class JsonIO {
         if (preferenceFileExists) {
             final Alert alert = getAlert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText(getFileExistsAlertTitle(type));
-            alert.setGraphic(null);
+
+            alert.setGraphic(IconManager.createBlueDialogIcon(UserInterfaceIconProvider.WARNING.buildImage(), 25));
             alert.setContentText(String.format(
                     PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
                     fileName
