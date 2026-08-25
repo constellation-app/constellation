@@ -81,9 +81,10 @@ public class TypeDropper implements GraphDropper {
             try {
                 final String data;
                 if (transferable.isDataFlavorSupported(VX_DATA_FLAVOR)) {
-                    final InputStream in = new ByteArrayInputStream(((ByteBuffer) transferable.getTransferData(VX_DATA_FLAVOR)).array());
-                    final ObjectInputStream oin = new ObjectInputStream(in);
-                    data = (String) oin.readObject();
+                    try (final InputStream in = new ByteArrayInputStream(((ByteBuffer) transferable.getTransferData(VX_DATA_FLAVOR)).array());
+                            final ObjectInputStream oin = new ObjectInputStream(in)) {
+                        data = (String) oin.readObject();
+                    }
                 } else {
                     final String t = (String) transferable.getTransferData(DataFlavor.stringFlavor);
 

@@ -323,8 +323,7 @@ public class Shape {
         final List<SimpleFeature> features = new ArrayList<>();
         for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
-            final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-            try {
+            try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
@@ -396,8 +395,7 @@ public class Shape {
         final List<SimpleFeature> features = new ArrayList<>();
         for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
-            final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-            try {
+            try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
@@ -491,8 +489,7 @@ public class Shape {
         final List<SimpleFeature> features = new ArrayList<>();
         for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
-            final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-            try {
+            try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
@@ -617,8 +614,7 @@ public class Shape {
         try (final FeatureWriter<SimpleFeatureType, SimpleFeature> writer = datastore.getFeatureWriterAppend(datastore.getTypeNames()[0], Transaction.AUTO_COMMIT)) {
             for (final Entry<String, String> entry : shapes.entrySet()) {
                 final String shape = entry.getValue();
-                final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-                try {
+                try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                     final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                     while (featureIterator.hasNext()) {
                         final SimpleFeature feature = featureIterator.next();

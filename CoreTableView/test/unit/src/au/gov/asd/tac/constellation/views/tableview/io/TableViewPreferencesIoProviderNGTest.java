@@ -91,13 +91,15 @@ public class TableViewPreferencesIoProviderNGTest {
     @Test
     public void getPreferencesOldVersionWithEmptyEmptySort() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final List<UserTablePreferences> tablePrefs = objectMapper.readValue(new FileInputStream(getClass().getResource("resources/old-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {
-                    // nothing to add here
-                });
-
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
-                .thenReturn(tablePrefs);
+        try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/old-preferences.json").getPath())) {
+            final List<UserTablePreferences> tablePrefs = objectMapper.readValue(stream,
+                    new TypeReference<List<UserTablePreferences>>() {
+                        // nothing to add here
+                    });
+            
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
+                    .thenReturn(tablePrefs);
+        }
 
         final UserTablePreferences tablePreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
 
@@ -112,13 +114,16 @@ public class TableViewPreferencesIoProviderNGTest {
     @Test
     public void getPreferencesMultiplePrefsPicksLast() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final List<UserTablePreferences> tablePrefs = objectMapper.readValue(new FileInputStream(getClass().getResource("resources/vertex-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {
-                    // nothing to add here
-                });
 
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
-                .thenReturn(tablePrefs);
+        try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/vertex-preferences.json").getPath())) {
+            final List<UserTablePreferences> tablePrefs = objectMapper.readValue(stream,
+                    new TypeReference<List<UserTablePreferences>>() {
+                        // nothing to add here
+                    });
+            
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
+                    .thenReturn(tablePrefs);
+        }
 
         final UserTablePreferences tablePreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
 
@@ -133,13 +138,15 @@ public class TableViewPreferencesIoProviderNGTest {
     @Test
     public void getPreferencesSinglePreference() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final List<UserTablePreferences> tablePrefs = objectMapper.readValue(new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {
-                    // nothing to add here
-                });
+        try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())) {
+            final List<UserTablePreferences> tablePrefs = objectMapper.readValue(stream,
+                    new TypeReference<List<UserTablePreferences>>() {
+                        // nothing to add here
+                    });
 
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("transaction-")), any(TypeReference.class), anyString()))
-                .thenReturn(tablePrefs);
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("transaction-")), any(TypeReference.class), anyString()))
+                    .thenReturn(tablePrefs);
+        }
 
         final UserTablePreferences tablepreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.TRANSACTION);
 
@@ -193,16 +200,19 @@ public class TableViewPreferencesIoProviderNGTest {
         TableViewPreferencesIoProvider.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
 
         final ObjectMapper objectMapper = new ObjectMapper();
-        final List<UserTablePreferences> expectedTablePrefs = objectMapper.readValue(new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath()),
-                new TypeReference<List<UserTablePreferences>>() {
-                    // nothing to add here
-                });
 
-        jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
-                eq(Optional.of("TableViewPreferences")),
-                eq(Optional.of("transaction-")),
-                eq(expectedTablePrefs),
-                "Type1"
-        ));
+        try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())) {
+            final List<UserTablePreferences> expectedTablePrefs = objectMapper.readValue(stream,
+                    new TypeReference<List<UserTablePreferences>>() {
+                        // nothing to add here
+                    });
+            
+            jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
+                    eq(Optional.of("TableViewPreferences")),
+                    eq(Optional.of("transaction-")),
+                    eq(expectedTablePrefs),
+                    "Type1"
+            ));
+        }
     }
 }
