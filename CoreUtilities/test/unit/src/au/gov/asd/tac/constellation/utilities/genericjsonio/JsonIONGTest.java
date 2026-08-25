@@ -597,7 +597,7 @@ public class JsonIONGTest {
             jsonIoDialogMockedStatic.verifyNoInteractions();
 
             // Verify the correct error dialog was presented
-            notifyDisplayerMockedStatic.verify(() -> NotifyDisplayer.display("Can't create preference directory '"
+            notifyDisplayerMockedStatic.verify(() -> NotifyDisplayer.display("Can't create the directory '"
                     + preferenceDirectory + "'.", NotifyDescriptor.ERROR_MESSAGE));
         } finally {
             Files.deleteIfExists(outputFile.toPath());
