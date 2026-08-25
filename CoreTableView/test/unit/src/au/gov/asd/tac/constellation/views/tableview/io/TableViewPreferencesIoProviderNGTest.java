@@ -34,6 +34,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -95,7 +96,7 @@ public class TableViewPreferencesIoProviderNGTest {
                     // nothing to add here
                 });
 
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
                 .thenReturn(tablePrefs);
 
         final UserTablePreferences tablePreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
@@ -116,7 +117,7 @@ public class TableViewPreferencesIoProviderNGTest {
                     // nothing to add here
                 });
 
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
                 .thenReturn(tablePrefs);
 
         final UserTablePreferences tablePreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
@@ -137,7 +138,7 @@ public class TableViewPreferencesIoProviderNGTest {
                     // nothing to add here
                 });
 
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("transaction-")), any(TypeReference.class)))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("transaction-")), any(TypeReference.class), anyString()))
                 .thenReturn(tablePrefs);
 
         final UserTablePreferences tablepreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.TRANSACTION);
@@ -152,7 +153,7 @@ public class TableViewPreferencesIoProviderNGTest {
 
     @Test
     public void getPreferencesNullPrefs() throws IOException {
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
                 .thenReturn(null);
 
         final UserTablePreferences tablepreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
@@ -200,7 +201,8 @@ public class TableViewPreferencesIoProviderNGTest {
         jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
                 eq(Optional.of("TableViewPreferences")),
                 eq(Optional.of("transaction-")),
-                eq(expectedTablePrefs)
+                eq(expectedTablePrefs),
+                "Type1"
         ));
     }
 }
