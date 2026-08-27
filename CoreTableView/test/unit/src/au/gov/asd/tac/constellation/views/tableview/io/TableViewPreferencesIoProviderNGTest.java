@@ -211,7 +211,7 @@ public class TableViewPreferencesIoProviderNGTest {
                     eq(Optional.of("TableViewPreferences")),
                     eq(Optional.of("transaction-")),
                     eq(expectedTablePrefs),
-                    "Type1"
+                    eq("Preference")
             ));
         }
     }
