@@ -245,7 +245,7 @@ public class AnalyticViewControllerNGTest {
      * Test of updateResults method, of class AnalyticViewController.
      */
     @Test
-    public void testUpdateResults() {
+    public void testUpdateResults() throws InterruptedException {
         System.out.println("updateResults");
         
         try (final MockedStatic<AnalyticViewController> controllerStatic = Mockito.mockStatic(AnalyticViewController.class)) {

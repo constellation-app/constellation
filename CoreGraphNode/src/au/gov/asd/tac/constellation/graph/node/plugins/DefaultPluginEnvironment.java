@@ -145,6 +145,10 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     calledConstraints.setAlwaysSilent(alwaysSilent);
                     try {
                         plugin.run(graphs, interaction, parameters);
+                    } catch (final InterruptedException ex) {
+                        auditPluginError(plugin, ex);
+                        reportException(plugin.getName(), interaction, currentReport, null, ex);
+                        Thread.currentThread().interrupt();
                     } finally {
                         calledConstraints.setAlwaysSilent(false);
                         calledConstraints.setSilentCount(0);
@@ -304,6 +308,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         } catch (final InterruptedException ex) {
             auditPluginError(plugin, ex);
             reportException(plugin.getName(), interaction, currentReport, null, ex);
+            interaction.setExecutionStage(silentCount, silentCount, THREAD_POOL_NAME, THREAD_POOL_NAME, interactive);
             Thread.currentThread().interrupt();
             throw ex;
         } catch (final PluginException ex) {
