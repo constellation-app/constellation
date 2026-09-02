@@ -47,7 +47,16 @@
       <a href="../ext\docs\CoreAlgorithmPlugins\k-truss.md">K-Truss</a><br/>
       <a href="../ext\docs\CoreAlgorithmPlugins\hierarchical-clustering.md">Hierarchical</a><br/>
       <a href="../ext\docs\CoreAlgorithmPlugins\info-map-clustering.md">Info Map</a><br/>
-</a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Jupyter" aria-expanded="false" aria-controls="Jupyter">Jupyter</button></h2></div>
+</a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Preferences" aria-expanded="false" aria-controls="Preferences">Preferences</button></h2></div>
+<div id="Preferences" class="collapse" aria-labelledby="Preferences" data-parent="#Preferences"> <div class="card-body">    <a href="../ext\docs\CoreViewFramework\view-preferences.md">View</a><br/>
+    <a href="../ext\docs\CoreDataAccessView\data-access-view-preferences.md">Data Access Category</a><br/>
+    <a href="../ext\docs\CorePreferences\application-preferences.md">Application</a><br/>
+    <a href="../ext\docs\CorePreferences\developer-preferences.md">Developer</a><br/>
+    <a href="../ext\docs\CorePreferences\graph-preferences.md">Graph</a><br/>
+    <a href="../ext\docs\CoreOpenGLDisplay\label-fonts-preferences.md">Label Fonts</a><br/>
+    <a href="../ext\docs\CoreHelp\help-options.md">Online Help</a><br/>
+    <a href="../ext\docs\CoreSecurity\proxy-preferences.md">Proxy</a><br/>
+</a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Jupyter" aria-expanded="false" aria-controls="Jupyter">Jupyter</button></h2></div>
 <div id="Jupyter" class="collapse" aria-labelledby="Jupyter" data-parent="#Jupyter"> <div class="card-body">    <a href="../ext\docs\CoreUtilities\about-jupyter-notebook-server.md">About The Jupyter Notebook Server</a><br/>
     <a href="../ext\docs\CoreUtilities\about-rest-server.md">About The Constellation REST Server</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Views" aria-expanded="false" aria-controls="Views">Views</button></h2></div>
@@ -175,15 +184,7 @@
 <div id="TimelineView" class="collapse" aria-labelledby="TimelineView" data-parent="#TimelineView"> <div class="card-body">      <a href="../ext\docs\CoreTimelineView\timeline-view.md">Timeline</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#WordCloudView" aria-expanded="false" aria-controls="WordCloudView">Word Cloud View</button></h2></div>
 <div id="WordCloudView" class="collapse" aria-labelledby="WordCloudView" data-parent="#WordCloudView"> <div class="card-body">      <a href="../ext\docs\CoreWordCloudView\word-cloud-view.md">Word Cloud View</a><br/>
-</a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Preferences" aria-expanded="false" aria-controls="Preferences">Preferences</button></h2></div>
-<div id="Preferences" class="collapse" aria-labelledby="Preferences" data-parent="#Preferences"> <div class="card-body">    <a href="../ext\docs\CoreDataAccessView\data-access-view-preferences.md">Data Access Category</a><br/>
-    <a href="../ext\docs\CorePreferences\application-preferences.md">Application</a><br/>
-    <a href="../ext\docs\CorePreferences\developer-preferences.md">Developer</a><br/>
-    <a href="../ext\docs\CorePreferences\graph-preferences.md">Graph</a><br/>
-    <a href="../ext\docs\CoreOpenGLDisplay\label-fonts-preferences.md">Label Fonts</a><br/>
-    <a href="../ext\docs\CoreHelp\help-options.md">Online Help</a><br/>
-    <a href="../ext\docs\CoreSecurity\proxy-preferences.md">Proxy</a><br/>
-</a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Arrangements" aria-expanded="false" aria-controls="Arrangements">Arrangements</button></h2></div>
+</a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Arrangements" aria-expanded="false" aria-controls="Arrangements">Arrangements</button></h2></div>
 <div id="Arrangements" class="collapse" aria-labelledby="Arrangements" data-parent="#Arrangements"> <div class="card-body">    <a href="../ext\docs\CoreArrangementPlugins\grid-arrangement.md">Grid</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\line-arrangement.md">Line</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\circle-arrangement.md">Circle</a><br/>

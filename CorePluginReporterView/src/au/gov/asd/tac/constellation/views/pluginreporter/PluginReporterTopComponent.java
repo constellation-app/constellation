@@ -20,7 +20,9 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.pluginreporter.panes.PluginReporterPane;
 import javafx.application.Platform;
@@ -29,6 +31,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -64,6 +67,7 @@ import org.openide.windows.TopComponent;
     "CTL_PluginReporterTopComponent=Plugin Reporter",
     "HINT_PluginReporterTopComponent=Plugin Reporter"
 })
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginReporterPane> implements GraphReportListener {
 
     private final PluginReporterPane reporterPane;
@@ -158,5 +162,15 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     @Override
     protected PluginReporterPane createContent() {
         return reporterPane;
+    }
+
+    @Override
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_PluginReporterTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "rightSlidingSide";
     }
 }
