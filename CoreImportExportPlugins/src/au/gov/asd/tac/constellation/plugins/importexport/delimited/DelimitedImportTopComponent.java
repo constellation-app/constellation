@@ -104,11 +104,6 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
     }
 
     @Override
-    protected void handleComponentOpened() {
-        super.handleComponentOpened();
-    }
-
-    @Override
     public Tuple<String, Boolean> getDefaultFloatingInfo() {
         return Tuple.create(Bundle.CTL_ImportDelimitedFileAction(), Boolean.FALSE);
     }

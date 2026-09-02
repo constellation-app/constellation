@@ -59,7 +59,7 @@ public class ViewOptionsPanelControllerNGTest {
     public void testUpdate() {
         System.out.println("update");
 
-        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class)) {
+        try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class)) {
 
             final ViewOptionsPanelController instance = new ViewOptionsPanelController();
             instance.update();
@@ -82,10 +82,10 @@ public class ViewOptionsPanelControllerNGTest {
         System.out.println("applyChanges");
 
         // When isChanged() returns true.
-        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+        try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
-        }); MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+        }); final MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
 
             final ViewOptionsPanelController instance = new ViewOptionsPanelController();
             instance.applyChanges();
@@ -110,10 +110,10 @@ public class ViewOptionsPanelControllerNGTest {
         }
 
         // When isChanged() returns false.
-        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+        try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
-        }); MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+        }); final MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
 
             final ViewOptionsPanelController instance = new ViewOptionsPanelController();
             instance.applyChanges();
@@ -146,7 +146,7 @@ public class ViewOptionsPanelControllerNGTest {
         System.out.println("isChanged");
 
         // When the options from the NbPreferences and UI differ.
-        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+        try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllTrue);
         })) {
@@ -166,7 +166,7 @@ public class ViewOptionsPanelControllerNGTest {
         }
 
         // When the options from the NbPreferences and UI match.
-        try (MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
+        try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
             when(mockInstance.getOptionsFromUI()).thenReturn(prefsAllFalse);
             when(mockInstance.getOptionsFromPrefs()).thenReturn(prefsAllFalse);
         })) {
@@ -221,7 +221,7 @@ public class ViewOptionsPanelControllerNGTest {
         System.out.println("addPropertyChangeListener");
         final PropertyChangeListener pcl = null;
 
-        try (MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+        try (final MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
 
             final ViewOptionsPanelController instance = new ViewOptionsPanelController();
             instance.addPropertyChangeListener(pcl);
@@ -242,7 +242,7 @@ public class ViewOptionsPanelControllerNGTest {
         System.out.println("removePropertyChangeListener");
         final PropertyChangeListener pcl = null;
 
-        try (MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
+        try (final MockedConstruction<PropertyChangeSupport> mockPCS = mockConstruction(PropertyChangeSupport.class)) {
 
             final ViewOptionsPanelController instance = new ViewOptionsPanelController();
             instance.removePropertyChangeListener(pcl);

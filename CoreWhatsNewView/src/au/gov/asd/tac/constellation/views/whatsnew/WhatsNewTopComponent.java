@@ -164,11 +164,6 @@ public final class WhatsNewTopComponent extends JavaFxTopComponent<WhatsNewViewP
     }
 
     @Override
-    protected void handleComponentOpened() {
-        super.handleComponentOpened();
-    }
-
-    @Override
     public Tuple<String, Boolean> getDefaultFloatingInfo() {
         return Tuple.create(Bundle.CTL_TutorialTopComponentTopComponent(), Boolean.FALSE);
     }

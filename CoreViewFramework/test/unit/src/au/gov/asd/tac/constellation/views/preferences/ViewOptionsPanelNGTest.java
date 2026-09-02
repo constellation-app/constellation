@@ -40,7 +40,7 @@ public class ViewOptionsPanelNGTest {
     public void testCreateTableModel() {
         System.out.println("createTableModel");
 
-        try (MockedConstruction<DefaultTableModel> mockDTM = mockConstruction(DefaultTableModel.class)) {
+        try (final MockedConstruction<DefaultTableModel> mockDTM = mockConstruction(DefaultTableModel.class)) {
 
             final ViewOptionsPanel instance = new ViewOptionsPanel();
             instance.createTableModel();
@@ -67,7 +67,7 @@ public class ViewOptionsPanelNGTest {
     public void testFireTableDataChanged() {
         System.out.println("fireTableDataChanged");
 
-        try (MockedConstruction<DefaultTableModel> mockDTM = mockConstruction(DefaultTableModel.class)) {
+        try (final MockedConstruction<DefaultTableModel> mockDTM = mockConstruction(DefaultTableModel.class)) {
 
             final ViewOptionsPanel instance = new ViewOptionsPanel();
             instance.fireTableDataChanged();

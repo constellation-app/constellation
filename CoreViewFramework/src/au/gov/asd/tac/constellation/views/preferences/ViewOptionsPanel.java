@@ -56,9 +56,7 @@ public class ViewOptionsPanel extends JPanel {
             }
         };
 
-        final Map<String, Boolean> options = getOptionsFromPrefs().isEmpty() ? getDefaultPrefs() : getOptionsFromPrefs();
-
-        for (final Map.Entry<String, Boolean> entry : options.entrySet()) {
+        for (final Map.Entry<String, Boolean> entry : getOptionsFromPrefs().entrySet()) {
             tableModel.addRow(new Object[]{entry.getKey(), entry.getValue()});
         }
 

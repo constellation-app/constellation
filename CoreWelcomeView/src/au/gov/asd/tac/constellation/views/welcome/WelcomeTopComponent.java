@@ -168,11 +168,6 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
     }
 
     @Override
-    protected void handleComponentOpened() {
-        super.handleComponentOpened();
-    }
-
-    @Override
     public Tuple<String, Boolean> getDefaultFloatingInfo() {
         return Tuple.create(Bundle.CTL_WelcomeTopComponentTopComponent(), Boolean.FALSE);
     }

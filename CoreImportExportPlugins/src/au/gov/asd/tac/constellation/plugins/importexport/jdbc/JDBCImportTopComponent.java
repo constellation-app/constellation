@@ -106,11 +106,6 @@ public final class JDBCImportTopComponent extends ImportTopComponent {
     }
 
     @Override
-    protected void handleComponentOpened() {
-        super.handleComponentOpened();
-    }
-
-    @Override
     public Tuple<String, Boolean> getDefaultFloatingInfo() {
         return Tuple.create(Bundle.CTL_ImportJDBCFileAction(), Boolean.FALSE);
     }
