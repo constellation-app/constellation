@@ -29,12 +29,10 @@ import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 /**
  * The GraphTaxonomy arranger.
  * <p>
- * A GraphTaxonomy arranger instance provides a consistent way to arrange a
- * GraphTaxonomy.
+ * A GraphTaxonomy arranger instance provides a consistent way to arrange a GraphTaxonomy.
  * <p>
- * A GraphTaxonomyArranger uses three Arranger instances: an inner Arranger, an
- * outer Arranger, and an implicit ArrangeInGrid Arranger. It is also possible
- * to provide separate arrangers for singleton and doublet taxa: these will
+ * A GraphTaxonomyArranger uses three Arranger instances: an inner Arranger, an outer Arranger, and an implicit
+ * ArrangeInGrid Arranger. It is also possible to provide separate arrangers for singleton and doublet taxa: these will
  * typically also be an ArrangeInGrid instance.
  * <p>
  * These instances are applied in the arrange() method.
@@ -105,17 +103,15 @@ public abstract class GraphTaxonomyArranger implements Arranger {
     /**
      * Arrange the graph using a taxonomy provided by getTaxonomy().
      * <p>
-     * If there is only one taxon, the inner arrangement will be done.
-     * Otherwise, for each taxon, the rectangular, singleton, doublet, or inner
-     * arranger will be performed according to the type of taxon. Then a
-     * condensation of the taxonomy keys will be created, the outer arranger
-     * will be performed on the condensation, an uncollision will be done, and
-     * the taxonomy vertices repositioned according to the results.
+     * If there is only one taxon, the inner arrangement will be done. Otherwise, for each taxon, the rectangular,
+     * singleton, doublet, or inner arranger will be performed according to the type of taxon. Then a condensation of
+     * the taxonomy keys will be created, the outer arranger will be performed on the condensation, an uncollision will
+     * be done, and the taxonomy vertices repositioned according to the results.
      *
      * @param wg The graph to arrange.
      *
-     * @throws InterruptedException if the thread is interrupted during
-     * execution meaning that the operation has been canceled.
+     * @throws InterruptedException if the thread is interrupted during execution meaning that the operation has been
+     * canceled.
      */
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
@@ -126,9 +122,10 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         if (interaction != null) {
             interaction.setProgress(0, 0, "Discovering taxonomy...", true);
         }
-
+        System.out.println("before getTaxonomy(wg) in GraphTaxonomyArranger");
         final GraphTaxonomy taxonomy = getTaxonomy(wg);
-
+        System.out.println("after getTaxonomy(wg) in GraphTaxonomyArranger");
+        
         if (taxonomy.size() == 1) {
             final int k = taxonomy.getTaxa().keysView().intIterator().next();
             inner.arrange(subgraphFactory.constructSubgraph(wg, taxonomy.getTaxa().get(k)));
@@ -151,6 +148,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
             final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
             final int steps = taxa.size() + 1;
             int step = 0;
+            System.out.println("taxa.keyValuesView(): " + taxa.keyValuesView());
             for (final IntObjectPair<MutableIntSet> keyValue : taxa.keyValuesView()) {
                 if (taxonomy.isArrangeRectangularly(keyValue.getOne())) {
                     if (interaction != null) {
@@ -173,6 +171,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
                         interaction.setProgress(step, steps, msg, true);
                     }
                     inner.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
+                    //inner.arrange(wg); // No overlaps with this, so TODO: figure out what this taxa thing is and why we're choosing to seperate the graph
                 }
                 step++;
             }

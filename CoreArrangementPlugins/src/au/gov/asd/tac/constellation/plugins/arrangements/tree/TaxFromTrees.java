@@ -37,21 +37,17 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 public class TaxFromTrees {
 
     /**
-     * Given a Graph, build a taxonomy by trees. First, the graph will be
-     * reduced to a simple graph. Then, each taxon will be a set of vertices
-     * such that the subgraph induced from the set is a tree and such that the
-     * set contains at most one vertex that was a member of a cycle in the
-     * original graph (viewed as undirected). The taxonomy has minimum
-     * cardinality satisfying theses properties. The representative of each
-     * taxon will the member of the taxon that participated in the cycle, if one
-     * existed; else, a random member will be chosen. The edges of each tree are
+     * Given a Graph, build a taxonomy by trees. First, the graph will be reduced to a simple graph. Then, each taxon
+     * will be a set of vertices such that the subgraph induced from the set is a tree and such that the set contains at
+     * most one vertex that was a member of a cycle in the original graph (viewed as undirected). The taxonomy has
+     * minimum cardinality satisfying theses properties. The representative of each taxon will the member of the taxon
+     * that participated in the cycle, if one existed; else, a random member will be chosen. The edges of each tree are
      * also included in the taxon.
      *
-     * The supplied vertexAttributeManger is consulted to set the name of the
-     * taxa. Each taxon is given the name of the taxon leader's key.
+     * The supplied vertexAttributeManger is consulted to set the name of the taxa. Each taxon is given the name of the
+     * taxon leader's key.
      *
-     * If skipSingletonTaxa is true, does not record taxa that have only one
-     * element.
+     * If skipSingletonTaxa is true, does not record taxa that have only one element.
      *
      * @param graph the write lock that will be used to perform the operation.
      * @param skipSingletons should singletons be excluded.
@@ -59,6 +55,7 @@ public class TaxFromTrees {
      * @return the graph taxonomy.
      */
     public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final boolean skipSingletons) {
+        System.out.println("TaxFromTrees getTaxonomy()");
         final int vxCount = graph.getVertexCount();
 
         // Every vertex starts in its own tree; its only member is itself.
@@ -72,6 +69,8 @@ public class TaxFromTrees {
             members.put(vxId, vertices);
             nodeToTaxa.put(vxId, vxId);
         }
+        
+        System.out.println("BEFORE members: " + members);
 
         // Track the vertices that have been "deleted".
         // Any vertex with valences[vxId]==Graph.NOT_FOUND has been "deleted".
@@ -85,12 +84,13 @@ public class TaxFromTrees {
             final int vxId = graph.getVertex(position);
 
             final int valence = graph.getVertexNeighbourCount(vxId);
+            //System.out.println("vxid: " + vxId + " valence: " + valence);
             valences[vxId] = valence;
             if (valence == 1) {
                 verticesToPluck.addLast(vxId);
             }
         }
-
+        System.out.println("verticesToPluck: " + verticesToPluck);
         // While there are vertices with valence 1, remove them.
         while (!verticesToPluck.isEmpty()) {
             final int vxToRemoveId = verticesToPluck.removeFirst();
@@ -106,6 +106,7 @@ public class TaxFromTrees {
                 }
             }
 
+           // System.out.println("valences[neighbourId]: " + valences[neighbourId]);
             if (valences[neighbourId] != Graph.NOT_FOUND) {
                 // Get the set of the neighbour's members.
                 final MutableIntSet neighbourVertices = members.get(neighbourId);
@@ -137,6 +138,8 @@ public class TaxFromTrees {
             members.removeIf((key, value) -> value.size() == 1);
         }
 
+        System.out.println("members: " + members);
+        System.out.println("nodeToTaxa: " + nodeToTaxa);
         return new GraphTaxonomy(graph, members, nodeToTaxa);
     }
 }

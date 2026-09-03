@@ -55,9 +55,16 @@ public class ArrangeInTreesPlugin extends SimpleEditPlugin {
             final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
             radiusSetter.setRadii();
 
-            final Arranger inner = new CircTreeArranger(CircTreeChoiceParameters.getDefaultParameters());
+            //final Arranger inner = new CircTreeArranger(CircTreeChoiceParameters.getDefaultParameters());
+            final Arranger inner = new NewTreeArranger();
+            // This has an inpact on how spread out the graph is, but it seems to compound?
+            // So if it's low then it's not as spread out, but then the nodes closer to leaves are toopacked together
+            //final Arranger inner = new CircTreeArranger(new CircTreeChoiceParameters(0.02f, false));
 
+            // IDK what this thing does
             final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
+            //final Arranger middle = new MdsArranger(new MDSChoiceParameters(LinkWeight.USE_EXTENTS, 0.2f, 20, 8, 1, true, 100));
+            //final Arranger middle = mock(Arranger.class);
 
             final GridChoiceParameters outerGcParams = GridChoiceParameters.getDefaultParameters();
             outerGcParams.setRowOffsets(false);
@@ -67,11 +74,13 @@ public class ArrangeInTreesPlugin extends SimpleEditPlugin {
             final GraphTaxonomyArranger arranger2 = new TreeTaxonArranger(inner, middle);
             arranger2.setInteraction(interaction);
 
+            // commenting this out doesnt seem to effect anything, this does run first so i suspect it help ths tree arranger
             // Push the MDS parts further away from each other.
             final UncollideArrangement unc = new UncollideArrangement(2);
             unc.setMinPadding(4);
             arranger2.setUncollider(unc);
 
+            // necessary
             final GraphTaxonomyArranger arranger1 = new GraphComponentArranger(arranger2, outer, Connections.LINKS);
             arranger1.setSingletonArranger(new GridArranger(innerGcParams));
             arranger1.setDoubletArranger(new GridArranger(innerGcParams, true));
