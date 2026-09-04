@@ -57,7 +57,7 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
 
 /**
- * Common functionality allowing JSON preferences to be saved/loaded.
+ * Common functionality allowing JSON preferences/templates to be saved/loaded.
  *
  * @author formalhaut69
  * @author serpens24
@@ -83,8 +83,8 @@ public class JsonIO {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
 
-    private static String getFileExistsAlertTitle(final String dialogType) {
-        return dialogType + " File Exists";
+    protected static String getFileExistsAlertTitle(final String dialogType) {
+        return dialogType + " File Exists.";
     }
 
     private static String getFileSavedMessage(final String dialogType, final String fileName) {
@@ -92,7 +92,7 @@ public class JsonIO {
     }
 
     private static String getFileSaveError(final String dialogType, final String error) {
-        return String.format("Can't save %s file: %s", dialogType.toLowerCase(), error);
+        return String.format("Can't save %s file: %s.", dialogType.toLowerCase(), error);
     }
 
     /**
@@ -140,6 +140,8 @@ public class JsonIO {
      * written
      * @param filePrefix prefix to be pre-pended to the file name the user
      * provides or empty if no prefix to be provided
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      *
      */
     public static void saveJsonPreferences(final Optional<String> saveDir, final Optional<String> filePrefix,
@@ -183,6 +185,7 @@ public class JsonIO {
             alert.setHeaderText(getFileExistsAlertTitle(type));
             alert.setContentText(String.format(PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT, prefixedFileName));
             alert.setGraphic(IconManager.createBlueDialogIcon(UserInterfaceIconProvider.DELETE.buildImage(), 28));
+            JsonIODialog.positionAndStyleDialog(alert);
 
             final Optional<ButtonType> option = alert.showAndWait();
             go = option.isPresent() && option.get() == ButtonType.OK;
@@ -241,6 +244,8 @@ public class JsonIO {
      * @param mapper configured object mapper to write serialize the root node
      * @param rootNode the root object representing the preferences to be
      * written
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
     public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode, final ObjectMapper mapper, final String type) {
@@ -255,6 +260,8 @@ public class JsonIO {
      * configuration file to or empty if it is to be save at the top level
      * @param rootNode the root object representing the preferences to be
      * written
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
     public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode, final String type) {
@@ -331,6 +338,7 @@ public class JsonIO {
                     PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
                     fileName
             ));
+            JsonIODialog.positionAndStyleDialog(alert);
 
             final Optional<ButtonType> option = alert.showAndWait();
             go = option.isPresent() && option.get() == ButtonType.OK;            
@@ -381,6 +389,8 @@ public class JsonIO {
      * provides or empty if no prefix to be provided
      * @param rootNode the root object representing the preferences to be
      * written
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
     public static void saveJsonPreferences(final Optional<String> saveDir, final Optional<String> filePrefix, 
@@ -446,6 +456,8 @@ public class JsonIO {
      * @param expectedFormat the type representing the JSON in the file to be
      * loaded
      * @param objectMapper the object mapper to perform the de-serialization
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
@@ -470,6 +482,8 @@ public class JsonIO {
      * preference file from or empty if it is to be loaded at the top level
      * @param expectedFormat the type representing the JSON in the file to be
      * loaded
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
@@ -487,13 +501,13 @@ public class JsonIO {
                 LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);               
             }
             return null;
-        }, type);
+        });
 
     }
 
     protected static <T> T loadJsonPreferencesForFile(final Optional<String> loadDir,
             final Optional<String> filePrefix,
-            final Function<File, T> deserializationFunction, final String type) {
+            final Function<File, T> deserializationFunction) {
         final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
 
         // List the files in the supplied directory that have the required file extension
@@ -547,6 +561,8 @@ public class JsonIO {
      * required
      * @param expectedFormat the type representing the JSON in the file to be
      * loaded
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
@@ -596,6 +612,8 @@ public class JsonIO {
      * required
      * @param deserializationFunction a function that take the file to be loaded
      * and de-serializes the JSON in the required class
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the processed JSON of the selected preference file or null if
      * nothing is selected
      */

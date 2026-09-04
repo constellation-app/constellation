@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
 import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -1070,6 +1071,7 @@ public class NotesViewPane extends BorderPane {
             deleteAlert.setHeaderText("Delete Note");
             deleteAlert.setContentText("Are you sure you want to delete \"" + titleLabel.getText() + "\"?");
             deleteAlert.setGraphic(IconManager.createBlueDialogIcon(UserInterfaceIconProvider.DELETE.buildImage(), 28));
+            JsonIODialog.positionAndStyleDialog(deleteAlert);
 
             deleteAlert.showAndWait();
             if (deleteAlert.getResult() == ButtonType.OK) {

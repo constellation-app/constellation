@@ -85,7 +85,6 @@ public class JsonIODialog {
     public static Optional<String> getSelection(final List<String> names, final Optional<String> loadDir, 
             final Optional<String> filePrefix, final String type) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         final ObservableList<String> observableNamesList = FXCollections.observableArrayList(names);
 
@@ -126,11 +125,7 @@ public class JsonIODialog {
 
             event.consume();
         });
-
-        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 100;
-        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 250;
-        dialog.setX(SystemUtilities.getMainframeXPos() + xOffset);
-        dialog.setY(SystemUtilities.getMainframeYPos() + yOffset);
+        positionAndStyleDialog(dialog);
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             return Optional.ofNullable(nameList.getSelectionModel().getSelectedItem());
@@ -139,6 +134,19 @@ public class JsonIODialog {
         return Optional.empty();
     }
 
+    /**
+     * Applies the standard dialog styling and positions the dialog in the
+     * center of the application's active window.
+     *
+     * @param dialog the dialog to style and position
+     */
+    public static void positionAndStyleDialog(final Dialog<?> dialog) {
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 100;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 250;
+        dialog.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        dialog.setY(SystemUtilities.getMainframeYPos() + yOffset);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+    }
     /**
      * Displays a small window allowing the user to enter a name for the new
      * preference file.
@@ -152,6 +160,7 @@ public class JsonIODialog {
         td.setTitle(getSaveDialogTitle(type));
         td.setHeaderText(getSaveDialogHeaderText(type));
         setIcon(td, false);
+        positionAndStyleDialog(td);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         return td.showAndWait();
     }

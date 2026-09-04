@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
-import java.awt.Robot;
 import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;

@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
-import java.awt.Robot;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -56,7 +58,6 @@ public class JsonIODialogNGTest {
     private final FxRobot robot = new FxRobot();
 
     private final String dialogType1 = "Type1";
-    private final String dialogType2 = "Type2";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -308,6 +309,19 @@ public class JsonIODialogNGTest {
         assertTrue(result.isPresent());       
     }
 
+    @Test
+    public void testPositionAndStyleDialog() throws Exception {
+            double expectedX = SystemUtilities.getMainframeXPos() + SystemUtilities.getMainframeWidth() / 2.0 - 100;
+            double expectedY = SystemUtilities.getMainframeYPos() + SystemUtilities.getMainframeHeight() / 2 - 250;
+
+            FxToolkit.setupFixture(() -> {
+                Dialog<?> dialog = new Alert(Alert.AlertType.INFORMATION);
+                JsonIODialog.positionAndStyleDialog(dialog);
+
+                assertEquals(dialog.getX(), expectedX);
+                assertEquals(dialog.getY(), expectedY);
+            });
+    }
 
     /**
      * Get a dialog that has been displayed to the user. This will iterate

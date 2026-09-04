@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.tableview.api.UserTablePreferences;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import org.apache.commons.lang3.tuple.ImmutablePair;

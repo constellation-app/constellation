@@ -49,6 +49,8 @@ public class IconManager {
     private static List<? extends ConstellationIconProvider> iconProviders = null;
     private static CustomIconProvider customProvider = null;
     private static Map<String, ConstellationIcon> cache = null;
+    private static final String GRADIENT_START_LIGHT_BLUE = "#69B6FF";
+    private static final String GRADIENT_END_DARK_BLUE = "#0A64C9";
 
     /**
      * Find all {@link ConstellationIconProvider} instances using
@@ -210,6 +212,14 @@ public class IconManager {
         return missingIcon;
     }
 
+    /**
+     * Creates a dialog icon consisting of the specified image displayed on a
+     * blue circular background.
+     *
+     * @param image the image to display in the icon
+     * @param size the width and height of the icon in pixels
+     * @return a StackPane containing the styled dialog icon
+     */
     public static StackPane createBlueDialogIcon(final Image image, final double size) {
         final ImageView imageView = new ImageView(image);
         imageView.setFitWidth(size);
@@ -226,8 +236,8 @@ public class IconManager {
                         0.8,
                         true,
                         CycleMethod.NO_CYCLE,
-                        new Stop(0.0, Color.web("#69B6FF")),
-                        new Stop(1.0, Color.web("#0A64C9"))
+                        new Stop(0.0, Color.web(GRADIENT_START_LIGHT_BLUE)),
+                        new Stop(1.0, Color.web(GRADIENT_END_DARK_BLUE))
                 )
         );
         background.setStroke(Color.WHITE);

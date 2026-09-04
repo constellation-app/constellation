@@ -43,6 +43,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.mockito.ArgumentMatchers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -487,12 +488,10 @@ public class JsonIONGTest {
                         when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.CANCEL));
                             });
             ) {
-                setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"), dialogTypePreference);
+                setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"), dialogType1);
 
-                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogTypePreference);
-                int ss = alertConstruction.constructed().size();
+                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogType1);
 
-                System.out.println(alertConstruction.constructed().size());
                 Alert alert = alertConstruction.constructed().get(0);
 
                 Mockito.mockingDetails(alert)
@@ -501,7 +500,7 @@ public class JsonIONGTest {
 
 
                 verify(alertConstruction.constructed().get(0)).setContentText("'my-preferences' already exists. Do you want to overwrite it?");
-                //verify(alertConstruction.constructed().get(0)).setHeaderText(String.format("Preference File Exists."));
+                verify(alertConstruction.constructed().get(0)).setHeaderText(String.format("%s File Exists.", dialogType1));
             }
 
             final String output;
@@ -530,14 +529,12 @@ public class JsonIONGTest {
                         assertEquals(cnxt.arguments(), List.of(Alert.AlertType.CONFIRMATION));
 
                         when(mock.showAndWait()).thenReturn(Optional.of(ButtonType.OK));
-                            });
-            ) {
-                setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"), dialogType1);
+                    });) {
+                setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"), dialogTypePreference);
 
-                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogType1);
-
+                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogTypePreference);
                 verify(alertConstruction.constructed().get(0)).setContentText("'my-preferences' already exists. Do you want to overwrite it?");
-                //verify(alertConstruction.constructed().get(0)).setHeaderText("Preference File Exists");
+                verify(alertConstruction.constructed().get(0)).setHeaderText("Preference File Exists.");
             }
 
             verifyOutputFileMatchesFixture(outputFile);
@@ -707,6 +704,14 @@ public class JsonIONGTest {
 
         jsonIoMockedStatic.when(() -> JsonIO
                 .saveJsonPreferences(any(Optional.class), any(Optional.class), any(), any(ObjectMapper.class), anyString()))
+                .thenCallRealMethod();
+
+        jsonIoMockedStatic.when(() -> JsonIO
+                .saveJsonPreferences(any(Optional.class), any(Optional.class), ArgumentMatchers.<Object>any(), anyString()))
+                .thenCallRealMethod();
+
+        jsonIoMockedStatic.when(() -> JsonIO
+                .getFileExistsAlertTitle(anyString()))
                 .thenCallRealMethod();
 
         jsonIoMockedStatic.when(() -> JsonIO
