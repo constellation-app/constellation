@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.TextInputDialogWithKeybordShortcut;
@@ -29,8 +31,10 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javax.swing.JDialog;
 
@@ -46,16 +50,24 @@ public class JsonIODialog {
     
     private static final String REMOVE_BUTTON_TEXT = "Remove";
 
-    private static final String PREFERENCE_SELECTION_DIALOG_TITLE = "Preferences";
-    private static final String PREFERENCE_SELECTION_DIALOG_HEADER_TEXT = "Select a preference to load.";
-
-    private static final String PREFERENCE_NAME_DIALOG_TITLE = "Preference Name";
-    private static final String PREFERENCE_NAME_DIALOG_HEADER_TEXT = "Enter a name for the preference";
-    
-    
     private JsonIODialog() {
     }
 
+    private static String getSelectionDialogTitle(final String dialogType) {
+        return dialogType + "s";
+    }
+
+    private static String getSelectionDialogHeaderText(final String dialogType) {
+        return "Select a " + dialogType.toLowerCase() + " to load.";
+    }
+
+    private static String getSaveDialogTitle(final String dialogType) {
+        return "Save " + dialogType;
+    }
+
+    private static String getSaveDialogHeaderText(final String dialogType) {
+        return "Enter a new " + dialogType.toLowerCase() + " name.";
+    }
     /**
      * Present a dialog allowing the user to select an entry from a list of
      * available files. The user is also able to select one or more files from
@@ -66,12 +78,13 @@ public class JsonIODialog {
      * @param loadDir the relative directory path from the user home preference
      * directory that the file names are located
      * @param filePrefix the prefix if any that was removed from the file names
+     * @param type the dialog type to be displayed in the header and title
      * @return the selected element text or null if nothing was selected
      */
+
     public static Optional<String> getSelection(final List<String> names, final Optional<String> loadDir, 
-            final Optional<String> filePrefix) {
+            final Optional<String> filePrefix, final String type) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         final ObservableList<String> observableNamesList = FXCollections.observableArrayList(names);
 
@@ -89,8 +102,10 @@ public class JsonIODialog {
         dialog.getDialogPane().setContent(nameList);
         dialog.getButtonTypes().add(removeButtonType);
         dialog.setResizable(false);
-        dialog.setTitle(PREFERENCE_SELECTION_DIALOG_TITLE);
-        dialog.setHeaderText(PREFERENCE_SELECTION_DIALOG_HEADER_TEXT);
+        dialog.setTitle(getSelectionDialogTitle(type));
+        dialog.setHeaderText(getSelectionDialogHeaderText(type));
+        setIcon(dialog, true);
+
 
         // The remove button has been wrapped inside the removeButtonType, this
         // has been done because any ButtonTypes added to an alert window will
@@ -110,11 +125,7 @@ public class JsonIODialog {
 
             event.consume();
         });
-
-        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 100;
-        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 250;
-        dialog.setX(SystemUtilities.getMainframeXPos() + xOffset);
-        dialog.setY(SystemUtilities.getMainframeYPos() + yOffset);
+        positionAndStyleDialog(dialog);
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             return Optional.ofNullable(nameList.getSelectionModel().getSelectedItem());
@@ -124,24 +135,56 @@ public class JsonIODialog {
     }
 
     /**
+     * Applies the standard dialog styling and positions the dialog in the
+     * center of the application's active window.
+     *
+     * @param dialog the dialog to style and position
+     */
+    public static void positionAndStyleDialog(final Dialog<?> dialog) {
+        final double xOffset = SystemUtilities.getMainframeWidth() / 2 - 100;
+        final double yOffset = SystemUtilities.getMainframeHeight() / 2 - 250;
+        dialog.setX(SystemUtilities.getMainframeXPos() + xOffset);
+        dialog.setY(SystemUtilities.getMainframeYPos() + yOffset);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+    }
+    /**
      * Displays a small window allowing the user to enter a name for the new
      * preference file.
      *
+     * @param type the dialog type to be displayed in the header and title
      * @return an optional name for the new file, empty if the dialog was closed
      * without entering a name for the file
      */
-    public static Optional<String> getPreferenceFileName() {
+    public static Optional<String> getPreferenceFileName(final String type) {
         final TextInputDialog td = new TextInputDialog();
-        td.setTitle(PREFERENCE_NAME_DIALOG_TITLE);
-        td.setHeaderText(PREFERENCE_NAME_DIALOG_HEADER_TEXT);
+        td.setTitle(getSaveDialogTitle(type));
+        td.setHeaderText(getSaveDialogHeaderText(type));
+        setIcon(td, false);
+        positionAndStyleDialog(td);
         td.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-
         return td.showAndWait();
     }
-    
-    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow) {
-        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("",  PREFERENCE_NAME_DIALOG_TITLE, PREFERENCE_NAME_DIALOG_HEADER_TEXT, preferenceDirectory, ks, parentWindow);
-        td.showPopUp(new JDialog());        
+    /**
+     * Set the Icon of the pop up dialog
+     *
+     */
+    private static void setIcon(final Dialog td, final boolean isLoading) {
+        td.setGraphic(IconManager.createBlueDialogIcon(isLoading ? AnalyticIconProvider.MOUSE.buildImage() : AnalyticIconProvider.KEYBOARD.buildImage(), 30));
+        Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+    }
+    /**
+     *
+     * @param ks
+     * @param preferenceDirectory
+     * @param parentWindow
+     * @param type
+     * @return
+     */
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileName(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow, final String type) {
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("", getSaveDialogTitle(type), getSaveDialogHeaderText(type), preferenceDirectory, ks, parentWindow);
+        setIcon(td, false);
+        td.showPopUp(new JDialog());
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }
 
@@ -150,10 +193,12 @@ public class JsonIODialog {
      * @param ks
      * @param preferenceDirectory
      * @param parentWindow
+     * @param type
      * @return 
      */
-    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileNameTest(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow) {
-        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("",  PREFERENCE_NAME_DIALOG_TITLE, PREFERENCE_NAME_DIALOG_HEADER_TEXT, preferenceDirectory, ks, parentWindow);
+    public static Optional<KeyboardShortcutSelectionResult> getPreferenceFileNameTest(final Optional<String> ks, final File preferenceDirectory, final Optional<Window> parentWindow, final String type) {
+        final TextInputDialogWithKeybordShortcut td = new TextInputDialogWithKeybordShortcut("", getSaveDialogTitle(type), getSaveDialogHeaderText(type), preferenceDirectory, ks, parentWindow);
+        setIcon(td, false);
         td.showPopUp();
         return Optional.ofNullable(td.getKeyboardShortcutSelectionResult());
     }

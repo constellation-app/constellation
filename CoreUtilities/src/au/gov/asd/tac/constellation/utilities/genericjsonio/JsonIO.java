@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,7 +57,7 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbPreferences;
 
 /**
- * Common functionality allowing JSON preferences to be saved/loaded.
+ * Common functionality allowing JSON preferences/templates to be saved/loaded.
  *
  * @author formalhaut69
  * @author serpens24
@@ -67,17 +69,11 @@ public class JsonIO {
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
 
-    private static final String PREFERENCE_FILE_EXISTS_ALERT_TITLE = "Preference File Exists";
     private static final String PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT
             = "'%s' already exists. Do you want to overwrite it?";
 
-    private static final String PREFERENCE_FILE_SAVED_MSG_FORMAT
-            = "Preference saved to %s.";
-
     private static final String FILE_READ_ERROR = "An error occured reading file %s";    
     
-    private static final String PREFERENCE_FILE_SAVE_ERROR = "Can't save preference file: %s";
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
@@ -85,6 +81,18 @@ public class JsonIO {
      */
     private JsonIO() {
         throw new IllegalStateException("Invalid call to private default constructor");
+    }
+
+    protected static String getFileExistsAlertTitle(final String dialogType) {
+        return dialogType + " File Exists.";
+    }
+
+    private static String getFileSavedMessage(final String dialogType, final String fileName) {
+        return String.format("%s saved to %s.", dialogType, fileName);
+    }
+
+    private static String getFileSaveError(final String dialogType, final String error) {
+        return String.format("Can't save %s file: %s.", dialogType.toLowerCase(), error);
     }
 
     /**
@@ -132,16 +140,18 @@ public class JsonIO {
      * written
      * @param filePrefix prefix to be pre-pended to the file name the user
      * provides or empty if no prefix to be provided
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      *
      */
     public static void saveJsonPreferences(final Optional<String> saveDir, final Optional<String> filePrefix,
-            final Object rootNode, final ObjectMapper mapper) {
+            final Object rootNode, final ObjectMapper mapper, final String type) {
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
+                    String.format("Can't create the directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
 
@@ -149,7 +159,7 @@ public class JsonIO {
         }
 
         // Ask the user to provide a file name
-        final Optional<String> userInput = JsonIODialog.getPreferenceFileName();
+        final Optional<String> userInput = JsonIODialog.getPreferenceFileName(type);
 
         // Cancel was pressed. So stop the save.
         if (userInput.isEmpty()) {
@@ -172,8 +182,10 @@ public class JsonIO {
         // If the file exist, ask the user if they want to overwrite
         if (preferenceFile.exists()) {
             final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setHeaderText(PREFERENCE_FILE_EXISTS_ALERT_TITLE);
+            alert.setHeaderText(getFileExistsAlertTitle(type));
             alert.setContentText(String.format(PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT, prefixedFileName));
+            alert.setGraphic(IconManager.createBlueDialogIcon(UserInterfaceIconProvider.DELETE.buildImage(), 28));
+            JsonIODialog.positionAndStyleDialog(alert);
 
             final Optional<ButtonType> option = alert.showAndWait();
             go = option.isPresent() && option.get() == ButtonType.OK;
@@ -187,12 +199,11 @@ public class JsonIO {
 
                 mapper.writeValue(preferenceFile, rootNode);
 
-                StatusDisplayer.getDefault().setStatusText(String.format(PREFERENCE_FILE_SAVED_MSG_FORMAT,
-                        preferenceFile.getPath()));
+                StatusDisplayer.getDefault().setStatusText(getFileSavedMessage(type, preferenceFile.getPath()));
             } catch (final IOException ex) {
-                NotifyDisplayer.display(String.format(PREFERENCE_FILE_SAVE_ERROR, ex.getMessage()),
+                NotifyDisplayer.display(getFileSaveError(type, ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE);
-                LOGGER.log(Level.WARNING, String.format(PREFERENCE_FILE_SAVE_ERROR, prefixedFileName), ex);
+                LOGGER.log(Level.WARNING, getFileSaveError(type, prefixedFileName), ex);
             }
         }
     }
@@ -233,10 +244,12 @@ public class JsonIO {
      * @param mapper configured object mapper to write serialize the root node
      * @param rootNode the root object representing the preferences to be
      * written
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
-    public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode, final ObjectMapper mapper) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper);
+    public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode, final ObjectMapper mapper, final String type) {
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, mapper, type);
     }
 
     /**
@@ -247,23 +260,25 @@ public class JsonIO {
      * configuration file to or empty if it is to be save at the top level
      * @param rootNode the root object representing the preferences to be
      * written
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
-    public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode) {
-        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER);
+    public static void saveJsonPreferences(final Optional<String> saveDir, final Object rootNode, final String type) {
+        saveJsonPreferences(saveDir, Optional.empty(), rootNode, OBJECT_MAPPER, type);
     }
 
-    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode, final Window parentWindow) {
+    public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode, final Window parentWindow, final String type) {
         final ObjectMapper mapper = OBJECT_MAPPER;
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
         // If the preference directory cannot be accessed then return
         if (!preferenceDirectory.isDirectory()) {
             NotifyDisplayer.display(
-                    String.format("Can't create preference directory '%s'.", preferenceDirectory),
+                    String.format("Can't create the directory '%s'.", preferenceDirectory),
                     NotifyDescriptor.ERROR_MESSAGE
             );
-            LOGGER.log(Level.WARNING, "Can't create preference directory {}.", preferenceDirectory);
+            LOGGER.log(Level.WARNING, "Can't create the directory {}.", preferenceDirectory);
             return;
         }
 
@@ -273,7 +288,7 @@ public class JsonIO {
         // Ask the user to provide a file name        
         final Optional<String> userInputWithKs;
 
-        final Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.ofNullable(parentWindow));
+        final Optional<KeyboardShortcutSelectionResult> ksResult = JsonIODialog.getPreferenceFileName(ks, preferenceDirectory, Optional.ofNullable(parentWindow), type);
         if (ksResult.isPresent()) {
             if (Objects.isNull(ksResult.get().getFileName())) {
                 return;
@@ -316,11 +331,14 @@ public class JsonIO {
         // If the file exist, ask the user if they want to overwrite
         if (preferenceFileExists) {
             final Alert alert = getAlert(Alert.AlertType.CONFIRMATION);
-            alert.setHeaderText(PREFERENCE_FILE_EXISTS_ALERT_TITLE);
+            alert.setHeaderText(getFileExistsAlertTitle(type));
+
+            alert.setGraphic(IconManager.createBlueDialogIcon(UserInterfaceIconProvider.WARNING.buildImage(), 25));
             alert.setContentText(String.format(
                     PREFERENCE_FILE_EXISTS_ALERT_ERROR_MSG_FORMAT,
                     fileName
             ));
+            JsonIODialog.positionAndStyleDialog(alert);
 
             final Optional<ButtonType> option = alert.showAndWait();
             go = option.isPresent() && option.get() == ButtonType.OK;            
@@ -344,17 +362,14 @@ public class JsonIO {
                 mapper.writeValue(preferenceFile, rootNode);
                
                 StatusDisplayer.getDefault().setStatusText(
-                        String.format(
-                                PREFERENCE_FILE_SAVED_MSG_FORMAT,
-                                preferenceFile.getPath()
-                        )
+                        getFileSavedMessage(type, preferenceFile.getPath())
                 );
             } catch (final IOException ex) {
                 NotifyDisplayer.display(
-                        String.format(PREFERENCE_FILE_SAVE_ERROR, ex.getMessage()),
+                        getFileSaveError(type, ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE
                 );
-                LOGGER.log(Level.WARNING, String.format(PREFERENCE_FILE_SAVE_ERROR, fileName), ex);
+                LOGGER.log(Level.WARNING, getFileSaveError(type, fileName), ex);
             }
         }
 
@@ -374,11 +389,13 @@ public class JsonIO {
      * provides or empty if no prefix to be provided
      * @param rootNode the root object representing the preferences to be
      * written
+     * @param type the type of item being saved (E.g. a Preference or Template),
+     * used in dialog titles and messages.
      * @see #saveJsonPreferences(Optional, ObjectMapper, ArrayNode, Optional)
      */
     public static void saveJsonPreferences(final Optional<String> saveDir, final Optional<String> filePrefix, 
-            final Object rootNode) {
-        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER);
+            final Object rootNode, final String type) {
+        saveJsonPreferences(saveDir, filePrefix, rootNode, OBJECT_MAPPER, type);
     }
 
     /**
@@ -406,7 +423,7 @@ public class JsonIO {
                 LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);
             }
             return null;
-        });
+        }, "Preference");
     }
 
     /**
@@ -439,11 +456,13 @@ public class JsonIO {
      * @param expectedFormat the type representing the JSON in the file to be
      * loaded
      * @param objectMapper the object mapper to perform the de-serialization
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir, final Optional<String> filePrefix, 
-            final TypeReference<T> expectedFormat, final ObjectMapper objectMapper) {
+            final TypeReference<T> expectedFormat, final ObjectMapper objectMapper, final String type) {
         return loadJsonPreferences(loadDir, filePrefix, file -> {
             try {
                 return objectMapper.readValue(file, expectedFormat);
@@ -451,7 +470,7 @@ public class JsonIO {
                 LOGGER.log(Level.WARNING, String.format(FILE_READ_ERROR, file.getName()), ioe);
             }
             return null;
-        });
+        }, type);
     }
 
     /**
@@ -463,15 +482,17 @@ public class JsonIO {
      * preference file from or empty if it is to be loaded at the top level
      * @param expectedFormat the type representing the JSON in the file to be
      * loaded
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
-    public static <T> T loadJsonPreferences(final Optional<String> loadDir, final TypeReference<T> expectedFormat) {
-        return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER);
+    public static <T> T loadJsonPreferences(final Optional<String> loadDir, final TypeReference<T> expectedFormat, final String type) {
+        return loadJsonPreferences(loadDir, Optional.empty(), expectedFormat, OBJECT_MAPPER, type);
     }
 
     public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir, final Optional<String> filePrefix,
-            final TypeReference<T> expectedFormat) {
+            final TypeReference<T> expectedFormat, final String type) {
 
         return loadJsonPreferencesForFile(loadDir, filePrefix, file -> {
             try {
@@ -540,12 +561,14 @@ public class JsonIO {
      * required
      * @param expectedFormat the type representing the JSON in the file to be
      * loaded
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the de-serialized JSON in the requested format
      * @see #loadJsonPreferences(Optional, Optional, Function)
      */
     public static <T> T loadJsonPreferences(final Optional<String> loadDir, final Optional<String> filePrefix,
-            final TypeReference<T> expectedFormat) {
-        return loadJsonPreferences(loadDir, filePrefix, expectedFormat, OBJECT_MAPPER);
+            final TypeReference<T> expectedFormat, final String type) {
+        return loadJsonPreferences(loadDir, filePrefix, expectedFormat, OBJECT_MAPPER, type);
     }
 
     /**
@@ -589,12 +612,14 @@ public class JsonIO {
      * required
      * @param deserializationFunction a function that take the file to be loaded
      * and de-serializes the JSON in the required class
+     * @param type the type of item being loaded (E.g. a Preference or
+     * Template), used in dialog titles and messages.
      * @return the processed JSON of the selected preference file or null if
      * nothing is selected
      */
     protected static <T> T loadJsonPreferences(final Optional<String> loadDir,
             final Optional<String> filePrefix,
-            final Function<File, T> deserializationFunction) {
+            final Function<File, T> deserializationFunction, final String type) {
         final File preferenceDirectory = getPrefereceFileDirectory(loadDir);
 
         // List the files in the supplied directory that have the required file extension
@@ -619,7 +644,8 @@ public class JsonIO {
                         .map(name -> name.substring(filePrefixLength))
                         .collect(Collectors.toList()),
                 loadDir,
-                filePrefix
+                filePrefix,
+                type
         );
 
         // Re-add the prefix and suffix, then serialize the preferences to the file

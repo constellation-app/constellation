@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
+import au.gov.asd.tac.constellation.utilities.SystemUtilities;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
-import java.awt.Robot;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -53,7 +55,9 @@ public class JsonIODialogNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(JsonIODialogNGTest.class.getName());
 
-    private final FxRobot robot = new FxRobot();    
+    private final FxRobot robot = new FxRobot();
+
+    private final String dialogType1 = "Type1";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -76,7 +80,7 @@ public class JsonIODialogNGTest {
         final List<String> names = List.of("myPreferenceFile", "theirPreferenceFile");
 
         final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of("")));
+                () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of(""), dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
@@ -104,7 +108,7 @@ public class JsonIODialogNGTest {
         final List<String> names = List.of("myPreferenceFile", "theirPreferenceFile");
 
         final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of("")));
+                () -> JsonIODialog.getSelection(names, Optional.of(""), Optional.of(""), dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
@@ -137,7 +141,7 @@ public class JsonIODialogNGTest {
             // the same thread as the execution
             try (MockedStatic<JsonIO> jsonIOMockedStatic = Mockito.mockStatic(JsonIO.class)) {
                 final Optional<String> result = JsonIODialog.getSelection(
-                        names, Optional.of("loadDir"), Optional.of("filePrefix"));
+                        names, Optional.of("loadDir"), Optional.of("filePrefix"), dialogType1);
 
                 // Verify the call to delete
                 jsonIOMockedStatic.verify(() -> JsonIO
@@ -188,7 +192,7 @@ public class JsonIODialogNGTest {
 
     @Test
     public void getPreferenceFileName_ok_pressed() {
-        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName(dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
@@ -216,7 +220,7 @@ public class JsonIODialogNGTest {
 
     @Test
     public void getPreferenceFileName_cancel_pressed() {
-        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName());
+        final Future<Optional<String>> future = WaitForAsyncUtils.asyncFx(() -> JsonIODialog.getPreferenceFileName(dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
@@ -247,7 +251,7 @@ public class JsonIODialogNGTest {
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty(), dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
@@ -281,7 +285,7 @@ public class JsonIODialogNGTest {
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         final Future<Optional<KeyboardShortcutSelectionResult>> future = WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty(), dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);
@@ -305,6 +309,19 @@ public class JsonIODialogNGTest {
         assertTrue(result.isPresent());       
     }
 
+    @Test
+    public void testPositionAndStyleDialog() throws Exception {
+            double expectedX = SystemUtilities.getMainframeXPos() + SystemUtilities.getMainframeWidth() / 2.0 - 100;
+            double expectedY = SystemUtilities.getMainframeYPos() + SystemUtilities.getMainframeHeight() / 2 - 250;
+
+            FxToolkit.setupFixture(() -> {
+                Dialog<?> dialog = new Alert(Alert.AlertType.INFORMATION);
+                JsonIODialog.positionAndStyleDialog(dialog);
+
+                assertEquals(dialog.getX(), expectedX);
+                assertEquals(dialog.getY(), expectedY);
+            });
+    }
 
     /**
      * Get a dialog that has been displayed to the user. This will iterate

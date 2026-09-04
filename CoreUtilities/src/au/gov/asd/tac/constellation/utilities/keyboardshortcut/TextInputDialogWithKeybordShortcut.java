@@ -16,33 +16,35 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.SystemUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.NamedArg;
+import javafx.css.PseudoClass;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.css.PseudoClass;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Control;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -355,6 +357,8 @@ public class TextInputDialogWithKeybordShortcut extends Dialog<String> {
         grid.add(shorcutWarningLabel, 0, 2, 7, 1);
               
         dialogPane.setContent(grid);
+
+        dialogPane.setGraphic(IconManager.createBlueDialogIcon(AnalyticIconProvider.KEYBOARD.buildImage(), 30));
 
         Platform.runLater(() -> textField.requestFocus());
     }

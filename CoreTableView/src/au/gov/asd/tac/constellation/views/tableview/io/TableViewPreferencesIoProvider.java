@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.tableview.api.UserTablePreferences;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -38,6 +37,7 @@ public class TableViewPreferencesIoProvider {
 
     private static final String VERTEX_FILE_PREFIX = "vertex-";
     private static final String TRANSACTION_FILE_PREFIX = "transaction-";
+    private static final String DIALOG_TYPE = "Preference";
 
     /**
      * Private constructor to prevent instantiation.
@@ -78,7 +78,7 @@ public class TableViewPreferencesIoProvider {
         }
 
         JsonIO.saveJsonPreferences(Optional.of(TABLE_VIEW_PREF_DIR), Optional.of(filePrefix),
-                List.of(tablePreferences));
+                List.of(tablePreferences), DIALOG_TYPE);
     }
 
     /**
@@ -98,9 +98,7 @@ public class TableViewPreferencesIoProvider {
                 Optional.of(TABLE_VIEW_PREF_DIR),
                 Optional.of(filePrefix),
                 new TypeReference<List<UserTablePreferences>>() {
-        }
-        );
-
+        }, DIALOG_TYPE);
         return root == null ? new UserTablePreferences() : root.get(0);
     }
 }
