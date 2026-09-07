@@ -47,15 +47,17 @@ public class ViewOptionsPanelNGTest {
 
             // Assert that a mock of the DefaultTableModel was constructed.
             final List<DefaultTableModel> constructedDTM = mockDTM.constructed();
-            assertEquals(constructedDTM.size(), 3); // Why 3 and not 1?
+            assertEquals(constructedDTM.size(), 3); // 3 constructed when mockDTM is created, when instance is created and when instance.createTableModel() is called.
+
+            final DefaultTableModel lastDTM = constructedDTM.getLast();
 
             // Verify that the DefaultTableModel was correctly constructed.
-            assertEquals(constructedDTM.get(2).getColumnClass(0), String.class);
-            assertEquals(constructedDTM.get(2).getColumnClass(1), Boolean.class);
+            assertEquals(lastDTM.getColumnClass(0), String.class);
+            assertEquals(lastDTM.getColumnClass(1), Boolean.class);
 
             for (int i = 1; i < 28; i++) {
-                assertFalse(constructedDTM.get(2).isCellEditable(i, 0));
-                assertTrue(constructedDTM.get(2).isCellEditable(i, 1));
+                assertFalse(lastDTM.isCellEditable(i, 0));
+                assertTrue(lastDTM.isCellEditable(i, 1));
             }
         }
     }
@@ -74,10 +76,10 @@ public class ViewOptionsPanelNGTest {
 
             // Assert that a mock of the DefaultTableModel was constructed.
             final List<DefaultTableModel> constructedDTM = mockDTM.constructed();
-            assertEquals(constructedDTM.size(), 2); // Why 2 and not 1?
+            assertEquals(constructedDTM.size(), 2); // 2 constructed when mockDTM is created and when instance is created.
 
             // Verify that this method was run on the constructed mock.
-            verify(constructedDTM.get(1), times(1)).fireTableDataChanged();
+            verify(constructedDTM.getLast(), times(1)).fireTableDataChanged();
         }
     }
 }

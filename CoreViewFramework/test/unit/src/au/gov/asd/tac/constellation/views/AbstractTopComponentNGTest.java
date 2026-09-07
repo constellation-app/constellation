@@ -96,23 +96,16 @@ public class AbstractTopComponentNGTest {
         when(windowMock.getHeight()).thenReturn(1080);
 
         final Dimension size = new Dimension(600, 350);
-        final int locationY = windowMock.getY() + windowMock.getHeight() - size.height;
 
         // Test for right side opening floating top components.
         final Point rightActual = instance.createFloatingLocation(windowMock, "commonpalette", size);
-        final Point rightExpected = new Point(
-                windowMock.getX() + windowMock.getWidth() - size.width,
-                locationY
-        );
+        final Point rightExpected = new Point(1320, 730);
 
         assertEquals(rightActual, rightExpected);
 
         // Test for left side opening floating top components.
         final Point leftActual = instance.createFloatingLocation(windowMock, "", size);
-        final Point leftExpected = new Point(
-                windowMock.getX(),
-                locationY
-        );
+        final Point leftExpected = new Point(0, 730);
 
         assertEquals(leftActual, leftExpected);
     }

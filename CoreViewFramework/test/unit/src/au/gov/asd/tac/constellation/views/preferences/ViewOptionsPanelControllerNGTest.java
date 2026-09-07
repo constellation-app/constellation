@@ -75,11 +75,11 @@ public class ViewOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of applyChanges method, of class ViewOptionsPanelController.
+     * Test of applyChanges method, of class ViewOptionsPanelController, when isChanged() returns true.
      */
     @Test
-    public void testApplyChanges() {
-        System.out.println("applyChanges");
+    public void testApplyChangesWhenIsChangedReturnsTrue() {
+        System.out.println("applyChangesWhenIsChangedReturnsTrue");
 
         // When isChanged() returns true.
         try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
@@ -108,6 +108,14 @@ public class ViewOptionsPanelControllerNGTest {
             // Verify that this method was run due to isChanged() returning true.
             verify(constructedPCS.get(0), times(1)).firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
         }
+    }
+
+    /**
+     * Test of applyChanges method, of class ViewOptionsPanelController, when isChanged() returns false.
+     */
+    @Test
+    public void testApplyChangesWhenIsChangedReturnsFalse() {
+        System.out.println("applyChangesWhenIsChangedReturnsFalse");
 
         // When isChanged() returns false.
         try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
@@ -139,11 +147,11 @@ public class ViewOptionsPanelControllerNGTest {
     }
 
     /**
-     * Test of isChanged method, of class ViewOptionsPanelController.
+     * Test of isChanged method, of class ViewOptionsPanelController, when isChanged() is true.
      */
     @Test
-    public void testIsChanged() {
-        System.out.println("isChanged");
+    public void testIsChangedWhenTrue() {
+        System.out.println("isChangedWhenTrue");
 
         // When the options from the NbPreferences and UI differ.
         try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
@@ -164,6 +172,15 @@ public class ViewOptionsPanelControllerNGTest {
             verify(constructed.get(0), times(1)).getOptionsFromPrefs();
             verify(constructed.get(0), times(1)).getOptionsFromUI();
         }
+
+    }
+
+    /**
+     * Test of isChanged method, of class ViewOptionsPanelController, when isChanged() is false.
+     */
+    @Test
+    public void testIsChangedWhenFalse() {
+        System.out.println("isChangedWhenFalse");
 
         // When the options from the NbPreferences and UI match.
         try (final MockedConstruction<ViewOptionsPanel> mockVOP = mockConstruction(ViewOptionsPanel.class, (mockInstance, context) -> {
@@ -206,11 +223,8 @@ public class ViewOptionsPanelControllerNGTest {
         System.out.println("getHelpCtx");
         final ViewOptionsPanelController instance = new ViewOptionsPanelController();
 
-        final Object result1 = instance.getHelpCtx();
-        assertEquals(result1.getClass(), HelpCtx.class);
-
-        final HelpCtx result2 = instance.getHelpCtx();
-        assertEquals(result2.getHelpID(), "au.gov.asd.tac.constellation.views.preferences");
+        final HelpCtx result = instance.getHelpCtx();
+        assertEquals(result.getHelpID(), "au.gov.asd.tac.constellation.views.preferences");
     }
 
     /**
