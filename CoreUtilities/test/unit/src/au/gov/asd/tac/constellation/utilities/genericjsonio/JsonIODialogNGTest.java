@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -311,16 +310,16 @@ public class JsonIODialogNGTest {
 
     @Test
     public void testPositionAndStyleDialog() throws Exception {
-            double expectedX = SystemUtilities.getMainframeXPos() + SystemUtilities.getMainframeWidth() / 2.0 - 100;
-            double expectedY = SystemUtilities.getMainframeYPos() + SystemUtilities.getMainframeHeight() / 2 - 250;
+        final double expectedX = SystemUtilities.getMainframeXPos() + SystemUtilities.getMainframeWidth() / 2.0 - 100;
+        final double expectedY = SystemUtilities.getMainframeYPos() + SystemUtilities.getMainframeHeight() / 2 - 250;
 
-            FxToolkit.setupFixture(() -> {
-                Dialog<?> dialog = new Alert(Alert.AlertType.INFORMATION);
-                JsonIODialog.positionAndStyleDialog(dialog);
+        FxToolkit.setupFixture(() -> {
+            Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+            JsonIODialog.positionAndStyleDialog(dialog);
 
-                assertEquals(dialog.getX(), expectedX);
-                assertEquals(dialog.getY(), expectedY);
-            });
+            assertEquals(dialog.getX(), expectedX);
+            assertEquals(dialog.getY(), expectedY);
+        });
     }
 
     /**

@@ -492,7 +492,7 @@ public class JsonIONGTest {
 
                 JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogType1);
 
-                Alert alert = alertConstruction.constructed().get(0);
+                final Alert alert = alertConstruction.constructed().get(0);
 
                 Mockito.mockingDetails(alert)
                         .getInvocations()

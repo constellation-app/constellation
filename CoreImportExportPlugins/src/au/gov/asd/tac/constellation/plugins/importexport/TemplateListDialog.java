@@ -137,7 +137,7 @@ public class TemplateListDialog {
      */
     private static void setIcon(final Dialog td, final boolean isLoading) {
         td.setGraphic(IconManager.createBlueDialogIcon(isLoading ? AnalyticIconProvider.MOUSE.buildImage() : AnalyticIconProvider.KEYBOARD.buildImage(), 30));
-        Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
+        final Stage stage = (Stage) td.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
     }
 }
