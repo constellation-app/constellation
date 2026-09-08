@@ -24,6 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -40,6 +49,8 @@ public class IconManager {
     private static List<? extends ConstellationIconProvider> iconProviders = null;
     private static CustomIconProvider customProvider = null;
     private static Map<String, ConstellationIcon> cache = null;
+    private static final String GRADIENT_START_LIGHT_BLUE = "#69B6FF";
+    private static final String GRADIENT_END_DARK_BLUE = "#0A64C9";
 
     /**
      * Find all {@link ConstellationIconProvider} instances using
@@ -199,5 +210,39 @@ public class IconManager {
         final ConstellationIcon missingIcon = new ConstellationIcon.Builder(name, DefaultIconProvider.UNKNOWN.getIconData()).build();
         cache.put(name, missingIcon);
         return missingIcon;
+    }
+
+    /**
+     * Creates a dialog icon consisting of the specified image displayed on a
+     * blue circular background.
+     *
+     * @param image the image to display in the icon
+     * @param size the width and height of the icon in pixels
+     * @return a StackPane containing the styled dialog icon
+     */
+    public static StackPane createBlueDialogIcon(final Image image, final double size) {
+        final ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(size);
+        imageView.setFitHeight(size);
+
+        imageView.setPreserveRatio(true);
+        imageView.setTranslateY(-1);
+
+        final Circle background = new Circle(20);
+        background.setFill(
+                new RadialGradient(
+                        0, 0,
+                        0.35, 0.35,
+                        0.8,
+                        true,
+                        CycleMethod.NO_CYCLE,
+                        new Stop(0.0, Color.web(GRADIENT_START_LIGHT_BLUE)),
+                        new Stop(1.0, Color.web(GRADIENT_END_DARK_BLUE))
+                )
+        );
+        background.setStroke(Color.WHITE);
+        background.setStrokeWidth(3);
+        background.setEffect(new DropShadow(4, Color.rgb(0, 0, 0, 0.25)));
+        return new StackPane(background, imageView);
     }
 }

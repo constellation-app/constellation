@@ -45,6 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DataAccessParametersIoProvider {
 
     private static final String DATA_ACCESS_DIR = "DataAccessView";
+    private static final String DIALOG_TYPE = "Template";
 
     /**
      * Private constructor to prevent external initialization.
@@ -76,7 +77,7 @@ public class DataAccessParametersIoProvider {
         }
 
         // Can now save the preferences even if no query name parameter is present
-        JsonIO.saveJsonPreferencesWithKeyboardShortcut(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses, parentWindow);
+        JsonIO.saveJsonPreferencesWithKeyboardShortcut(Optional.of(DATA_ACCESS_DIR), dataAccessUserPreferenceses, parentWindow, DIALOG_TYPE);
     }
 
     /**
@@ -91,7 +92,7 @@ public class DataAccessParametersIoProvider {
                 .loadJsonPreferencesWithFilePrefix(
                         Optional.of(DATA_ACCESS_DIR), Optional.of("[" + keyboardShortcut + "]"),
                         new TypeReference<List<DataAccessUserPreferences>>() {
-                }
+                }, DIALOG_TYPE
                 );
 
         if (loadedParameters != null) {
@@ -136,7 +137,7 @@ public class DataAccessParametersIoProvider {
                 .loadJsonPreferences(
                         Optional.of(DATA_ACCESS_DIR),
                         new TypeReference<List<DataAccessUserPreferences>>() {
-                }
+                }, DIALOG_TYPE
                 );
 
         if (loadedParameters != null) {

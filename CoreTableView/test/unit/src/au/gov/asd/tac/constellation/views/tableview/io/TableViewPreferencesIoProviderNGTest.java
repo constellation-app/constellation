@@ -34,6 +34,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -96,10 +97,9 @@ public class TableViewPreferencesIoProviderNGTest {
                         // nothing to add here
                     });
             
-            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
                     .thenReturn(tablePrefs);
         }
-
 
         final UserTablePreferences tablePreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
 
@@ -114,13 +114,14 @@ public class TableViewPreferencesIoProviderNGTest {
     @Test
     public void getPreferencesMultiplePrefsPicksLast() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
+
         try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/vertex-preferences.json").getPath())) {
             final List<UserTablePreferences> tablePrefs = objectMapper.readValue(stream,
                     new TypeReference<List<UserTablePreferences>>() {
                         // nothing to add here
                     });
             
-            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
                     .thenReturn(tablePrefs);
         }
 
@@ -143,7 +144,7 @@ public class TableViewPreferencesIoProviderNGTest {
                         // nothing to add here
                     });
 
-            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("transaction-")), any(TypeReference.class)))
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("transaction-")), any(TypeReference.class), anyString()))
                     .thenReturn(tablePrefs);
         }
 
@@ -159,7 +160,7 @@ public class TableViewPreferencesIoProviderNGTest {
 
     @Test
     public void getPreferencesNullPrefs() throws IOException {
-        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class)))
+        jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("TableViewPreferences")), eq(Optional.of("vertex-")), any(TypeReference.class), anyString()))
                 .thenReturn(null);
 
         final UserTablePreferences tablepreferences = TableViewPreferencesIoProvider.getPreferences(GraphElementType.VERTEX);
@@ -199,6 +200,7 @@ public class TableViewPreferencesIoProviderNGTest {
         TableViewPreferencesIoProvider.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
 
         final ObjectMapper objectMapper = new ObjectMapper();
+
         try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())) {
             final List<UserTablePreferences> expectedTablePrefs = objectMapper.readValue(stream,
                     new TypeReference<List<UserTablePreferences>>() {
@@ -208,7 +210,8 @@ public class TableViewPreferencesIoProviderNGTest {
             jsonIOStaticMock.verify(() -> JsonIO.saveJsonPreferences(
                     eq(Optional.of("TableViewPreferences")),
                     eq(Optional.of("transaction-")),
-                    eq(expectedTablePrefs)
+                    eq(expectedTablePrefs),
+                    eq("Preference")
             ));
         }
     }
