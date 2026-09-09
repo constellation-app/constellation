@@ -38,8 +38,23 @@ public class NewTreeArranger implements Arranger {
     private int yAttr;
     private int zAttr;
 
-    public NewTreeArranger() {
+    final private float nodeDistance;
+    final SubTreeMode separateSubTrees;
 
+    enum SubTreeMode {
+        NONE,
+        DIM,
+        HIDE
+    }
+
+    public NewTreeArranger() {
+        nodeDistance = 10f;
+        separateSubTrees = SubTreeMode.NONE;
+    }
+
+    public NewTreeArranger(final float nodeDistance, final SubTreeMode separateSubTrees) {
+        this.nodeDistance = nodeDistance;
+        this.separateSubTrees = separateSubTrees;
     }
 
     @Override
@@ -74,7 +89,7 @@ public class NewTreeArranger implements Arranger {
 
         orderChildren(rootVxId, vxsToGo, orderedChildren, onlyChildren);
 
-        calculateLayout(rootVxId, 10, orderedChildren);
+        calculateLayout(rootVxId, nodeDistance, orderedChildren);
     }
 
     private int findRootNodeId(final BitSet verticesToArrange, final int vxCount) {
@@ -182,7 +197,7 @@ public class NewTreeArranger implements Arranger {
      * @param root The center node of the tree hierarchy.
      * @param layerDistance The radial distance (radius step) between parent and child layers.
      */
-    public void calculateLayout(final int root, final double layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
+    private void calculateLayout(final int root, final float layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
         if (root == Graph.NOT_FOUND) {
             return;
         }
@@ -196,7 +211,7 @@ public class NewTreeArranger implements Arranger {
         calculateNodePositions(root, 1, 0, 2 * Math.PI, layerDistance, orderedChildren);
     }
 
-    private void calculateNodePositions(final int parent, final int depth, final double startAngle, final double endAngle, final double layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
+    private void calculateNodePositions(final int parent, final int depth, final double startAngle, final double endAngle, final float layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
         final List<VxInfo> children = orderedChildren.get(parent);
         if (children == null || children.isEmpty()) {
             return;

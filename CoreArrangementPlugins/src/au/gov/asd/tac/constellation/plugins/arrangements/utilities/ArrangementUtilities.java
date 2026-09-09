@@ -284,6 +284,7 @@ public final class ArrangementUtilities {
         final int doubletsComponentID = -2;
         components.put(singletonsComponentID, new IntHashSet());
         components.put(doubletsComponentID, new IntHashSet());
+        
         final BitSet potentials = vertexBits(wg);
         for (int vxID = potentials.nextSetBit(0); vxID >= 0; vxID = potentials.nextSetBit(vxID + 1)) {
             final MutableIntSet component = new IntHashSet();
@@ -295,6 +296,7 @@ public final class ArrangementUtilities {
                 neighbours.push(vxID);
                 while (!neighbours.isEmpty()) {
                     final int nxID = neighbours.pop();
+                    //System.out.println("getComponents vxID: " + vxID + " nxID: " + nxID + " neighbour count: " + wg.getVertexNeighbourCount(nxID));
                     for (int i = 0; i < wg.getVertexNeighbourCount(nxID); i++) {
                         final int nextNxID = wg.getVertexNeighbour(nxID, i);
                         if (potentials.get(nextNxID)) {

@@ -122,10 +122,8 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         if (interaction != null) {
             interaction.setProgress(0, 0, "Discovering taxonomy...", true);
         }
-        System.out.println("before getTaxonomy(wg) in GraphTaxonomyArranger");
+
         final GraphTaxonomy taxonomy = getTaxonomy(wg);
-        System.out.println("after getTaxonomy(wg) in GraphTaxonomyArranger");
-        
         if (taxonomy.size() == 1) {
             final int k = taxonomy.getTaxa().keysView().intIterator().next();
             inner.arrange(subgraphFactory.constructSubgraph(wg, taxonomy.getTaxa().get(k)));
@@ -171,6 +169,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
                         interaction.setProgress(step, steps, msg, true);
                     }
                     inner.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
+                    System.out.println("keyValue.getTwo(): " + keyValue.getTwo());
                     //inner.arrange(wg); // No overlaps with this, so TODO: figure out what this taxa thing is and why we're choosing to seperate the graph
                 }
                 step++;

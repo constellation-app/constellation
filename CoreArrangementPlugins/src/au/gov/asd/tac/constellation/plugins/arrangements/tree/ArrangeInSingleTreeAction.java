@@ -104,7 +104,8 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
                 });
             }
 
-            final CircTreeArranger arranger = new CircTreeArranger(CircTreeChoiceParameters.getDefaultParameters());
+            //final CircTreeArranger arranger = new CircTreeArranger(CircTreeChoiceParameters.getDefaultParameters());
+            final NewTreeArranger arranger = new NewTreeArranger();
             arranger.arrange(graph);
         }
     }
