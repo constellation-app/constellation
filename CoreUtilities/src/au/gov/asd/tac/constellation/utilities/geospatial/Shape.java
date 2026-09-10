@@ -651,7 +651,7 @@ public class Shape {
                                             && attributeValue != null
                                             && attributesOfValidType.get(entry.getKey()) != null
                                             && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
-                                        writableFeature.setAttribute(compatibleAttributeName, attributeValue);
+                                        writableFeature.setAttribute(compatibleAttributeName.strip(), attributeValue);
                                     } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());
                                     }
