@@ -111,12 +111,13 @@ public class NifiClient extends RestClient {
         }
 
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try {
-            final InputStream is = new FileInputStream(file);
+        try (final InputStream is = new FileInputStream(file)) {
             FlowFileV3Utilities.packageFlowFile(is, os, flowfileAttributes, file.length());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Error writing flow file", ex);
             return null;
+        } finally {
+            os.close();
         }
 
         // To avoid using expensive identity mime type at nifi, we specify ffv3

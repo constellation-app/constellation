@@ -78,12 +78,12 @@ public class QuadTree extends AbstractTree {
         int index = -1;
 
         // Object can completely fit within the top/bottom halves.
-        final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box.midY;
-        final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box.midY;
+        final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box.getMidY();
+        final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box.getMidY();
 
         // Object can completely fit witin the left/right halves.
-        final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box.midX;
-        final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box.midX;
+        final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box.getMidX();
+        final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box.getMidX();
 
         // Object can completely fit within the left half.
         if (leftHalf) {

@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -61,9 +62,9 @@ public abstract class RestClient {
      * @throws IOException
      */
     private static byte[] getBody(final HttpsURLConnection conn, final int code) throws IOException {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
         final byte[] bytes = new byte[256 * 1024];
-        try (final InputStream in = code / 100 == 2 ? HttpsUtilities.getInputStream(conn) : HttpsUtilities.getErrorStream(conn)) {
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                final InputStream in = code / 100 == 2 ? HttpsUtilities.getInputStream(conn) : HttpsUtilities.getErrorStream(conn)) {
             if (in != null) {
                 while (true) {
                     final int len = in.read(bytes);
@@ -74,8 +75,9 @@ public abstract class RestClient {
                     os.write(bytes, 0, len);
                 }
             }
+            
+            return os.toByteArray();
         }
-        return os.toByteArray();
     }
 
     /**
@@ -230,7 +232,9 @@ public abstract class RestClient {
         try {
             connection = makePostConnection(url, params);
 
-            try (final BufferedWriter request = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.name()))) {
+            try (final OutputStream stream = connection.getOutputStream();
+                    final OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8.name());
+                    final BufferedWriter request = new BufferedWriter(writer)) {
                 request.write(generateJsonFromFlatMap(params));
                 request.flush();
             }
@@ -272,7 +276,9 @@ public abstract class RestClient {
         try {
             connection = makePostConnection(url, params);
 
-            try (final BufferedWriter request = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.name()))) {
+            try (final OutputStream stream = connection.getOutputStream();
+                    final OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8.name());
+                    final BufferedWriter request = new BufferedWriter(writer)) {
                 request.write(json);
                 request.flush();
             }
@@ -314,7 +320,8 @@ public abstract class RestClient {
         HttpsURLConnection connection = null;
         try {
             connection = makePostConnection(url, params);
-            try (final DataOutputStream request = new DataOutputStream(connection.getOutputStream())) {
+            try (final OutputStream stream = connection.getOutputStream();
+                    final DataOutputStream request = new DataOutputStream(stream)) {
                 request.write(bytes);
                 request.flush();
             }
@@ -357,23 +364,24 @@ public abstract class RestClient {
      * @throws IOException
      */
     private String generateJsonFromFlatMap(final List<Tuple<String, String>> params) throws IOException {
-        final ByteArrayOutputStream json = new ByteArrayOutputStream();
-        final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();
-        try (final JsonGenerator jg = jsonFactory.createGenerator(json)) {
-            jg.writeStartObject();
+        try (final ByteArrayOutputStream json = new ByteArrayOutputStream()) {
+            final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();
+            try (final JsonGenerator jg = jsonFactory.createGenerator(json)) {
+                jg.writeStartObject();
 
-            for (final Tuple<String, String> param : params) {
-                // Ensure the parameter has a non empty key.
-                final String key = param.getFirst();
-                if (StringUtils.isNotBlank(key)) {
-                    jg.writeStringField(key, param.getSecond());
+                for (final Tuple<String, String> param : params) {
+                    // Ensure the parameter has a non empty key.
+                    final String key = param.getFirst();
+                    if (StringUtils.isNotBlank(key)) {
+                        jg.writeStringField(key, param.getSecond());
+                    }
                 }
+                jg.writeEndObject();
+                jg.flush();
             }
-            jg.writeEndObject();
-            jg.flush();
-        }
 
-        return json.toString(StandardCharsets.UTF_8.name());
+            return json.toString(StandardCharsets.UTF_8.name());
+        }
     }
 
     /**

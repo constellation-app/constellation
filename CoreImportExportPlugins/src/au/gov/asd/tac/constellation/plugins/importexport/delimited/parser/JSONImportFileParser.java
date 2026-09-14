@@ -374,10 +374,9 @@ public class JSONImportFileParser extends ImportFileParser {
      * resulting table.
      */
     private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
-        try {
-            final ArrayList<String[]> results = new ArrayList<>();
-            ObjectMapper mapper = new ObjectMapper();
-            InputStream in = input.getInputStream();
+        try (final InputStream in = input.getInputStream()) {
+            final List<String[]> results = new ArrayList<>();
+            final ObjectMapper mapper = new ObjectMapper();
 
             // Get root node and try to find a valid candidate list. If no list
             // is found there will be no data to import.

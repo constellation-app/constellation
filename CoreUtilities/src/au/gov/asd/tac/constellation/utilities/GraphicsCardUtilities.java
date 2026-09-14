@@ -103,7 +103,8 @@ public class GraphicsCardUtilities {
                     LOGGER.log(Level.INFO, "Took {0} seconds to retrieve the graphics card capabilities", (endTime - startTime) / 1000);
 
                     final StringBuilder builder = new StringBuilder();
-                    try (final BufferedReader in = new BufferedReader(new FileReader(file))) {
+                    try (final FileReader fileReader = new FileReader(file);
+                            final BufferedReader in = new BufferedReader(fileReader)) {
                         String line = in.readLine();
                         while (line != null) {
                             builder.append(line);

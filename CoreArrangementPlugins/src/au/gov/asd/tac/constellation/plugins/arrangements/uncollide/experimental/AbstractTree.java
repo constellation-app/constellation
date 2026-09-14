@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import org.eclipse.collections.api.iterator.IntIterator;
@@ -56,9 +55,9 @@ public abstract class AbstractTree {
         this.box = BoxFactory.create(graph, d);
 
         this.wg = graph;
-        this.xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        this.yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        this.rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        this.xId = VisualConcept.VertexAttribute.X.get(wg);
+        this.yId = VisualConcept.VertexAttribute.Y.get(wg);
+        this.rId = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
     }
 
     /**
@@ -135,7 +134,7 @@ public abstract class AbstractTree {
     }
 
     /**
-     * Insert all verticies in the graph into the tree.
+     * Insert all vertices in the graph into the tree.
      */
     protected final void insertAll() {
         for (int position = 0; position < wg.getVertexCount(); position++) {
@@ -143,10 +142,10 @@ public abstract class AbstractTree {
         }
     }
 
-    /*
+    /**
      * Return all objects that could collide with the given object.
      */
-    protected final MutableIntList getPossibleColliders(final MutableIntList colliders, final int vxId) {
+    private MutableIntList getPossibleColliders(final MutableIntList colliders, final int vxId) {
         // Recursively find all child colliders...
         final int index = getIndex(vxId);
         if (index != -1 && nodes != null) {

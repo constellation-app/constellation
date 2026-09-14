@@ -83,9 +83,10 @@ public class LabelDropper implements GraphDropper {
             try {
                 final String data;
                 if (transferable.isDataFlavorSupported(ATTRIBUTE_LABEL_FLAVOR)) {
-                    final InputStream in = new ByteArrayInputStream(((ByteBuffer) transferable.getTransferData(ATTRIBUTE_LABEL_FLAVOR)).array());
-                    final ObjectInputStream oin = new ObjectInputStream(in);
-                    data = (String) oin.readObject();
+                    try (final InputStream in = new ByteArrayInputStream(((ByteBuffer) transferable.getTransferData(ATTRIBUTE_LABEL_FLAVOR)).array());
+                            final ObjectInputStream oin = new ObjectInputStream(in)) {
+                        data = (String) oin.readObject();
+                    }
                 } else {
                     final String t = (String) transferable.getTransferData(DataFlavor.stringFlavor);
                     // Do we have the correct indicator?

@@ -153,7 +153,8 @@ public class ScriptingViewPane extends JPanel {
             if (GET_STARTED_FILE == null) {
                 throw new FileNotFoundException("The file could not be located.");
             }
-            try (final BufferedReader reader = new BufferedReader(new FileReader(new File(GET_STARTED_FILE.getPath())))) {
+            try (final FileReader fileReader = new FileReader(new File(GET_STARTED_FILE.getPath()));
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 final StringBuilder getStartedText = new StringBuilder();
                 reader.lines().forEach(line -> getStartedText.append(line).append(SeparatorConstants.NEWLINE));
                 scriptEditor.setText(getStartedText.toString());
@@ -440,8 +441,9 @@ public class ScriptingViewPane extends JPanel {
         @Override
         protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             try {
-                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
+                try (final FileInputStream fileStream = new FileInputStream(fileChooser.getSelectedFile());
+                        final InputStreamReader inputReader = new InputStreamReader(fileStream, StandardCharsets.UTF_8.name());
+                        final BufferedReader reader = new BufferedReader(inputReader)) {
                     final StringBuilder b = new StringBuilder();
                     while (true) {
                         final String s = reader.readLine();

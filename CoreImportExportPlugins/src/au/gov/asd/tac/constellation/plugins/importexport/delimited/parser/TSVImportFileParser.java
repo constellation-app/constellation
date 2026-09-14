@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -47,9 +46,9 @@ public class TSVImportFileParser extends ImportFileParser {
     @Override
     public List<String[]> parse(final InputSource input, final PluginParameters parameters) throws IOException {
         final List<String[]> result = new ArrayList<>();
-        try ( InputStream in = input.getInputStream()) {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()));
-
+        try (final InputStream in = input.getInputStream();
+                final InputStreamReader inputReader = new InputStreamReader(in, StandardCharsets.UTF_8.name());
+                final BufferedReader reader = new BufferedReader(inputReader)) {
             String line = reader.readLine();
             while (line != null) {
                 result.add(line.split(SeparatorConstants.TAB, -1));
@@ -63,12 +62,12 @@ public class TSVImportFileParser extends ImportFileParser {
     @Override
     public List<String[]> preview(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
         final List<String[]> result = new ArrayList<>();
-        try ( InputStream in = input.getInputStream()) {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()));
-
+        try (final InputStream in = input.getInputStream();
+                final InputStreamReader inputReader = new InputStreamReader(in, StandardCharsets.UTF_8.name());
+                final BufferedReader reader = new BufferedReader(inputReader)) {
             int currentRow = 0;
             String line = reader.readLine();
-            while ((line != null) && (currentRow < limit)) {
+            while (line != null && currentRow < limit) {
                 result.add(line.split(SeparatorConstants.TAB, -1));
                 line = reader.readLine();
                 currentRow++;

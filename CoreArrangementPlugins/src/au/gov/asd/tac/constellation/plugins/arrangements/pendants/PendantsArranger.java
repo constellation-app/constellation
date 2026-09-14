@@ -65,10 +65,10 @@ public class PendantsArranger implements Arranger {
             final MutableIntSet vertices = e.getValue();
 
             switch (neighbours.size()) {
-                case 0:
-                    break;
-
-                case 1:
+                case 0 -> {
+                    // do nothing
+                }
+                case 1 -> {
                     // If this is a doublet A->B, and we just do the layout, then first we'll layout B with A at the centre,
                     // then A with B at the centre, and the doublet will creep across the landscape on successive layouts.
                     // Therefore we do something so doublet layout only happens once.
@@ -82,11 +82,10 @@ public class PendantsArranger implements Arranger {
                     if (doLayout) {
                         layoutPendants(wg, vertices, neighbours);
                     }
-                    break;
-
-                default:
-                    break;
-
+                }
+                default -> {
+                    // do nothing
+                }
             }
         }
     }

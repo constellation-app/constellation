@@ -44,10 +44,6 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        run(graph);
-    }
-
-    private void run(final GraphWriteMethods graph) {
         xAttribute = VisualConcept.VertexAttribute.X.get(graph);
         yAttribute = VisualConcept.VertexAttribute.Y.get(graph);
         zAttribute = VisualConcept.VertexAttribute.Z.get(graph);
@@ -135,7 +131,6 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
     }
 
     private float layout(final GraphWriteMethods graph, final int vertex, final int[][] children, final float[] radii) {
-
         graph.setFloatValue(xAttribute, vertex, 0);
         graph.setFloatValue(yAttribute, vertex, 0);
         graph.setFloatValue(zAttribute, vertex, 0);

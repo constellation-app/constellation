@@ -61,36 +61,38 @@ public class TableViewStateIoProviderNGTest {
     @Test
     public void readObject() throws IOException {
         final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode jsonNode = objectMapper.readTree(new FileInputStream(getClass().getResource("resources/tableViewStateRead.json").getPath()));
+        try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/tableViewStateRead.json").getPath())) {
+            final JsonNode jsonNode = objectMapper.readTree(stream);
+            
+            final GraphWriteMethods graph = mock(GraphWriteMethods.class);
 
-        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
+            when(graph.getAttribute(GraphElementType.TRANSACTION, "My Transaction")).thenReturn(1);
+            when(graph.getAttribute(GraphElementType.VERTEX, "My Vertex")).thenReturn(2);
 
-        when(graph.getAttribute(GraphElementType.TRANSACTION, "My Transaction")).thenReturn(1);
-        when(graph.getAttribute(GraphElementType.VERTEX, "My Vertex")).thenReturn(2);
+            tableViewStateIoProvider.readObject(ATTRIBUTE_ID, ELEMENT_ID, jsonNode, graph, null, null, null, null);
 
-        tableViewStateIoProvider.readObject(ATTRIBUTE_ID, ELEMENT_ID, jsonNode, graph, null, null, null, null);
+            // Capture the call on the graph setter, pulling out the state
+            final ArgumentCaptor<TableViewState> captor = ArgumentCaptor.forClass(TableViewState.class);
 
-        // Capture the call on the graph setter, pulling out the state
-        final ArgumentCaptor<TableViewState> captor = ArgumentCaptor.forClass(TableViewState.class);
+            verify(graph, times(1)).setObjectValue(eq(ATTRIBUTE_ID), eq(ELEMENT_ID), captor.capture());
 
-        verify(graph, times(1)).setObjectValue(eq(ATTRIBUTE_ID), eq(ELEMENT_ID), captor.capture());
+            final TableViewState actual = captor.getValue();
+            
+            assertTrue(actual.isSelectedOnly());
+            assertEquals(actual.getElementType(), GraphElementType.VERTEX);
 
-        final TableViewState actual = captor.getValue();
+            assertEquals(actual.getTransactionColumnAttributes().size(), 1);
 
-        assertTrue(actual.isSelectedOnly());
-        assertEquals(actual.getElementType(), GraphElementType.VERTEX);
+            final Tuple<String, Attribute> transactionColumnAttr = actual.getTransactionColumnAttributes().get(0);
+            assertEquals(transactionColumnAttr.getFirst(), "transactionPrefix");
+            assertEquals(transactionColumnAttr.getSecond(), new GraphAttribute(graph, 1));
 
-        assertEquals(actual.getTransactionColumnAttributes().size(), 1);
+            assertEquals(actual.getVertexColumnAttributes().size(), 1);
 
-        final Tuple<String, Attribute> transactionColumnAttr = actual.getTransactionColumnAttributes().get(0);
-        assertEquals(transactionColumnAttr.getFirst(), "transactionPrefix");
-        assertEquals(transactionColumnAttr.getSecond(), new GraphAttribute(graph, 1));
-
-        assertEquals(actual.getVertexColumnAttributes().size(), 1);
-
-        final Tuple<String, Attribute> vertexColumnAttr = actual.getVertexColumnAttributes().get(0);
-        assertEquals(vertexColumnAttr.getFirst(), "vertexPrefix");
-        assertEquals(vertexColumnAttr.getSecond(), new GraphAttribute(graph, 2));
+            final Tuple<String, Attribute> vertexColumnAttr = actual.getVertexColumnAttributes().get(0);
+            assertEquals(vertexColumnAttr.getFirst(), "vertexPrefix");
+            assertEquals(vertexColumnAttr.getSecond(), new GraphAttribute(graph, 2));
+        }
     }
 
     @Test
@@ -144,26 +146,29 @@ public class TableViewStateIoProviderNGTest {
         when(graph.getObjectValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(state);
 
         final JsonFactory factory = new JsonFactory();
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        JsonGenerator jsonGenerator = factory.createGenerator(output);
+        try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            try (final JsonGenerator jsonGenerator = factory.createGenerator(output)) {
+                // The code is written with the assumption that it is called within a document
+                // that has already started being written. Without starting the object in the test
+                // the code would throw invalid json exceptions.
+                jsonGenerator.writeStartObject();
 
-        // The code is written with the assumption that it is called within a document
-        // that has already started being written. Without starting the object in the test
-        // the code would throw invalid json exceptions.
-        jsonGenerator.writeStartObject();
+                tableViewStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
 
-        tableViewStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
+                jsonGenerator.writeEndObject();
 
-        jsonGenerator.writeEndObject();
+                jsonGenerator.flush();
+            }
 
-        jsonGenerator.flush();
+            final ObjectMapper objectMapper = new ObjectMapper();
+            final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode expected = objectMapper.readTree(new FileInputStream(getClass().getResource("resources/tableViewStateWrite.json").getPath()));
+            try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/tableViewStateWrite.json").getPath())) {
+                final JsonNode expected = objectMapper.readTree(stream);
 
-        final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
-
-        assertEquals(actual, expected);
+                assertEquals(actual, expected);
+            }
+        }
     }
 
     @Test
@@ -177,26 +182,27 @@ public class TableViewStateIoProviderNGTest {
         when(graph.getObjectValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(null);
 
         final JsonFactory factory = new JsonFactory();
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        JsonGenerator jsonGenerator = factory.createGenerator(output);
+        try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            try (final JsonGenerator jsonGenerator = factory.createGenerator(output)) {
+                // The code is written with the assumption that it is called within a document
+                // that has already started being written. Without starting the object in the test
+                // the code would throw invalid json exceptions.
+                jsonGenerator.writeStartObject();
 
-        // The code is written with the assumption that it is called within a document
-        // that has already started being written. Without starting the object in the test
-        // the code would throw invalid json exceptions.
-        jsonGenerator.writeStartObject();
+                tableViewStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
 
-        tableViewStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
+                jsonGenerator.writeEndObject();
 
-        jsonGenerator.writeEndObject();
+                jsonGenerator.flush();
+            }
 
-        jsonGenerator.flush();
+            final ObjectMapper objectMapper = new ObjectMapper();
+            final JsonNode expected = objectMapper.readTree("{\"ATTR NAME\": null}");
 
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final JsonNode expected = objectMapper.readTree("{\"ATTR NAME\": null}");
+            final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 
-        final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
-
-        assertEquals(actual, expected);
+            assertEquals(actual, expected);
+        }
     }
 
     @Test
@@ -209,13 +215,14 @@ public class TableViewStateIoProviderNGTest {
         when(graph.isDefaultValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(true);
 
         final JsonFactory factory = new JsonFactory();
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        final JsonGenerator jsonGenerator = factory.createGenerator(output);
+        try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            try (final JsonGenerator jsonGenerator = factory.createGenerator(output)) {
+                tableViewStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
 
-        tableViewStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
+                jsonGenerator.flush();
+            }
 
-        jsonGenerator.flush();
-
-        assertEquals(new String(output.toByteArray(), StandardCharsets.UTF_8), "");
+            assertEquals(new String(output.toByteArray(), StandardCharsets.UTF_8), "");
+        }
     }
 }

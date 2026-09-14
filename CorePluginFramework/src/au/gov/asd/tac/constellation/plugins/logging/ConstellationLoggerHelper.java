@@ -313,7 +313,8 @@ public class ConstellationLoggerHelper {
         sha256Digest.reset();
 
         final byte[] buffer = new byte[1024];
-        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
+        try (final FileInputStream stream = new FileInputStream(file);
+                final BufferedInputStream in = new BufferedInputStream(stream)) {
             int bytesRead = in.read(buffer);
             while (bytesRead >= 0) {
                 sha256Digest.update(buffer, 0, bytesRead);

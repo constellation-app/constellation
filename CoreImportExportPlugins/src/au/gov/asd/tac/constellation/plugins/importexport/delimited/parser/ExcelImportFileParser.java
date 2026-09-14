@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -54,10 +55,10 @@ public class ExcelImportFileParser extends ImportFileParser {
 
     @Override
     public List<String[]> parse(final InputSource input, final PluginParameters parameters) throws IOException {
-        final ArrayList<String[]> results = new ArrayList<>();
+        final List<String[]> results = new ArrayList<>();
         if (input.getFile().getName().endsWith("xlsx")) {
-
-            try (XSSFWorkbook wb = new XSSFWorkbook(input.getInputStream())) {
+            try (final InputStream inputStream = input.getInputStream(); 
+                    final XSSFWorkbook wb = new XSSFWorkbook(inputStream)) {
                 XSSFSheet sheet = wb.getSheetAt(0);
                 XSSFRow row;
                 XSSFCell cell;
@@ -94,8 +95,8 @@ public class ExcelImportFileParser extends ImportFileParser {
             }
 
         } else if (input.getFile().getName().endsWith("xls")) {
-
-            try (HSSFWorkbook wb = new HSSFWorkbook(input.getInputStream())) {
+            try (final InputStream inputStream = input.getInputStream();
+                    final HSSFWorkbook wb = new HSSFWorkbook(inputStream)) {
                 HSSFSheet sheet = wb.getSheetAt(0);
                 HSSFRow row;
                 HSSFCell cell;
@@ -139,11 +140,11 @@ public class ExcelImportFileParser extends ImportFileParser {
     @Override
     public List<String[]> preview(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
         // Leave the header on, as the importer expects this as the first entry.
-        final ArrayList<String[]> results = new ArrayList<>();
+        final List<String[]> results = new ArrayList<>();
         int count = 0;
         if (input.getFile().getName().endsWith("xlsx")) {
-
-            try (XSSFWorkbook wb = new XSSFWorkbook(input.getInputStream())) {
+            try (final InputStream inputStream = input.getInputStream();
+                    final XSSFWorkbook wb = new XSSFWorkbook(inputStream)) {
                 XSSFSheet sheet = wb.getSheetAt(0);
                 XSSFRow row;
                 XSSFCell cell;
@@ -182,10 +183,9 @@ public class ExcelImportFileParser extends ImportFileParser {
                     }
                 }
             }
-
         } else if (input.getFile().getName().endsWith("xls")) {
-
-            try (HSSFWorkbook wb = new HSSFWorkbook(input.getInputStream())) {
+            try (final InputStream inputStream = input.getInputStream();
+                    final HSSFWorkbook wb = new HSSFWorkbook(inputStream)) {
                 HSSFSheet sheet = wb.getSheetAt(0);
                 HSSFRow row;
                 HSSFCell cell;

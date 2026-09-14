@@ -95,14 +95,18 @@ public class HttpsUtilitiesNGTest {
         when(mockDeflateEncodedConnection.getInputStream()).thenReturn(mockStream);
         when(mockOtherEncodedConnection.getInputStream()).thenReturn(mockStream);
 
-        final InputStream result1 = HttpsUtilities.getInputStream(mockNullEncodedConnection);
-        assertEquals(result1, mockStream);
-        final InputStream result2 = HttpsUtilities.getInputStream(mockGzipEncodedConnection);
-        assertTrue(result2 instanceof GZIPInputStream);
-        final InputStream result3 = HttpsUtilities.getInputStream(mockDeflateEncodedConnection);
-        assertTrue(result3 instanceof InflaterInputStream);
-        final InputStream result4 = HttpsUtilities.getInputStream(mockOtherEncodedConnection);
-        assertEquals(result4, mockStream);
+        try (final InputStream result1 = HttpsUtilities.getInputStream(mockNullEncodedConnection)) {
+            assertEquals(result1, mockStream);
+        }
+        try (final InputStream result2 = HttpsUtilities.getInputStream(mockGzipEncodedConnection)) {
+            assertTrue(result2 instanceof GZIPInputStream);
+        }
+        try (final InputStream result3 = HttpsUtilities.getInputStream(mockDeflateEncodedConnection)) {
+            assertTrue(result3 instanceof InflaterInputStream);
+        }
+        try (final InputStream result4 = HttpsUtilities.getInputStream(mockOtherEncodedConnection)) {
+            assertEquals(result4, mockStream);
+        }
     }
     
     /**
@@ -143,14 +147,18 @@ public class HttpsUtilitiesNGTest {
         when(mockDeflateEncodedConnection.getErrorStream()).thenReturn(mockStream);
         when(mockOtherEncodedConnection.getErrorStream()).thenReturn(mockStream);
 
-        final InputStream result1 = HttpsUtilities.getErrorStream(mockNullEncodedConnection);
-        assertEquals(result1, mockStream);
-        final InputStream result2 = HttpsUtilities.getErrorStream(mockGzipEncodedConnection);
-        assertTrue(result2 instanceof GZIPInputStream);
-        final InputStream result3 = HttpsUtilities.getErrorStream(mockDeflateEncodedConnection);
-        assertTrue(result3 instanceof InflaterInputStream);
-        final InputStream result4 = HttpsUtilities.getErrorStream(mockOtherEncodedConnection);
-        assertEquals(result4, mockStream);
+        try (final InputStream result1 = HttpsUtilities.getErrorStream(mockNullEncodedConnection)) {
+            assertEquals(result1, mockStream);
+        }
+        try (final InputStream result2 = HttpsUtilities.getErrorStream(mockGzipEncodedConnection)) {
+            assertTrue(result2 instanceof GZIPInputStream);
+        }
+        try (final InputStream result3 = HttpsUtilities.getErrorStream(mockDeflateEncodedConnection)) {
+            assertTrue(result3 instanceof InflaterInputStream);
+        }
+        try (final InputStream result4 = HttpsUtilities.getErrorStream(mockOtherEncodedConnection)) {
+            assertEquals(result4, mockStream);
+        }
     }
 
     /**
@@ -178,12 +186,13 @@ public class HttpsUtilitiesNGTest {
         System.out.println("readErrorStreamAndThrowExceptionNullSystem");
         
         final HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-        final InputStream stream = new FileInputStream(HttpsUtilitiesNGTest.class.getResource("resources/test.txt").getPath());
-        when(mockConnection.getErrorStream()).thenReturn(stream);
-        when(mockConnection.getResponseCode()).thenReturn(101);
-        when(mockConnection.getResponseMessage()).thenReturn("Test response message");
-        
-        HttpsUtilities.readErrorStreamAndThrowException(mockConnection, null);
+        try (final InputStream stream = new FileInputStream(HttpsUtilitiesNGTest.class.getResource("resources/test.txt").getPath())) {
+            when(mockConnection.getErrorStream()).thenReturn(stream);
+            when(mockConnection.getResponseCode()).thenReturn(101);
+            when(mockConnection.getResponseMessage()).thenReturn("Test response message");
+
+            HttpsUtilities.readErrorStreamAndThrowException(mockConnection, null);
+        }
     }
     
     /**
@@ -200,11 +209,12 @@ public class HttpsUtilitiesNGTest {
         System.out.println("readErrorStreamAndThrowException");
         
         final HttpURLConnection mockConnection = mock(HttpURLConnection.class);
-        final InputStream stream = new FileInputStream(HttpsUtilitiesNGTest.class.getResource("resources/test.txt").getPath());
-        when(mockConnection.getErrorStream()).thenReturn(stream);
-        when(mockConnection.getResponseCode()).thenReturn(101);
-        when(mockConnection.getResponseMessage()).thenReturn("Test response message");
-        
-        HttpsUtilities.readErrorStreamAndThrowException(mockConnection, "My system");
+        try (final InputStream stream = new FileInputStream(HttpsUtilitiesNGTest.class.getResource("resources/test.txt").getPath())) {
+            when(mockConnection.getErrorStream()).thenReturn(stream);
+            when(mockConnection.getResponseCode()).thenReturn(101);
+            when(mockConnection.getResponseMessage()).thenReturn("Test response message");
+
+            HttpsUtilities.readErrorStreamAndThrowException(mockConnection, "My system");
+        }
     }
 }

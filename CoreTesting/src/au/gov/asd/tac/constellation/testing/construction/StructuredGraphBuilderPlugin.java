@@ -257,6 +257,9 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
         graph.setLongValue(attrTxDatetime, transaction, dt);
         graph.setObjectValue(colorAttr, transaction, randomColorWithAlpha(r));
+        if (graph.getSchema() != null) {
+            graph.getSchema().newTransaction(graph, transaction);
+        }
     }
 
     private static String getRandomIconName(final List<String> iconNames, final SecureRandom r) {

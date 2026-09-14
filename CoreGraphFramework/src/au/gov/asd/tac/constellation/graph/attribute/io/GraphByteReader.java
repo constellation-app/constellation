@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.attribute.io;
 import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -40,17 +41,16 @@ public class GraphByteReader {
     }
 
     public GraphByteReader(final InputStream in) throws IOException {
-        final ZipInputStream zin = new ZipInputStream(in);
-        ZipEntry entry = zin.getNextEntry();
-        while (entry != null) {
-            final ExtendedBuffer out = new ExtendedBuffer(1 << 16);
-            try {
-                GraphByteWriter.copy(zin, out.getOutputStream());
-                contents.put(entry.getName(), out);
-            } finally {
-                out.getOutputStream().close();
+        try (final ZipInputStream zin = new ZipInputStream(in)) {
+            ZipEntry entry = zin.getNextEntry();
+            while (entry != null) {
+                final ExtendedBuffer out = new ExtendedBuffer(1 << 16);
+                try (final OutputStream outputStream = out.getOutputStream()) {
+                    GraphByteWriter.copy(zin, outputStream);
+                    contents.put(entry.getName(), out);
+                }
+                entry = zin.getNextEntry();
             }
-            entry = zin.getNextEntry();
         }
     }
 

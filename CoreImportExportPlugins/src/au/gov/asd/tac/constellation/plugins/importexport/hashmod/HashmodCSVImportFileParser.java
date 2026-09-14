@@ -36,15 +36,14 @@ import org.openide.NotifyDescriptor;
 public class HashmodCSVImportFileParser {
 
     protected CSVParser getCSVParser(final HashmodInputSource input) throws IOException {
-        final InputStream inputStream = input.getInputStream();
-        if (inputStream == null) {
-            return null;
+        try (final InputStream inputStream = input.getInputStream();
+                final InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8.name())) {
+            return CSVFormat.RFC4180.parse(reader);
         }
-        return CSVFormat.RFC4180.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8.name()));
     }
 
     public List<String[]> parse(final HashmodInputSource input) throws IOException {
-        final ArrayList<String[]> results = new ArrayList<>();
+        final List<String[]> results = new ArrayList<>();
 
         try (final CSVParser csvFileParser = getCSVParser(input)) {
             if (csvFileParser == null) {
@@ -68,7 +67,7 @@ public class HashmodCSVImportFileParser {
 
     public List<String[]> preview(final HashmodInputSource input, final int limit) throws IOException {
         // Leave the header on, as the importer expects this as the first entry.
-        final ArrayList<String[]> results = new ArrayList<>();
+        final List<String[]> results = new ArrayList<>();
 
         try (final CSVParser csvFileParser = getCSVParser(input)) {
             int count = 0;

@@ -174,9 +174,9 @@ public class MultiPart {
     }
 
     public static byte[] getBody(final HttpURLConnection conn, final int code) throws IOException {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
         final byte[] buf = new byte[256 * 1024];
-        try (final InputStream in = code / 100 == 2 ? conn.getInputStream() : conn.getErrorStream()) {
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                final InputStream in = code / 100 == 2 ? conn.getInputStream() : conn.getErrorStream()) {
             while (true) {
                 final int len = in.read(buf);
                 if (len == -1) {
@@ -184,8 +184,9 @@ public class MultiPart {
                 }
                 os.write(buf, 0, len);
             }
+            
+            return os.toByteArray();
         }
-        return os.toByteArray();
     }
 
     private static String htmlEncode(final String s) {

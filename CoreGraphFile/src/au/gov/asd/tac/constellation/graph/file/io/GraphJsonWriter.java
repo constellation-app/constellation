@@ -45,14 +45,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Cancellable;
 
 /**
@@ -118,8 +116,9 @@ public final class GraphJsonWriter implements Cancellable {
                     final String reference = entry.getKey();
                     final File fbin = entry.getValue();
 
-                    try (final FileOutputStream binout = new FileOutputStream(new File(parentDir, reference))) {
-                        GraphByteWriter.copy(new FileInputStream(fbin), binout);
+                    try (final FileOutputStream binout = new FileOutputStream(new File(parentDir, reference));
+                            final FileInputStream inputStream = new FileInputStream(fbin)) {
+                        GraphByteWriter.copy(inputStream, binout);
                     }
                 }
             }
@@ -188,7 +187,9 @@ public final class GraphJsonWriter implements Cancellable {
                         final File f = entry.getValue();
                         final ZipEntry ze = new ZipEntry(reference);
                         zout.putNextEntry(ze);
-                        GraphByteWriter.copy(new FileInputStream(f), zout);
+                        try (final FileInputStream inputStream = new FileInputStream(f)) {
+                            GraphByteWriter.copy(inputStream, zout);
+                        }
                         zout.closeEntry();
                     }
                     for (final String iconName : customIconList) {

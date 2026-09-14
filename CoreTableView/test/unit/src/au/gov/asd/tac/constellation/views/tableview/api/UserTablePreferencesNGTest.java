@@ -45,18 +45,19 @@ public class UserTablePreferencesNGTest {
     @Test
     public void serialization() throws IOException {
         final JsonNode serialization = OBJECT_MAPPER.valueToTree(fixture());
-        final JsonNode expected = OBJECT_MAPPER.readTree(
-                new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()));
-        
-        assertThat(expected).usingRecursiveComparison().isEqualTo(serialization);
+        try (final FileInputStream stream = new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath())) {
+            final JsonNode expected = OBJECT_MAPPER.readTree(stream);
+            assertThat(expected).usingRecursiveComparison().isEqualTo(serialization);
+        }
     }
 
     @Test
     public void deserialization() throws IOException {
-        final UserTablePreferences deserialization = OBJECT_MAPPER.readValue(new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath()),
-                UserTablePreferences.class);
+        try (final FileInputStream stream = new FileInputStream(getClass().getResource(JSON_RESOURCE).getPath())) {
+            final UserTablePreferences deserialization = OBJECT_MAPPER.readValue(stream, UserTablePreferences.class);
 
-        assertEquals(fixture(), deserialization);
+            assertEquals(fixture(), deserialization);
+        }
     }
 
     @Test

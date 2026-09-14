@@ -250,7 +250,8 @@ public class DelimitedImportController extends ImportController {
 
     public List<String> getColumnHeaders(final File file) {
         final List<String> headersArray = new ArrayList<>();
-        try (final BufferedReader bufferReader = new BufferedReader(new FileReader(file))) {
+        try (final FileReader fileReader = new FileReader(file);
+                final BufferedReader bufferReader = new BufferedReader(fileReader)) {
             final String headerLine = bufferReader.readLine();
             headersArray.addAll(Arrays.asList(headerLine.split(SeparatorConstants.COMMA)));
 

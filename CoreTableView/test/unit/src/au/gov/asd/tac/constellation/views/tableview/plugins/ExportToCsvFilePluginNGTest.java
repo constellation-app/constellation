@@ -78,9 +78,12 @@ public class ExportToCsvFilePluginNGTest {
             final ExportToCsvFilePlugin plugin = new ExportToCsvFilePlugin(tmpFile, table, pagination, true);
             plugin.execute(null, pluginInteraction, null);
 
-            final String outputtedFile = new String(IOUtils.toByteArray(new FileInputStream(tmpFile)), StandardCharsets.UTF_8);
+            try (final FileInputStream stream = new FileInputStream(tmpFile)) {
+                final String outputtedFile = new String(IOUtils.toByteArray(stream), StandardCharsets.UTF_8);
+                
+                assertEquals(csv, outputtedFile);
+            }
 
-            assertEquals(csv, outputtedFile);
             assertEquals(plugin.getName(), "Table View: Export to Delimited File");
         } finally {
             if (tmpFile != null) {
