@@ -39,7 +39,6 @@ public class NewTreeArranger implements Arranger {
     private int zAttr;
 
     final private float nodeDistance;
-    final SubTreeMode separateSubTrees;
 
     enum SubTreeMode {
         NONE,
@@ -49,12 +48,10 @@ public class NewTreeArranger implements Arranger {
 
     public NewTreeArranger() {
         nodeDistance = 10f;
-        separateSubTrees = SubTreeMode.NONE;
     }
 
-    public NewTreeArranger(final float nodeDistance, final SubTreeMode separateSubTrees) {
+    public NewTreeArranger(final float nodeDistance) {
         this.nodeDistance = nodeDistance;
-        this.separateSubTrees = separateSubTrees;
     }
 
     @Override

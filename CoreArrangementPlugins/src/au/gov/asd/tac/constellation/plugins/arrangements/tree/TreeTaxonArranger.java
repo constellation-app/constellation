@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -34,27 +35,33 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 public class TreeTaxonArranger extends GraphTaxonomyArranger {
 
     private boolean putSingletonTaxaWithSameNeighborsTogether;
+    private final boolean useTaxFromTrees;
+
+    public TreeTaxonArranger(final Arranger inner, final Arranger outer, final boolean newThing) {
+        super(inner, outer, Connections.LINKS, InducedSubgraph.getSubgraphFactory());
+        putSingletonTaxaWithSameNeighborsTogether = true;
+        useTaxFromTrees = newThing;
+    }
 
     public TreeTaxonArranger(final Arranger inner, final Arranger outer) {
         super(inner, outer, Connections.LINKS, InducedSubgraph.getSubgraphFactory());
         putSingletonTaxaWithSameNeighborsTogether = true;
+        useTaxFromTrees = true;
     }
 
     /**
-     * If true, singleton taxa (those that have only one vertex) are joined with
-     * others having the same set of neighbors; these are then arranged as
-     * larger groups.
+     * If true, singleton taxa (those that have only one vertex) are joined with others having the same set of
+     * neighbors; these are then arranged as larger groups.
      *
-     * @param putSingletonTaxaWithSameNeighborsTogether should singletons tax
-     * with the same neighbours be combined. Default value is true.
+     * @param putSingletonTaxaWithSameNeighborsTogether should singletons tax with the same neighbours be combined.
+     * Default value is true.
      *
      */
     public void setPutSingletonTaxaWithSameNeighborsTogether(final boolean putSingletonTaxaWithSameNeighborsTogether) {
         this.putSingletonTaxaWithSameNeighborsTogether = putSingletonTaxaWithSameNeighborsTogether;
     }
 
-    @Override
-    public GraphTaxonomy getTaxonomy(final GraphWriteMethods graph) {
+    public GraphTaxonomy getTreeTaxonomy(final GraphWriteMethods graph) {
         final GraphTaxonomy taxByTrees = TaxFromTrees.getTaxonomy(graph, false);
 
         if (putSingletonTaxaWithSameNeighborsTogether) {
@@ -66,7 +73,7 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
                     singletons.add(vxRoot);
                 }
             });
-            
+
             // remove all of the singletons
             taxa.removeIf((key, value) -> singletons.contains(key));
 
@@ -75,5 +82,10 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
             taxByTrees.setArrangeRectangularly(taxByNeighbours.getTaxa().keySet());
         }
         return taxByTrees;
+    }
+
+    @Override
+    protected GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
+        return useTaxFromTrees ?  getTreeTaxonomy(wg) : ArrangementUtilities.getIslands(wg);
     }
 }

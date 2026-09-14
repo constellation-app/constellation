@@ -23,13 +23,16 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
@@ -40,38 +43,32 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.eclipse.collections.impl.stack.mutable.primitive.IntArrayStack;
 
 /**
- * provides a set of functions pertaining to a graph's components and its
- * vertices
+ * provides a set of functions pertaining to a graph's components and its vertices
  *
  * @author algol
  */
 public final class ArrangementUtilities {
 
     public static final int FUNDAMENTAL_SIZE = 2;
-    
+
     private static final int NO_DISTANCE = -1;
-    
+
     private ArrangementUtilities() {
         throw new IllegalStateException("Utility class");
     }
 
     /**
-     * Find the minimum sum of weighted edges that must be traversed to reach
-     * all other reachable vertices from the given one, moving either only
-     * forward, only backward, or both.
+     * Find the minimum sum of weighted edges that must be traversed to reach all other reachable vertices from the
+     * given one, moving either only forward, only backward, or both.
      *
-     * The edge weights here are special: the weight of a edge is the sum of the
-     * "radii" of the two vertices it joins. Results are appended to
-     * distancesToVertices, which should be cleared first, else the breadth
-     * first search will stop when vertices contained in distancesToVertices are
-     * encountered.
+     * The edge weights here are special: the weight of a edge is the sum of the "radii" of the two vertices it joins.
+     * Results are appended to distancesToVertices, which should be cleared first, else the breadth first search will
+     * stop when vertices contained in distancesToVertices are encountered.
      *
      * @param graph the read lock that will be used for the operation.
      * @param vxId the id of the vertex to start from.
-     * @param goForward can transactions be traveled along in the forward
-     * direction.
-     * @param goBackward can transactions be traveled along in the reverse
-     * direction.
+     * @param goForward can transactions be traveled along in the forward direction.
+     * @param goBackward can transactions be traveled along in the reverse direction.
      * @param minRadius the minimum radius of vertices.
      *
      * @return the minimum distance to each vertex in the graph.
@@ -141,8 +138,7 @@ public final class ArrangementUtilities {
     /**
      * Get the mean of the x,y,z coordinates of the vertices of a graph.
      *
-     * @param rg the graph read lock that will be used to perform this
-     * operation.
+     * @param rg the graph read lock that will be used to perform this operation.
      * @return the mean of the x,y,z coordinates of the vertices of a graph.
      */
     public static float[] getXyzMean(final GraphReadMethods rg) {
@@ -266,25 +262,24 @@ public final class ArrangementUtilities {
     }
 
     /**
-     * Returns a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * Returns a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      * <p>
-     * This procedure is fundamentally linear, but may be slowed by construction
-     * of reporting structures. It is implemented as a breadth-first traversal.
+     * This procedure is fundamentally linear, but may be slowed by construction of reporting structures. It is
+     * implemented as a breadth-first traversal.
      * <p>
      * @param wg The graph to get the components from.
      *
-     * @return a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * @return a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      */
     public static GraphTaxonomy getComponents(final GraphWriteMethods wg) {
+        System.out.println("ArrangementUtilities getComponents");
         final MutableIntObjectMap<MutableIntSet> components = new IntObjectHashMap<>();
         final MutableIntIntMap nodeToComponent = new IntIntHashMap();
         final int singletonsComponentID = -1;
         final int doubletsComponentID = -2;
         components.put(singletonsComponentID, new IntHashSet());
         components.put(doubletsComponentID, new IntHashSet());
-        
+
         final BitSet potentials = vertexBits(wg);
         for (int vxID = potentials.nextSetBit(0); vxID >= 0; vxID = potentials.nextSetBit(vxID + 1)) {
             final MutableIntSet component = new IntHashSet();
@@ -317,24 +312,106 @@ public final class ArrangementUtilities {
                     components.get(doubletsComponentID).addAll(component);
                     component.forEach(vert -> nodeToComponent.put(vert, doubletsComponentID));
                 }
-                default -> components.put(vxID, component);
+                default ->
+                    components.put(vxID, component);
             }
         }
         return new GraphTaxonomy(wg, components, nodeToComponent, singletonsComponentID, doubletsComponentID);
     }
 
+    // TODO: rename island stuff to "weak componenets" because i think theyre the same thing
+    // Also refactor this algorithm to construct the taxonmy as it goes, maybe
+    public static GraphTaxonomy getIslands(final GraphWriteMethods wg) {
+        System.out.println("ArrangementUtilities getIslands");
+        final MutableIntObjectMap<MutableIntSet> islands = new IntObjectHashMap<>();
+        final MutableIntIntMap nodeToIsland = new IntIntHashMap();
+        final int singletonsIslandID = -1;
+        final int doubletsIslandID = -2;
+        islands.put(singletonsIslandID, new IntHashSet());
+        islands.put(doubletsIslandID, new IntHashSet());
+
+        final List<MutableIntSet> islandsList = findAllIslands(wg);
+
+        for (final MutableIntSet island : islandsList) {
+            final MutableIntIterator iterator = island.intIterator();
+            if (!iterator.hasNext()) {
+                continue;
+            }
+
+            final int firstVxID = iterator.next();
+            nodeToIsland.put(firstVxID, firstVxID);
+            while (iterator.hasNext()) {
+                final int vx = iterator.next();
+                nodeToIsland.put(firstVxID, vx);
+
+                switch (island.size()) {
+                    case 1 -> {
+                        islands.get(singletonsIslandID).addAll(island);
+                        nodeToIsland.put(firstVxID, singletonsIslandID);
+                    }
+                    case 2 -> {
+                        islands.get(doubletsIslandID).addAll(island);
+                        island.forEach(vert -> nodeToIsland.put(vert, doubletsIslandID));
+                    }
+                    default ->
+                        islands.put(firstVxID, island);
+                }
+            }
+        }
+
+        return new GraphTaxonomy(wg, islands, nodeToIsland, singletonsIslandID, doubletsIslandID);
+    }
+
+    private static List<MutableIntSet> findAllIslands(final GraphWriteMethods graph) {
+        final List<MutableIntSet> islands = new ArrayList<>();
+        final BitSet unvisitedNodes = new BitSet(graph.getVertexCount()); // Represent node positions
+        unvisitedNodes.set(0, graph.getVertexCount());
+
+        // Iterate through every vertex's neighbour recrusively, remove them from list of visited verts
+        // Once done iterating, if any verts remain unvisited, begin the process anew as they are on a seperate island
+        while (!unvisitedNodes.isEmpty()) {
+            final MutableIntSet island = new IntHashSet();
+            final int nextUnvisitedPos = unvisitedNodes.nextSetBit(0);
+            islands.add(findIsland(graph, nextUnvisitedPos, unvisitedNodes, island));
+        }
+
+        return islands;
+    }
+
+    private static MutableIntSet findIsland(final GraphWriteMethods graph, final int vxPos, final BitSet unvisitedNodes, final MutableIntSet islandSet) {
+        // If visited already
+        if (!unvisitedNodes.get(vxPos)) {
+            return islandSet;
+        }
+
+        // Mark as visitied
+        unvisitedNodes.clear(vxPos);
+
+        islandSet.add(vxPos);
+
+        final int vxID = graph.getVertex(vxPos);
+        final int numNeighbours = graph.getVertexNeighbourCount(vxID);
+
+        // Recursively find all neighbours
+        for (int i = 0; i < numNeighbours; i++) {
+            final int nxID = graph.getVertexNeighbour(vxID, i);
+            final int nxPos = graph.getVertexPosition(nxID);
+            islandSet.addAll(findIsland(graph, nxPos, unvisitedNodes, islandSet));
+        }
+
+        return islandSet;
+    }
+
     /**
-     * Returns a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * Returns a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      * <p>
-     * This procedure is fundamentally linear, but may be slowed by construction
-     * of reporting structures. It is implemented as a breadth-first traversal.
+     * This procedure is fundamentally linear, but may be slowed by construction of reporting structures. It is
+     * implemented as a breadth-first traversal.
      * <p>
      * @param graph The graph to get the components from.
      * @param verticesToArrange a bit set specifying which vertices to arrange.
      *
-     * @return a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * @return a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      */
     @Deprecated(forRemoval = true)
     public static GraphTaxonomy getComponents(final GraphWriteMethods graph, final BitSet verticesToArrange) {
@@ -370,8 +447,7 @@ public final class ArrangementUtilities {
      * @param seedVxId The vertex to start from.
      * @param verticesToArrange a BitSet specifying which vertices to arrange.
      *
-     * @return A Set&lt;Integer%gt; containing all of the vertices in the same
-     * component as rootVxId.
+     * @return A Set&lt;Integer%gt; containing all of the vertices in the same component as rootVxId.
      */
     @Deprecated(forRemoval = true)
     public static Set<Integer> getComponentContainingVertex(final GraphReadMethods graph, final int seedVxId, final BitSet verticesToArrange) {
@@ -399,8 +475,7 @@ public final class ArrangementUtilities {
     /**
      * Get the vertices that are sources, ie those with in-degree zero.
      *
-     * @param graph the graph write lock that will be used to perform this
-     * operation.
+     * @param graph the graph write lock that will be used to perform this operation.
      * @return the vertices that are sources, ie those with in-degree zero.
      */
     public static Deque<Integer> getSources(final GraphWriteMethods graph) {
@@ -421,8 +496,7 @@ public final class ArrangementUtilities {
     /**
      * Set x2,y2,z2 to be the same as x,y,z.
      *
-     * @param wg the graph write lock that will be used to perform this
-     * operation.
+     * @param wg the graph write lock that will be used to perform this operation.
      */
     public static void setXYZ2FromXYZ(final GraphWriteMethods wg) {
         final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
