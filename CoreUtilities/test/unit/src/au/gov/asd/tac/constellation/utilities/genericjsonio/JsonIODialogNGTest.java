@@ -314,7 +314,7 @@ public class JsonIODialogNGTest {
         final double expectedY = SystemUtilities.getMainframeYPos() + SystemUtilities.getMainframeHeight() / 2 - 250;
 
         FxToolkit.setupFixture(() -> {
-            Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+            final Alert dialog = new Alert(Alert.AlertType.INFORMATION);
             JsonIODialog.positionAndStyleDialog(dialog);
 
             assertEquals(dialog.getX(), expectedX);

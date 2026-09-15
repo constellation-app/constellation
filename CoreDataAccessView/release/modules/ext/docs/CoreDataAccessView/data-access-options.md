@@ -14,13 +14,13 @@ Button" />
 
 When a template is saved, you are prompted to name the template. If
 a template of that name has already been saved, you will be asked if
-you want to overwrite it. Preferences are saved by default in the
+you want to overwrite it. Templates are saved by default in the
 directory &lt;HOME_DIRECTORY&gt;/.CONSTELLATION/DataAccessView. (The name of the
 file in which the template is saved is encoded so it doesn't clash
 with file system limitations.) Files in this directory can be copied and
 deleted using your favourite file management utility. 
 
-Preferences are being saved with assigned keyboard shortcuts. 
+Templates are being saved with assigned keyboard shortcuts. 
 Default keyboard shortcuts are 'Alt 1', 'Alt 2', ... , 'Alt 5'. 
 Users can save templates with the keyboard shortcut of their choice. 
 
