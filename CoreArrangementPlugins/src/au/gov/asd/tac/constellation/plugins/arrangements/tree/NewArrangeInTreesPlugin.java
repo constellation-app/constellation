@@ -41,6 +41,10 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.security.SecureRandom;
+import org.eclipse.collections.api.iterator.MutableIntIterator;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -64,11 +68,11 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         }
 
         // PARAMS
-        final boolean splitIntoTrees = true; // Working
+        final boolean splitIntoTrees = true;
         final boolean dimOrHideTrans = true;
         final boolean dimTrans = true;
-        final boolean colorNodesByGroup = false; // working
-        final float scale = 10f; // working
+        final boolean colorNodesByGroup = false;
+        final float scale = 10F;
 
         final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
         radiusSetter.setRadii();
@@ -106,6 +110,10 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
             colourSubGraphs(graph, arranger2.getTreeTaxonomy(graph));
         }
 
+        if (dimOrHideTrans) {
+            dimOrHideTransactions(graph, arranger2.getTaxonomy(graph), dimTrans);
+        }
+
         interaction.setProgress(1, 0, "Finished", true);
     }
 
@@ -135,6 +143,45 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
                 graph.setObjectValue(colorAttr, vxId, color);
             });
         });
+    }
 
+    private void dimOrHideTransactions(final GraphWriteMethods graph, final GraphTaxonomy taxonomy, final boolean dimTrans) {
+        final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
+        final int transactionDimmedAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
+        final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
+
+        // For each subgraph, check each node's neighbour
+        for (final IntObjectPair<MutableIntSet> keyValue : taxa.keyValuesView()) {
+            final MutableIntSet subGraphIds = keyValue.getTwo();
+            System.out.println("Dim hide trans, keyValue.getTwo(): " + subGraphIds);
+            // For each node
+            final MutableIntIterator iterator = subGraphIds.intIterator();
+            while (iterator.hasNext()) {
+                final int vxId = iterator.next();
+
+                final int neighbourCount = graph.getVertexNeighbourCount(vxId);
+                if (neighbourCount < 1) {
+                    continue;
+                }
+
+                // For each neighbour
+                for (int i = 0; i < neighbourCount; i++) {
+                    final int nxId = graph.getVertexNeighbour(vxId, i);
+                    // If neighbour is not in subgraph, dim/hide
+                    if (!subGraphIds.contains(nxId)) {
+                        // This assumes that transaction position matches neighbour position
+                        final int txId = graph.getVertexTransaction(vxId, i);
+                        System.out.println("Dimming txId " + txId);
+
+                        //final float visibiltyValue = !dimTrans ? -2.0F : 2.0F;
+                        if (dimTrans) {
+                            graph.setBooleanValue(transactionDimmedAttribute, txId, dimTrans);
+                        } else {
+                            graph.setFloatValue(transactionVisibilityAttribute, txId, -2.0F);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

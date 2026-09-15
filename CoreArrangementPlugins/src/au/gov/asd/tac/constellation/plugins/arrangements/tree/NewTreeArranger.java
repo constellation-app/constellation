@@ -47,7 +47,7 @@ public class NewTreeArranger implements Arranger {
     }
 
     public NewTreeArranger() {
-        nodeDistance = 10f;
+        nodeDistance = 10F;
     }
 
     public NewTreeArranger(final float nodeDistance) {
