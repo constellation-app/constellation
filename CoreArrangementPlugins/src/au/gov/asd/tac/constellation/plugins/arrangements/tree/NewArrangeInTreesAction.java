@@ -15,10 +15,17 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -39,13 +46,13 @@ import org.openide.util.NbBundle.Messages;
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 200),
-    @ActionReference(path = "Toolbars/Arrange", position = 100),
-    //@ActionReference(path = "Shortcuts", name = "C-T")
+    @ActionReference(path = "Toolbars/Arrange", position = 100), //@ActionReference(path = "Shortcuts", name = "C-T")
 })
 @Messages("CTL_NewArrangeInTreesAction=Trees")
 public final class NewArrangeInTreesAction extends AbstractAction {
 
     private final GraphNode context;
+    private static final Dimension size = new Dimension(750, 300);
 
     public NewArrangeInTreesAction(final GraphNode context) {
         this.context = context;
@@ -53,8 +60,20 @@ public final class NewArrangeInTreesAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
-                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
+
+        final Plugin plugin = PluginRegistry.get(ArrangementPluginRegistry.NEW_TREES);
+        final PluginParameters params = plugin.createParameters();
+        final Graph graph = context.getGraph();
+        plugin.updateParameters(graph, params);
+
+        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_NewArrangeInTreesAction(), params);
+        dialog.setSize(size);
+        dialog.showAndWait();
+        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+            PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
+                    .set(params)
+                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                    .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
+        }
     }
 }

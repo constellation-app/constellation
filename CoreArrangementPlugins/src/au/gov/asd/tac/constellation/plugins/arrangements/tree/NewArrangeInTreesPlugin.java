@@ -36,11 +36,19 @@ import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.UncollideArrangement;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
 import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
@@ -59,6 +67,69 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
 
+    public static final String SPLIT_INTO_TREES_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "split_into_trees");
+    private static final String SPLIT_INTO_TREES_PARAMETER_ID_NAME = "Split into Trees";
+    private static final String SPLIT_INTO_TREES_PARAMETER_ID_DESCRIPTION = "Arrange the whole graph, or first split into subgraphs";
+    private static final boolean SPLIT_INTO_TREES_DEFAULT = false;
+
+    public static final String DIM_OR_HIDE_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "dim_or_hide");
+    private static final String DIM_OR_HIDE_PARAMETER_ID_NAME = "Dim or Hide Cross-subgraph transactions";
+    private static final String DIM_OR_HIDE_PARAMETER_ID_DESCRIPTION = "What to do with transactions that connect subgraphs";
+    private static final String NOTHING = "Nothing";
+    private static final String DIM = "Dim";
+    private static final List<String> DIM_OR_HIDE_PARAM_VALUES = Arrays.asList(NOTHING, DIM, "Hide");
+    private static final String DIM_OR_HIDE_PARAMETER_ID_DEFAULT = NOTHING;
+
+    public static final String COLOUR_SUBGRAPHS_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "colour_subgraphs");
+    private static final String COLOUR_SUBGRAPHS_PARAMETER_ID_NAME = "Colour Subgraphs";
+    private static final String COLOUR_SUBGRAPHS_PARAMETER_ID_DESCRIPTION = "Give each subgraph a unique colour";
+    private static final boolean COLOUR_SUBGRAPHS_DEFAULT = false;
+
+    public static final String SCALE_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "scale");
+    private static final String SCALE_PARAMETER_ID_NAME = "Distance Between Layers";
+    private static final String SCALE_PARAMETER_ID_DESCRIPTION = "The distance between each layer of the arranged graph";
+    private static final float SCALE_PARAMETER_ID_DEFAULT = 10F;
+
+    private PluginParameter<SingleChoiceParameterValue> dimOrHideParam;
+
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<BooleanParameterValue> splitIntoTreesParam = BooleanParameterType.build(SPLIT_INTO_TREES_PARAMETER_ID);
+        splitIntoTreesParam.setName(SPLIT_INTO_TREES_PARAMETER_ID_NAME);
+        splitIntoTreesParam.setDescription(SPLIT_INTO_TREES_PARAMETER_ID_DESCRIPTION);
+        splitIntoTreesParam.setBooleanValue(SPLIT_INTO_TREES_DEFAULT);
+        splitIntoTreesParam.addListener((oldValue, newValue) -> enableDimHideParam(splitIntoTreesParam.getBooleanValue()));
+        parameters.addParameter(splitIntoTreesParam);
+
+        dimOrHideParam = SingleChoiceParameterType.build(DIM_OR_HIDE_PARAMETER_ID);
+        dimOrHideParam.setName(DIM_OR_HIDE_PARAMETER_ID_NAME);
+        dimOrHideParam.setDescription(DIM_OR_HIDE_PARAMETER_ID_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(dimOrHideParam, DIM_OR_HIDE_PARAM_VALUES);
+        SingleChoiceParameterType.setChoice(dimOrHideParam, DIM_OR_HIDE_PARAMETER_ID_DEFAULT);
+        dimOrHideParam.setEnabled(SPLIT_INTO_TREES_DEFAULT); // Conditional on splitIntoTreesParam being checked
+        parameters.addParameter(dimOrHideParam);
+
+        final PluginParameter<BooleanParameterValue> colourSubgraphsParam = BooleanParameterType.build(COLOUR_SUBGRAPHS_PARAMETER_ID);
+        colourSubgraphsParam.setName(COLOUR_SUBGRAPHS_PARAMETER_ID_NAME);
+        colourSubgraphsParam.setDescription(COLOUR_SUBGRAPHS_PARAMETER_ID_DESCRIPTION);
+        colourSubgraphsParam.setBooleanValue(COLOUR_SUBGRAPHS_DEFAULT);
+        parameters.addParameter(colourSubgraphsParam);
+
+        final PluginParameter<FloatParameterType.FloatParameterValue> scaleParam = FloatParameterType.build(SCALE_PARAMETER_ID);
+        scaleParam.setName(SCALE_PARAMETER_ID_NAME);
+        scaleParam.setDescription(SCALE_PARAMETER_ID_DESCRIPTION);
+        scaleParam.setFloatValue(SCALE_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(scaleParam);
+
+        return parameters;
+    }
+
+    private void enableDimHideParam(final boolean enable) {
+        dimOrHideParam.setEnabled(enable);
+    }
+
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Arranging...", true);
@@ -67,12 +138,11 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
             interaction.setProgress(1, 0, "Finished", true);
         }
 
-        // PARAMS
-        final boolean splitIntoTrees = true;
-        final boolean dimOrHideTrans = true;
-        final boolean dimTrans = true;
-        final boolean colorNodesByGroup = false;
-        final float scale = 10F;
+        // Params
+        final boolean splitIntoTrees = parameters.getParameters().get(SPLIT_INTO_TREES_PARAMETER_ID).getBooleanValue();
+        final String dimHideChoice = parameters.getParameters().get(DIM_OR_HIDE_PARAMETER_ID).getStringValue();
+        final boolean colorNodesByGroup = parameters.getParameters().get(COLOUR_SUBGRAPHS_PARAMETER_ID).getBooleanValue();
+        final float scale = parameters.getParameters().get(SCALE_PARAMETER_ID).getFloatValue();
 
         final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
         radiusSetter.setRadii();
@@ -110,8 +180,8 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
             colourSubGraphs(graph, arranger2.getTreeTaxonomy(graph));
         }
 
-        if (dimOrHideTrans) {
-            dimOrHideTransactions(graph, arranger2.getTaxonomy(graph), dimTrans);
+        if (!NOTHING.equals(dimHideChoice)) {
+            dimOrHideTransactions(graph, arranger2.getTaxonomy(graph), DIM.equals(dimHideChoice));
         }
 
         interaction.setProgress(1, 0, "Finished", true);
