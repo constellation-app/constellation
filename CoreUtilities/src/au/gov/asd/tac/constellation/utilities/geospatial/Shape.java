@@ -651,7 +651,7 @@ public class Shape {
                                             && attributeValue != null
                                             && attributesOfValidType.get(entry.getKey()) != null
                                             && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
-                                        writableFeature.setAttribute(compatibleAttributeName.strip(), attributeValue);
+                                        writableFeature.setAttribute(compatibleAttributeName, attributeValue);
                                     } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());
                                     }
@@ -729,6 +729,6 @@ public class Shape {
             compatibleHeader = compatibleHeader.substring(0, 10);
         }
 
-        return compatibleHeader;
+        return compatibleHeader.strip();
     }
 }
