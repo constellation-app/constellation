@@ -397,7 +397,7 @@ public class AnalyticConfigurationPane extends VBox {
      *
      * @return the answered {@link AnalyticQuestion}.
      */
-    public final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException {
+    public final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException, InterruptedException {
 
         // build question
         final AnalyticQuestion<?> question = new AnalyticQuestion<>(currentQuestion);
@@ -428,7 +428,14 @@ public class AnalyticConfigurationPane extends VBox {
         AnalyticViewController.getDefault().updateState(true, pluginList);
 
         // answer the question
-        return question.answer(currentGraph);
+        AnalyticQuestion<?> answer = question.answer(currentGraph);
+        if (!question.getExceptions().isEmpty()) {
+            Exception firstEx = question.getExceptions().getFirst();
+            if (firstEx instanceof InterruptedException ex) {
+                throw ex;
+            }
+        }
+        return answer;
     }
 
     /**

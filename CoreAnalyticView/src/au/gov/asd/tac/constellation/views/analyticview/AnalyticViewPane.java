@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
 import au.gov.asd.tac.constellation.graph.node.plugins.ThreadConstraints;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -47,6 +48,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
 /**
@@ -153,6 +155,15 @@ public class AnalyticViewPane extends BorderPane {
                                 question.addException(ex);
                                 analyticResultsPane.displayResults(question, emptyResult, new HashMap<>());
                                 analyticViewController.updateState(false, analyticConfigurationPane.getPluginList());
+                            } catch (InterruptedException ex) {
+                                System.out.println("Caught InterruptedException!");
+                                if (interaction instanceof DefaultPluginInteraction defInteraction) {
+                                    defInteraction.cancel();
+                                    final String pluginName = defInteraction.getPluginReport().getPluginName();
+                                    System.out.println("Caught InterruptedException for " + pluginName);
+                                    questionThread.interrupt();
+                                }
+                                
                             } finally {
                                 running = false;
                                 setRunButtonMode(true);
@@ -167,6 +178,7 @@ public class AnalyticViewPane extends BorderPane {
                     PluginExecution.withPlugin(virtualAnalytics).interactively(false).executeNow(activeGraph);
                 } catch (final InterruptedException iex) {
                     LOGGER.log(Level.SEVERE, iex.getLocalizedMessage());
+                    System.out.println("virtualAnalytics execution interrupted!");
                     Thread.currentThread().interrupt();
                 } catch (final PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
