@@ -38,6 +38,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParamete
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
 import java.awt.BorderLayout;
 import java.util.LinkedHashMap;
@@ -52,6 +54,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.UndoRedo;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -89,7 +92,8 @@ import org.openide.windows.TopComponent;
     "CTL_HistogramTopComponent=Histogram",
     "HINT_HistogramTopComponent=The histogram view will display attribute values as a bar chart"
 })
-public final class HistogramTopComponent extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
+@ServiceProvider(service = AbstractTopComponent.class)
+public final class HistogramTopComponent extends AbstractTopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 
     private static final int MIN_WIDTH = 425;
     private static final int MIN_HEIGHT = 400;
@@ -111,6 +115,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     private int selectedAttribute = Graph.NOT_FOUND;
     private long latestGraphChangeID = 0;
     private ElementSet currentFilter;
+    private final JScrollPane displayScroll;
 
     public HistogramTopComponent() {
         initComponents();
@@ -122,7 +127,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         add(controls, BorderLayout.SOUTH);
 
         display = new HistogramDisplay(this);
-        final JScrollPane displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
         add(displayScroll, BorderLayout.CENTER);
     }
@@ -317,7 +322,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     private void reset() {
         if (currentGraph != null) {
-            try (final ReadableGraph rg = currentGraph.getReadableGraph()){
+            try (final ReadableGraph rg = currentGraph.getReadableGraph()) {
                 reset(rg);
             }
         } else {
@@ -565,6 +570,16 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         // Required for GraphManagerListener, intentionally left blank.
     }
 
+    @Override
+    protected void initContent() {
+        // Required for AbstractTopComponent, intentionally left blank.
+    }
+
+    @Override
+    protected JScrollPane createContent() {
+        return displayScroll;
+    }
+
     /**
      * Plugin to update histogram state.
      */
@@ -780,5 +795,15 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
             SwingUtilities.invokeLater(display::repaint);
         }
+    }
+
+    @Override
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_HistogramTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "explorer";
     }
 }
