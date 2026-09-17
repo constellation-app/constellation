@@ -219,8 +219,6 @@ public final class CircTreeArranger implements Arranger {
             // fudge that could get us in trouble.
             final float fullRadius = selfRadius + selfRadius + childRadius;
 
-            //System.out.println("fullRadius children size 1: " + fullRadius);
-
             // Record and return result.
             childrenRadii[vxId] = fullRadius;
             fullRadii[vxId] = fullRadius;
@@ -270,11 +268,7 @@ public final class CircTreeArranger implements Arranger {
             childrenRadii[vxId] = fullRadius;
 
             fullRadius += maxChildRadius;
-            //fullRadius += (maxChildRadius/2); // a little better
-            //fullRadius += selfRadius; // much closer together but they tend to overlapp now
             fullRadii[vxId] = fullRadius;
-
-            //System.out.println("fullRadius children size less than max: " + fullRadius + " radiusFromCircum: " + radiusFromCircum + " radiusFromMaxChild: " + radiusFromMaxChild);
 
             return fullRadius;
         } else {
@@ -335,8 +329,6 @@ public final class CircTreeArranger implements Arranger {
             // Record and return result.
             final float fullRadius = innerRadius + 2 * maxChildRadiusThisAnnulus;
             fullRadii[vxId] = fullRadius;
-
-            //System.out.println("fullRadius else: " + fullRadius);
 
             return fullRadius;
         }

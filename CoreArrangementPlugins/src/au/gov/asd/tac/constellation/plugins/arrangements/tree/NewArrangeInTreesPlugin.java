@@ -212,7 +212,6 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         // For each subgraph, check each node's neighbour
         for (final IntObjectPair<MutableIntSet> keyValue : taxa.keyValuesView()) {
             final MutableIntSet subGraphIds = keyValue.getTwo();
-            System.out.println("Dim hide trans, keyValue.getTwo(): " + subGraphIds);
             // For each node
             final MutableIntIterator iterator = subGraphIds.intIterator();
             while (iterator.hasNext()) {

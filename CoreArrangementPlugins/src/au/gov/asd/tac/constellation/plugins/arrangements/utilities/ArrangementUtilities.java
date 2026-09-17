@@ -272,7 +272,6 @@ public final class ArrangementUtilities {
      * @return a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      */
     public static GraphTaxonomy getComponents(final GraphWriteMethods wg) {
-        System.out.println("ArrangementUtilities getComponents");
         final MutableIntObjectMap<MutableIntSet> components = new IntObjectHashMap<>();
         final MutableIntIntMap nodeToComponent = new IntIntHashMap();
         final int singletonsComponentID = -1;
@@ -290,8 +289,7 @@ public final class ArrangementUtilities {
                 final MutableIntStack neighbours = new IntArrayStack();
                 neighbours.push(vxID);
                 while (!neighbours.isEmpty()) {
-                    final int nxID = neighbours.pop();
-                    //System.out.println("getComponents vxID: " + vxID + " nxID: " + nxID + " neighbour count: " + wg.getVertexNeighbourCount(nxID));
+                    final int nxID = neighbours.pop();;
                     for (int i = 0; i < wg.getVertexNeighbourCount(nxID); i++) {
                         final int nextNxID = wg.getVertexNeighbour(nxID, i);
                         if (potentials.get(nextNxID)) {
@@ -319,10 +317,8 @@ public final class ArrangementUtilities {
         return new GraphTaxonomy(wg, components, nodeToComponent, singletonsComponentID, doubletsComponentID);
     }
 
-    // TODO: rename island stuff to "weak componenets" because i think theyre the same thing
-    // Also refactor this algorithm to construct the taxonmy as it goes, maybe
-    public static GraphTaxonomy getIslands(final GraphWriteMethods wg) {
-        System.out.println("ArrangementUtilities getIslands");
+    // TODO:  Also refactor this algorithm to construct the taxonmy as it goes, maybe
+    public static GraphTaxonomy getWeakComponents(final GraphWriteMethods wg) {
         final MutableIntObjectMap<MutableIntSet> islands = new IntObjectHashMap<>();
         final MutableIntIntMap nodeToIsland = new IntIntHashMap();
         final int singletonsIslandID = -1;
@@ -330,7 +326,7 @@ public final class ArrangementUtilities {
         islands.put(singletonsIslandID, new IntHashSet());
         islands.put(doubletsIslandID, new IntHashSet());
 
-        final List<MutableIntSet> islandsList = findAllIslands(wg);
+        final List<MutableIntSet> islandsList = findAllWeakComponents(wg);
 
         for (final MutableIntSet island : islandsList) {
             final MutableIntIterator iterator = island.intIterator();
@@ -362,7 +358,7 @@ public final class ArrangementUtilities {
         return new GraphTaxonomy(wg, islands, nodeToIsland, singletonsIslandID, doubletsIslandID);
     }
 
-    private static List<MutableIntSet> findAllIslands(final GraphWriteMethods graph) {
+    private static List<MutableIntSet> findAllWeakComponents(final GraphWriteMethods graph) {
         final List<MutableIntSet> islands = new ArrayList<>();
         final BitSet unvisitedNodes = new BitSet(graph.getVertexCount()); // Represent node positions
         unvisitedNodes.set(0, graph.getVertexCount());
@@ -372,13 +368,13 @@ public final class ArrangementUtilities {
         while (!unvisitedNodes.isEmpty()) {
             final MutableIntSet island = new IntHashSet();
             final int nextUnvisitedPos = unvisitedNodes.nextSetBit(0);
-            islands.add(findIsland(graph, nextUnvisitedPos, unvisitedNodes, island));
+            islands.add(findAllConnectedNodes(graph, nextUnvisitedPos, unvisitedNodes, island));
         }
 
         return islands;
     }
 
-    private static MutableIntSet findIsland(final GraphWriteMethods graph, final int vxPos, final BitSet unvisitedNodes, final MutableIntSet islandSet) {
+    private static MutableIntSet findAllConnectedNodes(final GraphWriteMethods graph, final int vxPos, final BitSet unvisitedNodes, final MutableIntSet islandSet) {
         // If visited already
         if (!unvisitedNodes.get(vxPos)) {
             return islandSet;
@@ -396,7 +392,7 @@ public final class ArrangementUtilities {
         for (int i = 0; i < numNeighbours; i++) {
             final int nxID = graph.getVertexNeighbour(vxID, i);
             final int nxPos = graph.getVertexPosition(nxID);
-            islandSet.addAll(findIsland(graph, nxPos, unvisitedNodes, islandSet));
+            islandSet.addAll(findAllConnectedNodes(graph, nxPos, unvisitedNodes, islandSet));
         }
 
         return islandSet;

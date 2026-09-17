@@ -115,10 +115,6 @@ public abstract class GraphTaxonomyArranger implements Arranger {
      */
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-        System.out.println("Graph Taxonomy Arranger arrange");
-//        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-//            System.out.println(ste);
-//        }
         final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
         int singletonsKey = Graph.NOT_FOUND;
         int doubletsKey = Graph.NOT_FOUND;
@@ -126,9 +122,8 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         if (interaction != null) {
             interaction.setProgress(0, 0, "Discovering taxonomy...", true);
         }
-        //System.out.println("Before getTaxonomy");
+
         final GraphTaxonomy taxonomy = getTaxonomy(wg);
-        //System.out.println("After getTaxonomy");
         if (taxonomy.size() == 1) {
             final int k = taxonomy.getTaxa().keysView().intIterator().next();
             inner.arrange(subgraphFactory.constructSubgraph(wg, taxonomy.getTaxa().get(k)));
@@ -151,7 +146,6 @@ public abstract class GraphTaxonomyArranger implements Arranger {
             final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
             final int steps = taxa.size() + 1;
             int step = 0;
-            System.out.println("taxa.keyValuesView(): " + taxa.keyValuesView());
             for (final IntObjectPair<MutableIntSet> keyValue : taxa.keyValuesView()) {
                 if (taxonomy.isArrangeRectangularly(keyValue.getOne())) {
                     if (interaction != null) {
@@ -173,10 +167,8 @@ public abstract class GraphTaxonomyArranger implements Arranger {
                         final String msg = String.format("Arrange inner (%s)...", inner.getClass().getSimpleName());
                         interaction.setProgress(step, steps, msg, true);
                     }
-                    //System.out.println("inner: " + inner + " keyValue.getTwo(): " + keyValue.getTwo());
-                    inner.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
                     
-                    //inner.arrange(wg); // No overlaps with this, so TODO: figure out what this taxa thing is and why we're choosing to seperate the graph
+                    inner.arrange(subgraphFactory.constructSubgraph(wg, keyValue.getTwo()));
                 }
                 step++;
             }

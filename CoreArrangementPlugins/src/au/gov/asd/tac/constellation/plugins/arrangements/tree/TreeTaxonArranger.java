@@ -35,7 +35,7 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 public class TreeTaxonArranger extends GraphTaxonomyArranger {
 
     private boolean putSingletonTaxaWithSameNeighborsTogether;
-    private final boolean useTaxFromTrees;
+    private final boolean useTaxFromTrees; // TODO: I feel like this could be done better
 
     public TreeTaxonArranger(final Arranger inner, final Arranger outer, final boolean newThing) {
         super(inner, outer, Connections.LINKS, InducedSubgraph.getSubgraphFactory());
@@ -86,6 +86,6 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
 
     @Override
     protected GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
-        return useTaxFromTrees ?  getTreeTaxonomy(wg) : ArrangementUtilities.getIslands(wg);
+        return useTaxFromTrees ?  getTreeTaxonomy(wg) : ArrangementUtilities.getWeakComponents(wg);
     }
 }
