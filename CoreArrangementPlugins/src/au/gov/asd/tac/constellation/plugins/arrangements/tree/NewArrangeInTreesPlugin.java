@@ -15,11 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -100,7 +96,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         splitIntoTreesParam.setName(SPLIT_INTO_TREES_PARAMETER_ID_NAME);
         splitIntoTreesParam.setDescription(SPLIT_INTO_TREES_PARAMETER_ID_DESCRIPTION);
         splitIntoTreesParam.setBooleanValue(SPLIT_INTO_TREES_DEFAULT);
-        splitIntoTreesParam.addListener((oldValue, newValue) -> enableDimHideParam(splitIntoTreesParam.getBooleanValue()));
+        splitIntoTreesParam.addListener((oldValue, newValue) -> dimOrHideParam.setEnabled(splitIntoTreesParam.getBooleanValue()));
         parameters.addParameter(splitIntoTreesParam);
 
         dimOrHideParam = SingleChoiceParameterType.build(DIM_OR_HIDE_PARAMETER_ID);
@@ -125,10 +121,6 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         parameters.addParameter(scaleParam);
 
         return parameters;
-    }
-
-    private void enableDimHideParam(final boolean enable) {
-        dimOrHideParam.setEnabled(enable);
     }
 
     @Override
@@ -194,19 +186,10 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         }
 
         final SecureRandom r = new SecureRandom();
+        final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(graph);
+        final int colorAttr = VisualConcept.VertexAttribute.COLOR.ensure(graph);
 
-        // TODO: change all this to 'ensure'
-        if (VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "background_icon", "background_icon", null, null);
-        }
-        final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
-
-        if (VisualConcept.VertexAttribute.COLOR.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, ColorAttributeDescription.ATTRIBUTE_NAME, ColorAttributeDescription.ATTRIBUTE_NAME, null, null);
-        }
-        final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
-
-        // Color the taxonomies so we can see what's going on.
+        // Color each subgraph
         tax.getTaxa().forEachValue(subgraph -> {
             final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
             subgraph.forEach(vxId -> {
@@ -216,6 +199,11 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         });
     }
 
+    /**
+     * Function that finds all transactions between sub graphs defined in the taxonomy, and then either dims or hides
+     * them
+     *
+     */
     private void dimOrHideTransactions(final GraphWriteMethods graph, final GraphTaxonomy taxonomy, final boolean dimTrans) {
         final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
         final int transactionDimmedAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
@@ -238,21 +226,21 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
                 // For each neighbour
                 for (int i = 0; i < neighbourCount; i++) {
                     final int nxId = graph.getVertexNeighbour(vxId, i);
-                    // If neighbour is not in subgraph, dim/hide
-                    if (!subGraphIds.contains(nxId)) {
-                        // This assumes that transaction position matches neighbour position
-                        final int txId = graph.getVertexTransaction(vxId, i);
-                        System.out.println("Dimming txId " + txId);
+                    if (subGraphIds.contains(nxId)) {
+                        continue;
+                    }
 
-                        //final float visibiltyValue = !dimTrans ? -2.0F : 2.0F;
-                        if (dimTrans) {
-                            graph.setBooleanValue(transactionDimmedAttribute, txId, dimTrans);
-                        } else {
-                            graph.setFloatValue(transactionVisibilityAttribute, txId, -2.0F);
-                        }
+                    // If neighbour is not in subgraph, dim/hide
+                    // This assumes that transaction position matches neighbour position
+                    final int txId = graph.getVertexTransaction(vxId, i);
+                    if (dimTrans) {
+                        graph.setBooleanValue(transactionDimmedAttribute, txId, dimTrans);
+                    } else {
+                        graph.setFloatValue(transactionVisibilityAttribute, txId, -2.0F);
                     }
                 }
             }
         }
     }
+
 }
