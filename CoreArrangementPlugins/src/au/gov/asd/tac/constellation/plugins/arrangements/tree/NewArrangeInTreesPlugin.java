@@ -40,7 +40,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -88,7 +88,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     public static final String SCALE_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "scale");
     private static final String SCALE_PARAMETER_ID_NAME = "Distance Between Layers";
     private static final String SCALE_PARAMETER_ID_DESCRIPTION = "The distance between each layer of the arranged graph";
-    private static final float SCALE_PARAMETER_ID_DEFAULT = 10F;
+    private static final int SCALE_PARAMETER_ID_DEFAULT = 10;
 
     private PluginParameter<SingleChoiceParameterValue> dimOrHideParam;
 
@@ -117,10 +117,11 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         colourSubgraphsParam.setBooleanValue(COLOUR_SUBGRAPHS_DEFAULT);
         parameters.addParameter(colourSubgraphsParam);
 
-        final PluginParameter<FloatParameterType.FloatParameterValue> scaleParam = FloatParameterType.build(SCALE_PARAMETER_ID);
+        final PluginParameter<IntegerParameterType.IntegerParameterValue> scaleParam = IntegerParameterType.build(SCALE_PARAMETER_ID);
         scaleParam.setName(SCALE_PARAMETER_ID_NAME);
         scaleParam.setDescription(SCALE_PARAMETER_ID_DESCRIPTION);
-        scaleParam.setFloatValue(SCALE_PARAMETER_ID_DEFAULT);
+        scaleParam.setIntegerValue(SCALE_PARAMETER_ID_DEFAULT);
+        IntegerParameterType.setMinimum(scaleParam, 1);
         parameters.addParameter(scaleParam);
 
         return parameters;
@@ -142,7 +143,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         final boolean splitIntoTrees = parameters.getParameters().get(SPLIT_INTO_TREES_PARAMETER_ID).getBooleanValue();
         final String dimHideChoice = parameters.getParameters().get(DIM_OR_HIDE_PARAMETER_ID).getStringValue();
         final boolean colorNodesByGroup = parameters.getParameters().get(COLOUR_SUBGRAPHS_PARAMETER_ID).getBooleanValue();
-        final float scale = parameters.getParameters().get(SCALE_PARAMETER_ID).getFloatValue();
+        final int scale = parameters.getParameters().get(SCALE_PARAMETER_ID).getIntegerValue();
 
         final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
         radiusSetter.setRadii();
