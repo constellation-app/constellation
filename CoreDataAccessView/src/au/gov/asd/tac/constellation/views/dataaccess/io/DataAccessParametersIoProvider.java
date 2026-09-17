@@ -92,8 +92,7 @@ public class DataAccessParametersIoProvider {
                 .loadJsonPreferencesWithFilePrefix(
                         Optional.of(DATA_ACCESS_DIR), Optional.of("[" + keyboardShortcut + "]"),
                         new TypeReference<List<DataAccessUserPreferences>>() {
-                }, DIALOG_TYPE
-                );
+                });
 
         if (loadedParameters != null) {
             dataAccessPane.getDataAccessTabPane().removeTabs();

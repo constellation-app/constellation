@@ -492,7 +492,7 @@ public class JsonIO {
     }
 
     public static <T> T loadJsonPreferencesWithFilePrefix(final Optional<String> loadDir, final Optional<String> filePrefix,
-            final TypeReference<T> expectedFormat, final String type) {
+            final TypeReference<T> expectedFormat) {
 
         return loadJsonPreferencesForFile(loadDir, filePrefix, file -> {
             try {

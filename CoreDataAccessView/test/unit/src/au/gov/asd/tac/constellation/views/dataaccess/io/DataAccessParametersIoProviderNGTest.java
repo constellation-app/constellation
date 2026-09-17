@@ -288,7 +288,7 @@ public class DataAccessParametersIoProviderNGTest {
             final List<DataAccessUserPreferences> preferences = objectMapper.readValue(
                     substitutor.replace(json), new TypeReference<List<DataAccessUserPreferences>>() {});
 
-            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferencesWithFilePrefix(eq(Optional.of("DataAccessView")), eq(Optional.of("[Ctrl 1]")), any(TypeReference.class), anyString()))
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferencesWithFilePrefix(eq(Optional.of("DataAccessView")), eq(Optional.of("[Ctrl 1]")), any(TypeReference.class)))
                     .thenReturn(preferences);
 
             DataAccessParametersIoProvider.loadParameters(dataAccessPane, "Ctrl 1");
@@ -369,7 +369,7 @@ public class DataAccessParametersIoProviderNGTest {
         when(globalParametersPane2.getParams()).thenReturn(globalPluginParameters2);
 
         try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class)) {           
-            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferencesWithFilePrefix(eq(Optional.of("DataAccessView")), eq(Optional.of("[Ctrl 1]")), any(TypeReference.class), anyString()))
+            jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferencesWithFilePrefix(eq(Optional.of("DataAccessView")), eq(Optional.of("[Ctrl 1]")), any(TypeReference.class)))
                     .thenCallRealMethod();
             DataAccessParametersIoProvider.loadParameters(dataAccessPane, "Ctrl 1");
         }
