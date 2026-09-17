@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,12 +54,18 @@ public final class ZoomToSelectionPlugin extends SimpleEditPlugin {
         BoundingBoxUtilities.recalculateFromGraph(box, graph, true);
         CameraUtilities.zoomToBoundingBox(camera, box);
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        
+        //Don't go for animation if there isn't any change in camera properties
+        if(oldCamera.toString().equals(camera.toString())) {
+            return;
+        }
+        
         if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
             // Only do the camera animation if the edited graph is currently active
             AnimationUtilities.startAnimation(new PanAnimation("Zoom to Selection", oldCamera, camera, true), activeGraph.getId());
         } else {
             // Skip the animation, just set the new camera position
             VisualGraphUtilities.setCamera(graph, camera);
-        }        
+        }
     }
 }

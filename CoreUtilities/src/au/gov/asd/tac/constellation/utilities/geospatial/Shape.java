@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.geotools.api.data.FeatureWriter;
 import org.geotools.api.data.Transaction;
 import org.geotools.api.feature.simple.SimpleFeature;
@@ -158,7 +160,7 @@ public class Shape {
          * {@code CRS.decode()} is known to have performance issues so we are
          * going to cache the output to reduce delays.
          */
-        private static final Map<Integer, String> cache = new HashMap<>();
+        private static final MutableIntObjectMap<String> cache = new IntObjectHashMap<>();
 
         private SpatialReference(final String name, final int srid) {
             this.name = name;
@@ -321,8 +323,7 @@ public class Shape {
         final List<SimpleFeature> features = new ArrayList<>();
         for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
-            final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-            try {
+            try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
@@ -394,8 +395,7 @@ public class Shape {
         final List<SimpleFeature> features = new ArrayList<>();
         for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
-            final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-            try {
+            try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
@@ -489,8 +489,7 @@ public class Shape {
         final List<SimpleFeature> features = new ArrayList<>();
         for (final Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
-            final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-            try {
+            try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
@@ -615,8 +614,7 @@ public class Shape {
         try (final FeatureWriter<SimpleFeatureType, SimpleFeature> writer = datastore.getFeatureWriterAppend(datastore.getTypeNames()[0], Transaction.AUTO_COMMIT)) {
             for (final Entry<String, String> entry : shapes.entrySet()) {
                 final String shape = entry.getValue();
-                final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
-                try {
+                try (final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8))) {
                     final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                     while (featureIterator.hasNext()) {
                         final SimpleFeature feature = featureIterator.next();

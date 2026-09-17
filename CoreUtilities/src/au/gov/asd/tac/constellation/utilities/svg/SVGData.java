@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2025 Australian Signals Directorate
+* Copyright 2010-2026 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -349,9 +349,8 @@ public class SVGData {
     * @return svgData
     */
     public static final SVGData loadFromTemplate(final SVGFile templateResource) {
-        final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.getFileName());
         SVGData templateSVG = null;
-        try {
+        try (final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.getFileName())) {
             templateSVG = SVGParser.parse(inputStream);
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

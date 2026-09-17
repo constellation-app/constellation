@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,12 +111,13 @@ public class NifiClient extends RestClient {
         }
 
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try {
-            final InputStream is = new FileInputStream(file);
+        try (final InputStream is = new FileInputStream(file)) {
             FlowFileV3Utilities.packageFlowFile(is, os, flowfileAttributes, file.length());
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, "Error writing flow file", ex);
             return null;
+        } finally {
+            os.close();
         }
 
         // To avoid using expensive identity mime type at nifi, we specify ffv3

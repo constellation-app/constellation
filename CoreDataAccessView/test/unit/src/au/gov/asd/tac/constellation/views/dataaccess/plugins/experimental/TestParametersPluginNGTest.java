@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,7 +94,7 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         // Test correct amount of parameters are added
-        final int expResult = 20;
+        final int expResult = 21;
         assertEquals(result.getParameters().size(), expResult);
 
         // Test correct controllers are added by name

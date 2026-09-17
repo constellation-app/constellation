@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,14 +107,11 @@ public class BooleanObjectEditorFactoryNGTest {
         
         // default values from instantiation
         assertFalse(editor.getValueFromControls());
-        assertFalse(editor.isCheckBoxDisabled());
-        
+
         editor.updateControlsWithValue(true);
         assertTrue(editor.getValueFromControls());
-        assertFalse(editor.isCheckBoxDisabled());
                 
         editor.updateControlsWithValue(null);
         assertFalse(editor.getValueFromControls());
-        assertTrue(editor.isCheckBoxDisabled());
     }
 }

@@ -4,19 +4,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](STransaction.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/graph/STransaction.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](package-tree.md)
--   [Deprecated](../deprecated-list.md)
--   [Index](../index-all.md)
--   [Help](../help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -29,13 +29,13 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 <div class="subNav">
 
 -   [<span
-    class="typeNameLink">Prev Class</span>](SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Prev Class</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SReadableGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 -   [<span
-    class="typeNameLink">Next Class</span>](SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Next Class</span>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 <!-- -->
 
--   [All Classes](../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -46,15 +46,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constructor](STransaction.md#constructor.summary) | 
--   [Method](STransaction.md#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/STransaction.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/STransaction.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constructor](STransaction.md#constructor.detail) | 
--   [Method](STransaction.md#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/STransaction.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/STransaction.md#method.detail)
 
 </div>
 
@@ -316,7 +316,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             the source vertex as a
-            [`SVertex`](SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SVertex`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span id="destinationVertex--"></span>
 
@@ -332,7 +332,7 @@ au.gov.asd.tac.constellation.views.scripting.graph
 
             <span class="returnLabel">Returns:</span>  
             the destination vertex as a
-            [`SVertex`](SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SVertex`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SVertex.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="otherVertex-au.gov.asd.tac.constellation.views.scripting.graph.SVertex-"></span>

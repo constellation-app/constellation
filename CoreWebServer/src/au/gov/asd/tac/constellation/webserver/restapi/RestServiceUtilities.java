@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,6 +123,9 @@ public class RestServiceUtilities {
      * @param parameters The parameters to be assigned values.
      */
     public static void parametersFromJson(final JsonNode json, final PluginParameters parameters) {
+        if (json == null) {
+            return;
+        }
         json.properties().iterator().forEachRemaining(entry -> {
             final String parameterName = entry.getKey();
             if (parameters.hasParameter(parameterName)) {

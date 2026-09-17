@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.proximity;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -26,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUt
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.Point3D;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implements a 3D version of the Fruchterman-Reingold force-directed algorithm
@@ -70,8 +68,8 @@ public class FR3DArranger implements Arranger {
     private double attractionConstant;
     private double repulsionConstant;
     private static final double EPSILON = 0.000001;
-    private ArrayList<Point3D.Float> points;
-    private ArrayList<Point3D.Float> offsets;
+    private List<Point3D.Float> points;
+    private List<Point3D.Float> offsets;
     private volatile boolean stopWork;
 
     private final PluginInteraction interaction;
@@ -166,47 +164,35 @@ public class FR3DArranger implements Arranger {
         });
     }
 
-    public void layout() throws InterruptedException {
+    private void layout() throws InterruptedException {
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             interaction.setProgress(i + 1, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
-            wg.vertexStream().parallel().forEach(vertexId -> repulse(vertexId)
-            );
+            wg.vertexStream().parallel().forEach(vertexId -> repulse(vertexId));
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            wg.linkStream().parallel().forEach(txId -> attract(txId)
-            );
+            wg.linkStream().parallel().forEach(txId -> attract(txId));
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
 
-            wg.vertexStream().parallel().forEach(vertexId -> position(vertexId)
-            );
+            wg.vertexStream().parallel().forEach(vertexId -> position(vertexId));
 
             cool(i);
         }
     }
 
-    public void writeBackXYZ() {
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        }
-        if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        }
-        if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
-        }
-        final int x2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
-        final int y2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
-        final int z2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
+    private void writeBackXYZ() {
+        final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.ensure(wg);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.ensure(wg);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.ensure(wg);
 
         for (int position = 0; position < wg.getVertexCount(); position++) {
             final int nodeId = wg.getVertex(position);

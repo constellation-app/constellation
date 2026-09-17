@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hde;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -35,11 +34,9 @@ import java.util.Arrays;
  * @author algol
  */
 public class HighDimensionEmbeddingArranger implements Arranger {
-
-    /**
-     * Dimensionality of embedding space.
-     */
-    public static final int M = 50;
+    
+    // Dimensionality of embedding space.
+    private static final int M = 50;
 
     // Scale graph up so it isn't too cramped.
     private static final float SCALE = 10;
@@ -50,12 +47,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
     private GraphWriteMethods wg;
     private int[] centres;
     private double[] mean;
-    private boolean[] known;
-    private boolean[] pivot;
     private int[] distance;
-
-    // Coordinates of each node relative to pivot.
-    private double[][] xMatrix;
 
     private static final boolean PART_ONLY = false;
 
@@ -64,23 +56,19 @@ public class HighDimensionEmbeddingArranger implements Arranger {
     public HighDimensionEmbeddingArranger(final int dimensions) {
         this.dimensions = dimensions;
     }
-
-    private void set(final GraphWriteMethods wg) {
+    
+    @Override
+    public void arrange(final GraphWriteMethods wg) {
         this.wg = wg;
         final int vxCapacity = wg.getVertexCapacity();
 
         centres = new int[M];
         mean = new double[M];
-        known = new boolean[vxCapacity];
-        pivot = new boolean[vxCapacity];
         distance = new int[vxCapacity];
+        final boolean[] pivot = new boolean[vxCapacity];
 
-        xMatrix = new double[M][vxCapacity];
-    }
-
-    @Override
-    public void arrange(final GraphWriteMethods wg) {
-        set(wg);
+        // Coordinates of each node relative to pivot.
+        final double[][] xMatrix = new double[M][vxCapacity];
 
         final int vxCount = wg.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
@@ -88,7 +76,6 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
             distance[vxId] = Integer.MAX_VALUE;
             pivot[vxId] = false;
-            known[vxId] = false;
         }
 
         centres[0] = wg.getVertex(0);
@@ -114,9 +101,6 @@ public class HighDimensionEmbeddingArranger implements Arranger {
                     pnode = n;
                     pdist = distance[n];
                 }
-
-                // Clear known flag for next round.
-                known[n] = false;
             }
 
             // Mark the chosen node as a pivot.
@@ -242,9 +226,9 @@ public class HighDimensionEmbeddingArranger implements Arranger {
         final double[] pos = new double[3];
         Arrays.fill(pos, 0);
 
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
 
         // pos = X * U^T.
         for (int npos = 0; npos < vxCount; npos++) {

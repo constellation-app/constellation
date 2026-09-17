@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,9 +81,10 @@ public class TypeDropper implements GraphDropper {
             try {
                 final String data;
                 if (transferable.isDataFlavorSupported(VX_DATA_FLAVOR)) {
-                    final InputStream in = new ByteArrayInputStream(((ByteBuffer) transferable.getTransferData(VX_DATA_FLAVOR)).array());
-                    final ObjectInputStream oin = new ObjectInputStream(in);
-                    data = (String) oin.readObject();
+                    try (final InputStream in = new ByteArrayInputStream(((ByteBuffer) transferable.getTransferData(VX_DATA_FLAVOR)).array());
+                            final ObjectInputStream oin = new ObjectInputStream(in)) {
+                        data = (String) oin.readObject();
+                    }
                 } else {
                     final String t = (String) transferable.getTransferData(DataFlavor.stringFlavor);
 

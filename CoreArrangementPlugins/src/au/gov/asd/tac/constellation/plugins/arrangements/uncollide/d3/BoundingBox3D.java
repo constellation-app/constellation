@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,23 +57,7 @@ public class BoundingBox3D {
         return new Box3D(minx, miny, minz, maxx, maxy, maxz);
     }
 
-    public static class Box3D {
-
-        public final float minx;
-        public final float miny;
-        public final float minz;
-        public final float maxx;
-        public final float maxy;
-        public final float maxz;
-
-        public Box3D(final float minx, final float miny, final float minz, final float maxx, final float maxy, final float maxz) {
-            this.minx = minx;
-            this.miny = miny;
-            this.minz = minz;
-            this.maxx = maxx;
-            this.maxy = maxy;
-            this.maxz = maxz;
-        }
+    public static record Box3D(float minx, float miny, float minz, float maxx, float maxy, float maxz) {
 
         @Override
         public String toString() {

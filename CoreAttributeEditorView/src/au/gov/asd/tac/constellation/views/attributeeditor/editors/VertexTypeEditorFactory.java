@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,6 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
         @Override
         protected Node createEditorControls() {
             final Label nameLabel = new Label("Type Name:");
-            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, nameLabel, nameText);
             nameText = new TextField();
             nameText.textProperty().addListener(ev -> {
                 if (!selectionIsActive) {
@@ -94,6 +93,7 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
                 }
                 update();
             });
+            final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING, nameLabel, nameText);
             
             // get all types supported by the current schema
             final List<SchemaVertexType> types = new ArrayList<>();

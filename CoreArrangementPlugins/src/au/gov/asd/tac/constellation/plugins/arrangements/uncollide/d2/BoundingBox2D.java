@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,20 +48,8 @@ public class BoundingBox2D {
         return new Box2D(minx, miny, maxx, maxy);
     }
 
-    public static class Box2D {
-
-        public final float minx;
-        public final float miny;
-        public final float maxx;
-        public final float maxy;
-
-        public Box2D(final float minx, final float miny, final float maxx, final float maxy) {
-            this.minx = minx;
-            this.miny = miny;
-            this.maxx = maxx;
-            this.maxy = maxy;
-        }
-
+    public static record Box2D(float minx, float miny, float maxx, float maxy) {
+        
         @Override
         public String toString() {
             return String.format("[Box2D %f %f %f %f]", minx, miny, maxx, maxy);

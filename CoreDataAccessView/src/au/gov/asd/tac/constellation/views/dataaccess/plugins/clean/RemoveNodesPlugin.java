@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -72,7 +74,9 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
 
     @Override
     public String getDescription() {
-        return "Remove nodes from your graph";
+        return """
+               Removes any currently selected nodes from your graph 
+               based on defined criteria.""";
     }
 
     @Override
@@ -123,10 +127,9 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         int totalProcessSteps = -1;
         interaction.setProgressTimestamp(true);
         interaction.setProgress(removedCount, totalProcessSteps, "Removing nodes...", true, parameters);
-        final List<Integer> verticesToRemove = new ArrayList<>();       
+        final MutableIntList verticesToRemove = new IntArrayList();       
             
-        if (removeType.equals(REMOVE_TYPE_LENGTH)) {   
-            
+        if (removeType.equals(REMOVE_TYPE_LENGTH)) {
             //Determine which nodes need to be removed
             final int vertexCount = wg.getVertexCount();
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
@@ -139,7 +142,8 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
             totalProcessSteps = verticesToRemove.size();
 
             //Remove identified vertices
-            for (final int vertex : verticesToRemove) {
+            for (int i = 0; i < verticesToRemove.size(); i++) {
+                final int vertex = verticesToRemove.get(i);
                 if (removeNodesByLength(wg, vertex, identifierAttribute, threshold)) {
                     interaction.setProgress(++removedCount, totalProcessSteps, true);
                 }

@@ -5,19 +5,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](SGraph.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-summary.md)
 -   Class
--   [Tree](package-tree.md)
--   [Deprecated](../deprecated-list.md)
--   [Index](../index-all.md)
--   [Help](../help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/docs/javadoc/graph/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -30,13 +30,13 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 <div class="subNav">
 
 -   [<font
-    class="typeNameLink">Prev Class</font>](SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Prev Class</font>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SEdge.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 -   [<font
-    class="typeNameLink">Next Class</font>](SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
+    class="typeNameLink">Next Class</font>](../ext/docs/CoreScriptingView/docs/javadoc/graph/SLink.md "class in au.gov.asd.tac.constellation.views.scripting.graph")
 
 <!-- -->
 
--   [All Classes](../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -46,16 +46,16 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   Summary: 
 -   Nested | 
--   [Field](SGraph.md#field.summary) | 
--   [Constructor](SGraph.md#constructor.summary) | 
--   [Method](SGraph.md#method.summary)
+-   [Field](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md#field.summary) | 
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
--   [Field](SGraph.md#field.detail) | 
--   [Constructor](SGraph.md#constructor.detail) | 
--   [Method](SGraph.md#method.detail)
+-   [Field](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md#field.detail) | 
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md#method.detail)
 
 </div>
 

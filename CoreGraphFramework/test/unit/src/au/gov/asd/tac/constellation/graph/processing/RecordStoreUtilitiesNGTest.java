@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,22 +35,26 @@ import org.testng.annotations.Test;
 public class RecordStoreUtilitiesNGTest {
     
     @Test
-    public void testToCsvEmpty() throws FileNotFoundException {
+    public void testToCsvEmpty() throws IOException {
         final File file = new File("test1.csv");
         final RecordStore recordStore = new GraphRecordStore();
 
-        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+        try (final FileOutputStream stream = new FileOutputStream(file)) {
+            RecordStoreUtilities.toCsv(recordStore, stream);
+        }
 
         assertTrue(file.isFile());
     }
 
     @Test
-    public void testToCsvEmptyRow() throws FileNotFoundException {
+    public void testToCsvEmptyRow() throws IOException {
         final File file = new File("test2.csv");
 
         final RecordStore recordStore = new GraphRecordStore();
         recordStore.add();
-        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+        try (final FileOutputStream stream = new FileOutputStream(file)) {
+            RecordStoreUtilities.toCsv(recordStore, stream);
+        }
 
         assertTrue(file.isFile());
     }
@@ -61,13 +65,17 @@ public class RecordStoreUtilitiesNGTest {
         final RecordStore recordStore = new GraphRecordStore();
         recordStore.add();
         recordStore.set("key", "value");
-        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+        try (final FileOutputStream stream = new FileOutputStream(file)) {
+            RecordStoreUtilities.toCsv(recordStore, stream);
+        }
 
-        final BufferedReader in = new BufferedReader(new FileReader(file));
-        String line = in.readLine();
-        assertEquals(line, "key");
-        line = in.readLine();
-        assertEquals(line, "value");
+        try (final FileReader reader = new FileReader(file);
+                final BufferedReader in = new BufferedReader(reader)) {
+            String line = in.readLine();
+            assertEquals(line, "key");
+            line = in.readLine();
+            assertEquals(line, "value");
+        }
     }
 
     @Test
@@ -77,13 +85,17 @@ public class RecordStoreUtilitiesNGTest {
         recordStore.add();
         recordStore.set("key1", "value1");
         recordStore.set("key2", "value2");
-        RecordStoreUtilities.toCsv(recordStore, new FileOutputStream(file));
+        try (final FileOutputStream stream = new FileOutputStream(file)) {
+            RecordStoreUtilities.toCsv(recordStore, stream);
+        }
 
-        final BufferedReader in = new BufferedReader(new FileReader(file));
-        String line = in.readLine();
-        assertEquals(line, "key1,key2");
-        line = in.readLine();
-        assertEquals(line, "value1,value2");
+        try (final FileReader reader = new FileReader(file);
+                final BufferedReader in = new BufferedReader(reader)) {
+            String line = in.readLine();
+            assertEquals(line, "key1,key2");
+            line = in.readLine();
+            assertEquals(line, "value1,value2");
+        }
     }
 
     @Test

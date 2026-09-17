@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.graph.processing;
 
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class RecordStoreUtilities {
      */
     public static RecordStore fromJson(final InputStream in) throws IOException {
         final RecordStore recordStore;
-        try (final JsonParser parser = new MappingJsonFactory().createParser(in)) {
+        try (final JsonParser parser = JsonFactoryUtilities.getJsonFactory().createParser(in)) {
             recordStore = new GraphRecordStore();
             JsonToken currentToken = parser.nextToken();
             if (currentToken != JsonToken.START_ARRAY) {
@@ -195,7 +195,8 @@ public class RecordStoreUtilities {
      */
     public static RecordStore fromTsv(final InputStream in) throws IOException {
         final RecordStore recordStore = new GraphRecordStore();
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+        try (final InputStreamReader inputReader = new InputStreamReader(in, StandardCharsets.UTF_8.name());
+                final BufferedReader reader = new BufferedReader(inputReader)) {
             String line = reader.readLine();
             final String[] headers = parseTsvRow(line);
 
@@ -230,7 +231,8 @@ public class RecordStoreUtilities {
     public static RecordStore fromCsv(final InputStream in) throws IOException {
         final RecordStore recordStore = new GraphRecordStore();
 
-        try (final CSVParser csvFileParser = CSVFormat.DEFAULT.parse(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
+        try (final InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8.name());
+                final CSVParser csvFileParser = CSVFormat.DEFAULT.parse(reader)) {
             final List<CSVRecord> recs = csvFileParser.getRecords();
             for (int i = 1; i < recs.size(); i++) {
                 recordStore.add();

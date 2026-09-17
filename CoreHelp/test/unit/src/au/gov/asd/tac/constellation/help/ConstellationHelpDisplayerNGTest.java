@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -310,7 +310,8 @@ public class ConstellationHelpDisplayerNGTest {
             }
 
             // assert that output file now has the correct contents
-            try (final BufferedReader reader = new BufferedReader(new FileReader(outputFile))) {
+            try (final FileReader fileReader = new FileReader(outputFile);
+                    final BufferedReader reader = new BufferedReader(fileReader)) {
                 String line;
 
                 int linecount = 0;
@@ -393,9 +394,8 @@ public class ConstellationHelpDisplayerNGTest {
             tempFile = File.createTempFile("testfile", ".xml");
             final String path = tempFile.getPath();
 
-            try (final FileInputStream expectedfis = new FileInputStream(path)) {
-                final InputStream actualfis = ConstellationHelpDisplayer.getInputStream(tempFile.getPath());
-                
+            try (final FileInputStream expectedfis = new FileInputStream(path);
+                    final InputStream actualfis = ConstellationHelpDisplayer.getInputStream(tempFile.getPath())) {
                 assertTrue(IOUtils.contentEquals(expectedfis, actualfis));
             }
         } finally {

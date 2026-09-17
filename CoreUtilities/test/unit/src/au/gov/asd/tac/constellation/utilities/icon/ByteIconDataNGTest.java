@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2025 Australian Signals Directorate
+* Copyright 2010-2026 Australian Signals Directorate
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -58,10 +58,12 @@ public class ByteIconDataNGTest {
     @Test
     public void testCreateRasterInputStream() throws IOException {
         final byte[] b = new byte[] {(byte)0xe0};
-        ByteArrayInputStream bais = new ByteArrayInputStream(b);
-        ByteIconData bid = new ByteIconData(b);
-        InputStream is = bid.createRasterInputStream();
-        assertEquals(bais.readAllBytes(),is.readAllBytes());
+        final ByteIconData bid = new ByteIconData(b);
+        try (final ByteArrayInputStream bais = new ByteArrayInputStream(b);
+                final InputStream is = bid.createRasterInputStream()) {
+            assertEquals(bais.readAllBytes(),is.readAllBytes());
+            
+        }
     }
 
     /**

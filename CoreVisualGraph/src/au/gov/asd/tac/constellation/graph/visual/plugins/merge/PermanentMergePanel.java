@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.openide.util.HelpCtx;
 
 /**
@@ -50,7 +52,7 @@ public final class PermanentMergePanel extends JPanel {
     private final List<Integer> nodeList;
     private List<Attribute> nodeAttrbiutes;
     private PermanentMergeTableModel tableModel;
-    private Map<Integer, Integer> selectedAttributes;
+    private MutableIntIntMap selectedAttributes;
     private static final String SELECTED_COLUMN = "SELECTED_COLUMN_FLAG";
     private static final String NODE_ID_COLUMN = "ID_";
 
@@ -66,7 +68,7 @@ public final class PermanentMergePanel extends JPanel {
         this.graph = graph;
         nodeList = nodeSelections;
         primaryNode = vxId;
-        selectedAttributes = new HashMap<>();
+        selectedAttributes = new IntIntHashMap();
         populateTable();
         nodeTable.setDefaultRenderer(String.class, new AttributeCellRenderer(this));
         nodeTable.getTableHeader().setPreferredSize(new Dimension(nodeTable.getColumnModel().getTotalColumnWidth(), 40));
@@ -99,7 +101,7 @@ public final class PermanentMergePanel extends JPanel {
      * for the merged node
      */
     private void setupSelectedAttributes() {
-        selectedAttributes = new HashMap<>();
+        selectedAttributes = new IntIntHashMap();
         processCellSelection(0, 1);
     }
 

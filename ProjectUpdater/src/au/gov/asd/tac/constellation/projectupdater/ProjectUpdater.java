@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -261,7 +261,8 @@ public class ProjectUpdater extends Task {
     }
 
     private void extractMatchingPackages(final File jarFile, final List<String> expressions, final Set<String> publicPackages) throws IOException {
-        try (final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile))) {
+        try (final FileInputStream stream = new FileInputStream(jarFile);
+                final ZipInputStream zip = new ZipInputStream(stream)) {
             ZipEntry entry = zip.getNextEntry();
             while (entry != null) {
                 final String path = entry.getName();

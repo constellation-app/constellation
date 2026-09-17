@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,13 @@ import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
  * @author capricornunicorn123
  */
 public final class PanAnimation extends Animation {
+
+    /**
+     * @return the step
+     */
+    public int getStep() {
+        return step;
+    }
 
     private static final int STEPS = 24;
 
@@ -65,8 +72,8 @@ public final class PanAnimation extends Animation {
 
     @Override
     public void animate(final GraphWriteMethods wg) {
-        if (step <= STEPS) {
-            final float t = step / (float) STEPS;
+        if (getStep() <= STEPS) {
+            final float t = getStep() / (float) STEPS;
             final float mix = reflect(t);
 
             camera = new Camera(camera);

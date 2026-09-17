@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import org.openide.util.HelpCtx;
 
 /**
@@ -117,6 +118,11 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
         setPadding(Insets.EMPTY);
         setTooltip(new Tooltip(plugin.getDescription()));
+        
+        // set the tooltip duration longer for longer text
+        if (getTooltip().getText().length() > 150) {
+            getTooltip().setShowDuration(Duration.seconds(10));
+        }
     }
     
     @Override

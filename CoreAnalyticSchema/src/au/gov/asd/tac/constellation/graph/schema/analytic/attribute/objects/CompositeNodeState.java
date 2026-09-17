@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects;
 
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -156,8 +156,7 @@ public class CompositeNodeState {
      * JSON from this state.
      */
     public String convertToString() {
-        try {
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             try (final JsonGenerator jg = new JsonFactory().createGenerator(outputStream)) {
                 jg.writeStartObject();
 
@@ -219,18 +218,20 @@ public class CompositeNodeState {
         if (StringUtils.isBlank(s)) {
             return null;
         }
-        try (final JsonParser parser = new MappingJsonFactory().createParser(s)) {
+        try (final JsonParser parser = JsonFactoryUtilities.getMappingJsonFactory().createParser(s)) {
             final JsonNode jn = parser.readValueAsTree();
             final int nodeId = jn.get(NODE_ID).asInt();
 
             final ExpandedCompositeNodeState expandedState;
             if (jn.hasNonNull(EXPANDED_STATE)) {
                 final JsonNode expandedNode = jn.get(EXPANDED_STATE);
-                final RecordStore compositeNodeStore = RecordStoreUtilities.fromJson(new ByteArrayInputStream(expandedNode.get(COMPOSITE_NODE_STORE).asText().getBytes(StandardCharsets.UTF_8.name())));
-                final String compositeId = expandedNode.get(COMPOSITE_ID).asText();
-                final boolean isAffecting = expandedNode.get(AFFECTING).asBoolean();
-                final int numberOfNodes = expandedNode.get(NUMBER_OF_NODES).asInt();
-                expandedState = new ExpandedCompositeNodeState(compositeNodeStore, compositeId, isAffecting, numberOfNodes);
+                try (final ByteArrayInputStream inputStream = new ByteArrayInputStream(expandedNode.get(COMPOSITE_NODE_STORE).asText().getBytes(StandardCharsets.UTF_8.name()))) {
+                    final RecordStore compositeNodeStore = RecordStoreUtilities.fromJson(inputStream);
+                    final String compositeId = expandedNode.get(COMPOSITE_ID).asText();
+                    final boolean isAffecting = expandedNode.get(AFFECTING).asBoolean();
+                    final int numberOfNodes = expandedNode.get(NUMBER_OF_NODES).asInt();
+                    expandedState = new ExpandedCompositeNodeState(compositeNodeStore, compositeId, isAffecting, numberOfNodes);
+                }
             } else {
                 expandedState = null;
             }
@@ -238,24 +239,26 @@ public class CompositeNodeState {
             final ContractedCompositeNodeState contractedState;
             if (jn.hasNonNull(CONTRACTED_STATE)) {
                 final JsonNode contractedNode = jn.get(CONTRACTED_STATE);
-                final RecordStore constituentNodeStore = RecordStoreUtilities.fromJson(new ByteArrayInputStream(contractedNode.get(CONSTITUENT_NODE_STORE).asText().getBytes(StandardCharsets.UTF_8.name())));
-                final List<String> expandedIds = new ArrayList<>();
-                final Iterator<JsonNode> expandedIdsIterator = contractedNode.get(EXPANDED_IDS).iterator();
-                while (expandedIdsIterator.hasNext()) {
-                    expandedIds.add(expandedIdsIterator.next().asText());
+                try (final ByteArrayInputStream inputStream = new ByteArrayInputStream(contractedNode.get(CONSTITUENT_NODE_STORE).asText().getBytes(StandardCharsets.UTF_8.name()))) {
+                    final RecordStore constituentNodeStore = RecordStoreUtilities.fromJson(inputStream);
+                    final List<String> expandedIds = new ArrayList<>();
+                    final Iterator<JsonNode> expandedIdsIterator = contractedNode.get(EXPANDED_IDS).iterator();
+                    while (expandedIdsIterator.hasNext()) {
+                        expandedIds.add(expandedIdsIterator.next().asText());
+                    }
+                    final List<String> affectedExpandedIds = new ArrayList<>();
+                    final Iterator<JsonNode> affectedExpandedIdsIterator = contractedNode.get(AFFECTED_EXPANDED_IDS).iterator();
+                    while (affectedExpandedIdsIterator.hasNext()) {
+                        affectedExpandedIds.add(affectedExpandedIdsIterator.next().asText());
+                    }
+                    final float[] mean = new float[3];
+                    final Iterator<JsonNode> meanIterator = contractedNode.get(MEAN).iterator();
+                    int i = 0;
+                    while (meanIterator.hasNext() && i < 3) {
+                        mean[i++] = (float) meanIterator.next().asDouble();
+                    }
+                    contractedState = new ContractedCompositeNodeState(constituentNodeStore, expandedIds, affectedExpandedIds, mean);
                 }
-                final List<String> affectedExpandedIds = new ArrayList<>();
-                final Iterator<JsonNode> affectedExpandedIdsIterator = contractedNode.get(AFFECTED_EXPANDED_IDS).iterator();
-                while (affectedExpandedIdsIterator.hasNext()) {
-                    affectedExpandedIds.add(affectedExpandedIdsIterator.next().asText());
-                }
-                final float[] mean = new float[3];
-                final Iterator<JsonNode> meanIterator = contractedNode.get(MEAN).iterator();
-                int i = 0;
-                while (meanIterator.hasNext() && i < 3) {
-                    mean[i++] = (float) meanIterator.next().asDouble();
-                }
-                contractedState = new ContractedCompositeNodeState(constituentNodeStore, expandedIds, affectedExpandedIds, mean);
             } else {
                 contractedState = null;
             }

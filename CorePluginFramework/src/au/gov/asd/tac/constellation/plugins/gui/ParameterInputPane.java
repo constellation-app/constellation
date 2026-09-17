@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,8 +70,8 @@ public abstract class ParameterInputPane<T extends ParameterValue, V extends Obj
         this.input.addListener(getFieldChangeListener(parameter));
         parameter.addListener(getPluginParameterListener());
         
-        // Add a validator that uses the parameter validation to validate the value of an input.
-        this.input.addValidator(parameter::validateString);
+        // Add a validator in the child pane that requires parameter validation to validate the value of an input if needed.
+        // eg.this.input.addValidator(parameter::validateString);
         
         getChildren().add(input);
     }

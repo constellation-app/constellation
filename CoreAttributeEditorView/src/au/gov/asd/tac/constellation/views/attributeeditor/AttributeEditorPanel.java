@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -285,9 +285,10 @@ public class AttributeEditorPanel extends BorderPane {
         schemaMenuNode.getChildren().addAll(schemaMenuRect, schemaMenuText);
         schemaMenuRect.setFill(color);
         schemaMenuItem.setOnAction(e -> {
-            final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
+            final EditOperation editOperation = value -> prefs.put(correspondingPreference, value != null ? ((ConstellationColor) value).getHtmlColor() : "");
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
-            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(String.format("For %s", itemName), editOperation, ConstellationColor.fromFXColor(color));
+            // for ColorEditorFactory in this case, don't add No Value checkbox, but add default color
+            final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(String.format("For %s", itemName), editOperation, ConstellationColor.fromFXColor(color), ConstellationColor.fromFXColor(color), false);
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
             dialog.showDialog();
         });
@@ -810,11 +811,13 @@ public class AttributeEditorPanel extends BorderPane {
                 final List<String> hiddenAttrList = StringUtilities.splitLabelsWithEscapeCharacters(hiddenAttributes, AttributePreferenceKey.SPLIT_CHAR_SET);
                 final Set<String> hiddenAttrSet = new HashSet<>(hiddenAttrList);
 
-                currentAttributeNames.put(type, new ArrayList<>());
+                final List<String> attributeNames = new ArrayList<>();
+
                 for (final AttributeData data : attributeDataList) {
                     final boolean hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
                     final Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
                     final boolean noValue = attributeValuesEmpty(values); // does attribute have a null value
+                    attributeNames.add(data.getAttributeName());
 
                     // If we are NOT showing all attributes and this attribute
                     // is null, don't add it to the list of children, this will
@@ -826,6 +829,7 @@ public class AttributeEditorPanel extends BorderPane {
                         header.getChildren().add(attribute); 
                     }
                 }
+                currentAttributeNames.put(type, attributeNames);
             }
         }
     }

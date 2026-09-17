@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,8 +164,9 @@ public abstract class Response {
      * @throws IOException
      */
     public JsonNode getRootNode(final ObjectMapper mapper, final byte[] bytes) throws IOException {
-        final InputStream in = new ByteArrayInputStream(bytes);
-        return mapper.readTree(in);
+        try (final InputStream in = new ByteArrayInputStream(bytes)) {
+            return mapper.readTree(in);
+        }
     }
 
     public String getLogMessage() {
@@ -223,9 +224,10 @@ public abstract class Response {
         final ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        mapper.writeValue(out, node);
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            mapper.writeValue(out, node);
 
-        return new String(out.toByteArray(), StandardCharsets.UTF_8.name());
+            return new String(out.toByteArray(), StandardCharsets.UTF_8.name());
+        }
     }
 }

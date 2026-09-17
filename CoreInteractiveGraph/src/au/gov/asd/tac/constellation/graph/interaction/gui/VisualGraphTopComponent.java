@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,11 @@ import au.gov.asd.tac.constellation.graph.file.SaveNotification;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.animation.AnimationManager;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardAction;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.PasteFromClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.composite.ContractAllCompositesAction;
@@ -61,11 +63,13 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
@@ -82,12 +86,14 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
 import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import com.jogamp.opengl.awt.GLCanvas;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -546,6 +552,11 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
+    public void componentActivated() {
+        visualUpdate();
+    }
+    
+    @Override
     public void componentClosed() {
         animationManager.interruptAllAnimations();
         super.componentClosed();
@@ -581,13 +592,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
+            
+        final HandleIoProgress ioProgressHandler = new HandleIoProgress(String.format("Graph %s has changed...", getName()));
+        ioProgressHandler.start();
+                  
         long modificationCount;
 
-        ReadableGraph rg = graph.getReadableGraph();
-        try {
-            modificationCount = rg.getGlobalModificationCounter();
-        } finally {
-            rg.release();
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
+            modificationCount = rg.getGlobalModificationCounter();       
         }
 
         if (modificationCount != graphModificationCount && graphModificationCount == graphModificationCountBase) {
@@ -598,12 +610,20 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 requestVisible();
             });
         }
+
+        final Graphics graphics = getGraphics();
+
+        final Component visualComponent = visualManager.getVisualComponent();
+        if (visualComponent instanceof GLCanvas vc) {
+                vc.flushGLRunnables();
+                vc.update(graphics);
+        }
+        ioProgressHandler.finish();
     }
 
     private void visualUpdate() {
 
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             final int drawFlagsAttribute = VisualConcept.GraphAttribute.DRAW_FLAGS.get(rg);
             final int visibleAboveThresholdAttribute = VisualConcept.GraphAttribute.VISIBLE_ABOVE_THRESHOLD.get(rg);
             final int displayModeIs3DAttribute = VisualConcept.GraphAttribute.DISPLAY_MODE_3D.get(rg);
@@ -658,8 +678,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         throw new IllegalStateException("Unknown ConnectionMode: " + connectionMode);
                 }
             }
-        } finally {
-            rg.release();
         }
     }
 
@@ -800,7 +818,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                             setHtmlDisplayName(newGraphName); // this changes the text on the tab
                             gdo.lockFile();
                         } catch (final IOException ex) {
-                            throw new RuntimeException(String.format("The name %s already exists.", newGraphName), ex);
+                            NotifyDisplayer.display(String.format("The name %s already exists.", newGraphName), NotifyDescriptor.WARNING_MESSAGE);
                         }
                         savable.setModified(true);
                     }
@@ -1346,5 +1364,26 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     ConstellationLoggerHelper.SUCCESS
             );
         }
+    }
+
+    /**
+     * Creates and opens a new cloned graph of this graph. This method is
+     * invoked by the NetBeans Window System when the user selects the Clone
+     * Window action from the right click context menu on the graph title tab
+     *
+     * @return the TopComponent {@link CloneableTopComponent} instance to be
+     * opened as the clone
+     */
+    @Override
+    protected CloneableTopComponent createClonedObject() {
+        final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
+        final PluginParameters copyParams = copyGraphPlugin.createParameters();
+        copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_SCHEMA_NAME_PARAMETER_ID).setStringValue(graphNode.getGraph().getSchema().getFactory().getName());
+        copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
+        copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_KEYS_PARAMETER_ID).setBooleanValue(true);
+        PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeLater(graphNode.getGraph());
+
+        final CloneableTopComponent topComponent = (CloneableTopComponent) graphNode.getTopComponent();
+        return topComponent;
     }
 }

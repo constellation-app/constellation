@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,7 +92,9 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
         boolean node = false;
         boolean edge = false;
 
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(input), StandardCharsets.UTF_8))) {
+        try (final FileInputStream stream = new FileInputStream(input);
+                final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                final BufferedReader in = new BufferedReader(reader)) {
             while ((line = in.readLine()) != null) {
                 line = line.trim();
                 if (line.startsWith(NODE_TAG)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,16 @@ package au.gov.asd.tac.constellation.utilities.rest;
 import au.gov.asd.tac.constellation.utilities.log.ConnectionLogging;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -47,7 +48,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author arcturus
  */
 public abstract class RestClient {
-    
+
     private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
 
     protected static final String HOST = "{HOST}";
@@ -61,9 +62,9 @@ public abstract class RestClient {
      * @throws IOException
      */
     private static byte[] getBody(final HttpsURLConnection conn, final int code) throws IOException {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
         final byte[] bytes = new byte[256 * 1024];
-        try (final InputStream in = code / 100 == 2 ? HttpsUtilities.getInputStream(conn) : HttpsUtilities.getErrorStream(conn)) {
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                final InputStream in = code / 100 == 2 ? HttpsUtilities.getInputStream(conn) : HttpsUtilities.getErrorStream(conn)) {
             if (in != null) {
                 while (true) {
                     final int len = in.read(bytes);
@@ -74,14 +75,14 @@ public abstract class RestClient {
                     os.write(bytes, 0, len);
                 }
             }
+            
+            return os.toByteArray();
         }
-        return os.toByteArray();
     }
 
     /**
-     * Construct a URL string based on supplied URL and any supplied query
-     * parameters.
-     * 
+     * Construct a URL string based on supplied URL and any supplied query parameters.
+     *
      * @param url URL to base generated URL on.
      * @param params Any parameters to add to the URL (ie HTTP GET parameters)
      * @return URL combining base URL and parameters.
@@ -104,7 +105,7 @@ public abstract class RestClient {
                     query.append(String.format("%s=%s", key, value));
                 } else {
                     LOGGER.log(Level.INFO, "{0}", String.format("Unable to add rest key/value: %s=%s to URL=%s", key, value, url));
-                } 
+                }
             }
         }
         return URI.create(url + (!query.isEmpty() ? "?" + query : "")).toURL();
@@ -129,20 +130,19 @@ public abstract class RestClient {
      * HTTP response content.
      */
     protected byte[] bytes;
-    
+
     /**
      * Manage the creation of a HTTP GET connection.
-     * 
+     *
      * @param url The URL to base the GET connection on.
      * @param params Any parameters to add to the URL
      * @return HttpsURLConnection object corresponding to the created connection
-     * @throws IOException 
+     * @throws IOException
      */
     public abstract HttpsURLConnection makeGetConnection(final String url, final List<Tuple<String, String>> params) throws IOException;
 
     /**
-     * Will be run before the GET connection - designed to be overridden as
-     * required.
+     * Will be run before the GET connection - designed to be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
@@ -150,7 +150,7 @@ public abstract class RestClient {
     public void beforeGet(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
     }
-    
+
     /**
      * A generic "send request / read response" method.
      * <p>
@@ -186,8 +186,7 @@ public abstract class RestClient {
     }
 
     /**
-     * Will be run after the GET connection has been disconnected - designed to
-     * be overridden as required.
+     * Will be run after the GET connection has been disconnected - designed to be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
@@ -195,10 +194,10 @@ public abstract class RestClient {
     public void afterGet(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
     }
-    
+
     /**
      * Manage the creation of a HTTP POST connection.
-     * 
+     *
      * @param url The URL to base the POST connection on.
      * @param params Any parameters to add to the URL
      * @return HttpsURLConnection object corresponding to the created connection
@@ -207,8 +206,7 @@ public abstract class RestClient {
     public abstract HttpsURLConnection makePostConnection(final String url, final List<Tuple<String, String>> params) throws IOException;
 
     /**
-     * Will be run before the POST connection - designed to be overridden as
-     * required.
+     * Will be run before the POST connection - designed to be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
@@ -218,13 +216,11 @@ public abstract class RestClient {
     }
 
     /**
-     * Post method which will convert the {@code params} to a JSON body. At the
-     * moment this method only supports a simple JSON object. That is, it does
-     * not convert arrays into JSON.
+     * Post method which will convert the {@code params} to a JSON body. At the moment this method only supports a
+     * simple JSON object. That is, it does not convert arrays into JSON.
      *
      * @param url The URL to request
-     * @param params A simple key/value pair in which values do not contain
-     * Arrays, Sets etc
+     * @param params A simple key/value pair in which values do not contain Arrays, Sets etc
      *
      * @throws IOException
      */
@@ -236,7 +232,9 @@ public abstract class RestClient {
         try {
             connection = makePostConnection(url, params);
 
-            try (final BufferedWriter request = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.name()))) {
+            try (final OutputStream stream = connection.getOutputStream();
+                    final OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8.name());
+                    final BufferedWriter request = new BufferedWriter(writer)) {
                 request.write(generateJsonFromFlatMap(params));
                 request.flush();
             }
@@ -262,24 +260,25 @@ public abstract class RestClient {
     }
 
     /**
-     * Post method similar to {@code post} but has the option to supply a json
-     * string that will be posted in the message body.
+     * Post method similar to {@code post} but has the option to supply a json string that will be posted in the message
+     * body.
      *
      * @param url The URL to request
-     * @param params A simple key/value pair in which values do not contain
-     * Arrays, Sets etc
+     * @param params A simple key/value pair in which values do not contain Arrays, Sets etc
      * @param json The json string to be posted in the message body
      * @throws IOException
      */
     public void postWithJson(final String url, final List<Tuple<String, String>> params, final String json) throws IOException {
         logRequest(url, params, json);
         beforePost(url, params);
-        
+
         HttpsURLConnection connection = null;
         try {
             connection = makePostConnection(url, params);
 
-            try (final BufferedWriter request = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.name()))) {
+            try (final OutputStream stream = connection.getOutputStream();
+                    final OutputStreamWriter writer = new OutputStreamWriter(stream, StandardCharsets.UTF_8.name());
+                    final BufferedWriter request = new BufferedWriter(writer)) {
                 request.write(json);
                 request.flush();
             }
@@ -305,12 +304,11 @@ public abstract class RestClient {
     }
 
     /**
-     * Post method similar to {@code post} but has the option to supply a byte
-     * array that will be posted in the message body.
+     * Post method similar to {@code post} but has the option to supply a byte array that will be posted in the message
+     * body.
      *
      * @param url The URL to request
-     * @param params A simple key/value pair in which values do not contain
-     * Arrays, Sets etc
+     * @param params A simple key/value pair in which values do not contain Arrays, Sets etc
      * @param bytes The bytes to be posted in the message body
      *
      * @throws IOException
@@ -322,7 +320,8 @@ public abstract class RestClient {
         HttpsURLConnection connection = null;
         try {
             connection = makePostConnection(url, params);
-            try (final DataOutputStream request = new DataOutputStream(connection.getOutputStream())) {
+            try (final OutputStream stream = connection.getOutputStream();
+                    final DataOutputStream request = new DataOutputStream(stream)) {
                 request.write(bytes);
                 request.flush();
             }
@@ -348,8 +347,7 @@ public abstract class RestClient {
     }
 
     /**
-     * Will be run before the POST connection has been disconnected - designed
-     * to be overridden as required.
+     * Will be run before the POST connection has been disconnected - designed to be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
@@ -366,32 +364,33 @@ public abstract class RestClient {
      * @throws IOException
      */
     private String generateJsonFromFlatMap(final List<Tuple<String, String>> params) throws IOException {
-        final ByteArrayOutputStream json = new ByteArrayOutputStream();
-        final JsonFactory jsonFactory = new MappingJsonFactory();
-        try (final JsonGenerator jg = jsonFactory.createGenerator(json)) {
-            jg.writeStartObject();
-            
-            for (final Tuple<String, String> param : params) {
-                // Ensure the parameter has a non empty key.
-                final String key = param.getFirst();
-                if (StringUtils.isNotBlank(key)) {
-                    jg.writeStringField(key,  param.getSecond());
-                }
-            }
-            jg.writeEndObject();
-            jg.flush();
-        }
+        try (final ByteArrayOutputStream json = new ByteArrayOutputStream()) {
+            final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();
+            try (final JsonGenerator jg = jsonFactory.createGenerator(json)) {
+                jg.writeStartObject();
 
-        return json.toString(StandardCharsets.UTF_8.name());
+                for (final Tuple<String, String> param : params) {
+                    // Ensure the parameter has a non empty key.
+                    final String key = param.getFirst();
+                    if (StringUtils.isNotBlank(key)) {
+                        jg.writeStringField(key, param.getSecond());
+                    }
+                }
+                jg.writeEndObject();
+                jg.flush();
+            }
+
+            return json.toString(StandardCharsets.UTF_8.name());
+        }
     }
-    
+
     /**
      * Logs the request if ConnectionLogging is enabled
      *
      * @param url The URL to request
      * @param params A simple key/value pair of request parameters
      * @param messageBytes The bytes to be posted in the message body
-     *     
+     *
      */
     public void logRequestBytes(final String url, final List<Tuple<String, String>> params, final byte[] messageBytes) {
         if (LogPreferences.isConnectionLoggingEnabled()) {
@@ -408,20 +407,20 @@ public abstract class RestClient {
             }
         }
     }
-    
+
     /**
      * Logs the request if ConnectionLogging is enabled
      *
      * @param url The URL to request
      * @param params A simple key/value pair of request parameters
      * @param messageBody The String to be posted in the message body
-     *     
+     *
      */
     public void logRequest(final String url, final List<Tuple<String, String>> params, final String messageBody) {
         if (LogPreferences.isConnectionLoggingEnabled()) {
             ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request URL = " + url, null);
             final StringBuilder sb = new StringBuilder();
-            for (final Tuple<String, String> t : params){
+            for (final Tuple<String, String> t : params) {
                 sb.append(t.getFirst()).append(" = ").append(t.getSecond()).append("\n");
             }
             ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request Parameters:\n" + sb.toString(), null);
@@ -430,7 +429,7 @@ public abstract class RestClient {
             }
         }
     }
-    
+
     /**
      * Logs the response if ConnectionLogging is enabled
      *

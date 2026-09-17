@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,17 +44,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntLongMap;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
 import org.openide.util.Lookup;
 
 /**
@@ -77,7 +78,7 @@ public final class GraphJsonReader {
     private long globalModCount;
     private long attrModCount;
     private long structModCount;
-    private final Map<Integer, Long> attrValCount = new HashMap<>();
+    private final MutableIntLongMap attrValCount = new IntLongHashMap();
     private GraphByteReader byteReader;
 
     private static final String ATTRIBUTE_MOD_COUNT = "attribute_mod_count";
@@ -103,7 +104,8 @@ public final class GraphJsonReader {
     }
 
     public Graph readGraphZip(final File graphFile, final IoProgress progress) throws IOException, GraphParseException {
-        try (final InputStream in = new BufferedInputStream(new FileInputStream(graphFile))) {
+        try (final FileInputStream stream = new FileInputStream(graphFile);
+                final InputStream in = new BufferedInputStream(stream)) {
             return readGraphZip(graphFile.getPath(), in, progress);
         }
     }
@@ -130,7 +132,6 @@ public final class GraphJsonReader {
                         if (entry.getName().startsWith(DefaultCustomIconProvider.USER_ICON_DIR) && !entry.isDirectory()) {
                             final String iconName = entry.getName().substring(DefaultCustomIconProvider.USER_ICON_DIR.length());
                             // prepare a link to an icon entry in the star/zip file
-                            final InputStream zin = zFile.getInputStream(entry);
                             boolean saveCustomFile = true;
                             final File file = new File(directoryPath + iconName);
                             if (file.exists()) {
@@ -148,7 +149,8 @@ public final class GraphJsonReader {
                             }
                             if (saveCustomFile) {
                                 // copy the icon image from the zip file to the constellation user's icon directory
-                                try (final FileOutputStream os = new FileOutputStream(file)) {
+                                try (final InputStream zin = zFile.getInputStream(entry);
+                                        final FileOutputStream os = new FileOutputStream(file)) {
                                     for (int c = zin.read(); c != -1; c = zin.read()) {
                                         os.write(c);
                                     }
@@ -174,15 +176,13 @@ public final class GraphJsonReader {
                 throw new GraphParseException(msg);
             }
 
-            try {
-                graph = readGraph(in.getInputStream(), in.getAvailableSize(), progress);
+            try (final InputStream inputStream = in.getInputStream()) {
+                graph = readGraph(inputStream, in.getAvailableSize(), progress);
             } catch (final IllegalStateException ex) {
                 throw new GraphParseException(ex.getMessage(), ex);
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new GraphParseException(ex.getMessage(), ex);
-            } finally {
-                in.getInputStream().close();
             }
         } finally {
             byteReader = null;
@@ -265,7 +265,7 @@ public final class GraphJsonReader {
         final ImmutableObjectCache immutableObjectCache = new ImmutableObjectCache();
 
         // Use a combination of stream and tree-model parsing.
-        jp = new MappingJsonFactory().createParser(in);
+        jp = JsonFactoryUtilities.getMappingJsonFactory().createParser(in);
 
         final Map<Integer, Integer> vertexMap = new HashMap<>();
         final Map<Integer, Integer> transactionMap = new HashMap<>();
@@ -477,9 +477,7 @@ public final class GraphJsonReader {
         //set mod count vals
         if (version >= 1) {
             storeGraph.setModificationCounters(globalModCount, structModCount, attrModCount);
-            for (final Entry<Integer, Long> e : attrValCount.entrySet()) {
-                storeGraph.setValueModificationCounter(e.getKey(), e.getValue());
-            }
+            attrValCount.forEachKeyValue((key, value) -> storeGraph.setValueModificationCounter(key, value));
         }
 
         try {
@@ -597,7 +595,7 @@ public final class GraphJsonReader {
 
                 if (version >= 1) {
                     //get mod count for attribute
-                    final Long modCount = node.get("mod_count").longValue();
+                    final long modCount = node.get("mod_count").longValue();
                     attrValCount.put(attrId, modCount);
                 }
             } catch (final IllegalArgumentException ex) {
@@ -630,7 +628,7 @@ public final class GraphJsonReader {
             }
 
             // Gather the key labels.
-            final List<Integer> keyAttrIds = new ArrayList<>();
+            final MutableIntList keyAttributes = new IntArrayList();
             while (jp.nextToken() != JsonToken.END_ARRAY) {
                 // Read the key attributes from the array and create the graph key.
                 final String keyLabel = jp.readValueAs(String.class);
@@ -639,16 +637,10 @@ public final class GraphJsonReader {
                     throw new GraphParseException(msg);
                 }
 
-                keyAttrIds.add(attributes.get(keyLabel).attrId);
+                keyAttributes.add(attributes.get(keyLabel).attrId);
             }
 
-            // Create the primary key.
-            final int[] keyAttributes = new int[keyAttrIds.size()];
-            for (int i = 0; i < keyAttrIds.size(); i++) {
-                keyAttributes[i] = keyAttrIds.get(i);
-            }
-
-            graph.setPrimaryKey(elementType, keyAttributes);
+            graph.setPrimaryKey(elementType, keyAttributes.toArray());
 
             current = jp.nextToken();
         }
@@ -687,7 +679,8 @@ public final class GraphJsonReader {
                     if (idNode == null) {
                         final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.VX_ID, jp.currentLocation());
                         throw new GraphParseException(msg);
-                    }       final int jsonId = idNode.intValue();
+                    }
+                    final int jsonId = idNode.intValue();
                     id = graph.addVertex();
                     vertexPositions.put(jsonId, id);
                 }

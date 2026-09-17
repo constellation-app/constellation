@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.whatsnew;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -84,10 +85,10 @@ public abstract class WhatsNewProvider {
      * @return A {@link List} of {@link WhatsNewEntry} objects.
      */
     public static List<WhatsNewEntry> getWhatsNew(final Class<?> cls, final String resourceName, final String section) {
-        try {
-            try (final BufferedReader r = new BufferedReader(new InputStreamReader(cls.getResourceAsStream(resourceName), StandardCharsets.UTF_8.name()))) {
-                return parse(r, section);
-            }
+        try (final InputStream stream = cls.getResourceAsStream(resourceName);
+                final InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
+                final BufferedReader r = new BufferedReader(reader)) {
+            return parse(r, section);
         } catch (final IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

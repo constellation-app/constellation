@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -250,7 +250,8 @@ public class DelimitedImportController extends ImportController {
 
     public List<String> getColumnHeaders(final File file) {
         final List<String> headersArray = new ArrayList<>();
-        try (final BufferedReader bufferReader = new BufferedReader(new FileReader(file))) {
+        try (final FileReader fileReader = new FileReader(file);
+                final BufferedReader bufferReader = new BufferedReader(fileReader)) {
             final String headerLine = bufferReader.readLine();
             headersArray.addAll(Arrays.asList(headerLine.split(SeparatorConstants.COMMA)));
 

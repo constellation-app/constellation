@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,9 +78,12 @@ public class ExportToCsvFilePluginNGTest {
             final ExportToCsvFilePlugin plugin = new ExportToCsvFilePlugin(tmpFile, table, pagination, true);
             plugin.execute(null, pluginInteraction, null);
 
-            final String outputtedFile = new String(IOUtils.toByteArray(new FileInputStream(tmpFile)), StandardCharsets.UTF_8);
+            try (final FileInputStream stream = new FileInputStream(tmpFile)) {
+                final String outputtedFile = new String(IOUtils.toByteArray(stream), StandardCharsets.UTF_8);
+                
+                assertEquals(csv, outputtedFile);
+            }
 
-            assertEquals(csv, outputtedFile);
             assertEquals(plugin.getName(), "Table View: Export to Delimited File");
         } finally {
             if (tmpFile != null) {

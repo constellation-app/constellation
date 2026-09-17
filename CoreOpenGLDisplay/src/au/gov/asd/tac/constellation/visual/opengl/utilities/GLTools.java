@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,7 +125,9 @@ public final class GLTools {
 
     public static String loadFile(final Class<?> refClass, final String resourceName) throws IOException {
         final StringBuilder buf = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(refClass.getResourceAsStream(resourceName), StandardCharsets.UTF_8.name()))) {
+        try (final InputStream stream = refClass.getResourceAsStream(resourceName);
+                final InputStreamReader inputReader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
+                final BufferedReader reader = new BufferedReader(inputReader)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 buf.append(line);

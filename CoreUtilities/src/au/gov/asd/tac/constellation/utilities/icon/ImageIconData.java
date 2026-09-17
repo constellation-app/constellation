@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,10 @@ public class ImageIconData extends IconData {
 
     @Override
     protected InputStream createRasterInputStream() throws IOException {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
-        return new ByteArrayInputStream(os.toByteArray());
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
+            return new ByteArrayInputStream(os.toByteArray());
+        }
     }
 
     @Override

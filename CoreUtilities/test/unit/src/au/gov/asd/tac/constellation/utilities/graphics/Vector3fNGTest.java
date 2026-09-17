@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -366,7 +366,7 @@ public class Vector3fNGTest {
         v.a[2] = 0F;
         assertTrue(v.isZero());
     }
-    
+
     @Test
     public void testEquals() {
         assertTrue(new Vector3f(F1, F2, F3).equals(new Vector3f(F1, F2, F3)));

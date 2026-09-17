@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,10 +47,7 @@ public class Octree {
     public Octree(final Box3D box) {
         this(0, box);
     }
-
-    /*
-     * Constructor
-     */
+    
     public Octree(final int level, final Box3D box) {
         this.level = level;
         this.box = box;
@@ -58,52 +55,18 @@ public class Octree {
         nodes = null;
     }
 
-    public List<Box3D> getSubs() {
-        final List<Box3D> boxes = new ArrayList<>();
-        getSubs(boxes);
-
-        return boxes;
-    }
-
-    private void getSubs(final List<Box3D> boxes) {
-        boxes.add(box);
-        for (final Octree qt : nodes) {
-            if (qt != null) {
-                qt.getSubs(boxes);
-            }
-        }
-    }
-
-    /*
-     * Clears the quadtree.
-     * <p>
-     * Recursively clear all objects from all nodes.
-     */
-    public void clear() {
-        objects.clear();
-
-        if (nodes != null) {
-            for (int i = 0; i < nodes.length; i++) {
-                nodes[i].clear();
-                nodes[i] = null;
-            }
-
-            nodes = null;
-        }
-    }
-
-    /*
+    /**
      * Splits the node into eight subnodes.
      * <p>
      * Divide the node into four equal parts and initialise the four subnodes with the new bounds.
      */
     private void split() {
-        final float minx = box.minx;
-        final float miny = box.miny;
-        final float minz = box.minz;
-        final float maxx = box.maxx;
-        final float maxy = box.maxy;
-        final float maxz = box.maxz;
+        final float minx = box.minx();
+        final float miny = box.miny();
+        final float minz = box.minz();
+        final float maxx = box.maxx();
+        final float maxy = box.maxy();
+        final float maxz = box.maxz();
         final float midx = minx + (maxx - minx) / 2;
         final float midy = miny + (maxy - miny) / 2;
         final float midz = minz + (maxz - minz) / 2;
@@ -119,29 +82,29 @@ public class Octree {
         nodes[BOT_R_B] = new Octree(level + 1, new Box3D(midx, midy, minz, maxx, maxy, midz));
     }
 
-    /*
+    /**
      * Determine which node the object belongs to.
      * <p>
      * -1 means object cannot completely fit within a child node and is part of the parent node.
      * <p>
-     * Determine where an object belongs in the quadtree by determining which node the object can fit into.
+     * Determine where an object belongs in the octree by determining which node the object can fit into.
      */
     private int getIndex(final Orb3D orb) {
         int index = -1;
-        final double midx = box.minx + ((box.maxx - box.minx) / 2F);
-        final double midy = box.miny + ((box.miny - box.maxy) / 2F);
-        final double midz = box.minz + ((box.minz - box.maxz) / 2F);
+        final double midx = box.minx() + ((box.maxx() - box.minx()) / 2F);
+        final double midy = box.miny() + ((box.miny() - box.maxy()) / 2F);
+        final double midz = box.minz() + ((box.minz() - box.maxz()) / 2F);
 
         // Object can completely fit within the top/bottom quadrants.
-        final boolean topQuadrant = orb.getY() + orb.r < midy;
-        final boolean bottomQuadrant = orb.getY() - orb.r > midy;
+        final boolean topQuadrant = orb.getY() + orb.getR() < midy;
+        final boolean bottomQuadrant = orb.getY() - orb.getR() > midy;
 
         // Object can completely fit within the front/back quadrants.
-        final boolean frontQuadrant = orb.getZ() - orb.r > midz;
-        final boolean backQuadrant = orb.getZ() + orb.r < midz;
+        final boolean frontQuadrant = orb.getZ() - orb.getR() > midz;
+        final boolean backQuadrant = orb.getZ() + orb.getR() < midz;
 
         // Object can completely fit within the left quadrants.
-        if (orb.getX() + orb.r < midx) {
+        if (orb.getX() + orb.getR() < midx) {
             if (topQuadrant) {
                 if (frontQuadrant) {
                     index = TOP_L_F;
@@ -155,7 +118,7 @@ public class Octree {
                     index = backQuadrant ? BOT_L_B : -1;
                 }
             }
-        } else if (orb.getX() - orb.r > midx) {
+        } else if (orb.getX() - orb.getR() > midx) {
             // Object can completely fit within the right quadrants.
             if (topQuadrant) {
                 if (frontQuadrant) {
@@ -177,8 +140,8 @@ public class Octree {
         return index;
     }
 
-    /*
-     * Insert the object into the quadtree. If the node exceeds the capacity, it will split and add
+    /**
+     * Insert the object into the octree. If the node exceeds the capacity, it will split and add
      * objects that fit to their corresponding nodes.
      */
     public void insert(final Orb3D orb) {
@@ -211,10 +174,10 @@ public class Octree {
         }
     }
 
-    /*
+    /**
      * Return all objects that could collide with the given object.
      */
-    public List<Orb3D> getPossibleColliders(final List<Orb3D> colliders, final Orb3D orb) {
+    private List<Orb3D> getPossibleColliders(final List<Orb3D> colliders, final Orb3D orb) {
         // Recursively find all child colliders...
         final int index = getIndex(orb);
         if (index != -1 && nodes != null) {
@@ -250,7 +213,7 @@ public class Octree {
                 float y = orb.getY() - possible.getY();
                 float z = orb.getZ() - possible.getZ();
                 final double ll = x * x + y * y + z * z;
-                final double r = possible.r + orb.r + padding;
+                final double r = possible.getR() + orb.getR() + padding;
                 if (ll <= r * r) {
                     final double l = Math.sqrt(ll);
                     collided++;

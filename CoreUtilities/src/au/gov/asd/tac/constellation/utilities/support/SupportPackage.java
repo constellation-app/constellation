@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ public class SupportPackage {
     public void zipFolder(final String sourceFolder, final Iterable<String> files, final String destinationZipFilename) throws IOException {
         final byte[] buffer = new byte[1024];
 
-        final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
-        try (final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
+        try (final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
+                final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             for (final String filename : files) {
                 if (!filesToIgnore(filename)) {
                     final ZipEntry zipEntry = new ZipEntry(filename);

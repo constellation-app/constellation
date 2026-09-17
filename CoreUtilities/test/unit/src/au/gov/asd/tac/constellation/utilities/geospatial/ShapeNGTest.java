@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -223,7 +223,7 @@ public class ShapeNGTest {
      * After running the tests that rely on an empty CRS cache we can manually
      * populate the cache to speed up test runs and avoid EPSG code from
      * reaching out further than necessary for simple unit tests.
-     * @throws org.opengis.referencing.FactoryException
+     * @throws org.geotools.api.referencing.FactoryException
      */
     @AfterGroups(groups = ("ShapeNGTest.emptyCrsCache"))
     public void populateCrsCache() throws FactoryException {
@@ -1005,14 +1005,17 @@ public class ShapeNGTest {
         assertTrue(kml.contains("Document id=\"" + id));
 
         // get Features from KML String
-        final PullParser parser = new PullParser(new KMLConfiguration(), new ByteArrayInputStream(kml.getBytes()), SimpleFeature.class);
-
         final List<SimpleFeature> features = new ArrayList<>();
-        SimpleFeature simpleFeature = (SimpleFeature) parser.parse();
-        while (simpleFeature != null) {
-            features.add(simpleFeature);
-            simpleFeature = (SimpleFeature) parser.parse();
+        try (final ByteArrayInputStream stream = new ByteArrayInputStream(kml.getBytes())) {
+            final PullParser parser = new PullParser(new KMLConfiguration(), stream, SimpleFeature.class);
+            
+            SimpleFeature simpleFeature = (SimpleFeature) parser.parse();
+            while (simpleFeature != null) {
+                features.add(simpleFeature);
+                simpleFeature = (SimpleFeature) parser.parse();
+            }
         }
+
         final SimpleFeatureCollection fc = DataUtilities.collection(features);
 
         // size-1 because KML adds the FeatureType into the list of Features

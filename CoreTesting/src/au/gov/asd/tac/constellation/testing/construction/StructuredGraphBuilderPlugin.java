@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -257,6 +257,9 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
         graph.setLongValue(attrTxDatetime, transaction, dt);
         graph.setObjectValue(colorAttr, transaction, randomColorWithAlpha(r));
+        if (graph.getSchema() != null) {
+            graph.getSchema().newTransaction(graph, transaction);
+        }
     }
 
     private static String getRandomIconName(final List<String> iconNames, final SecureRandom r) {

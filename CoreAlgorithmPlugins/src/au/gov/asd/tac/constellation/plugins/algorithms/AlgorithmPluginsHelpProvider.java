@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
 
-        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", MODULE_PATH + "chinese-whispers.md");
+        map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClustering", MODULE_PATH + "label-propagation-clustering.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", MODULE_PATH + "k-truss.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin", MODULE_PATH + "shortest-paths.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.Hierarchical", MODULE_PATH + "hierarchical-clustering.md");

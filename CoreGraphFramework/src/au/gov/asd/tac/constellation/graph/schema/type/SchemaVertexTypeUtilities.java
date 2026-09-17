@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -330,7 +331,44 @@ public class SchemaVertexTypeUtilities {
             extractedTypes.addAll(previouslyExtracted);
         }
 
-        getTypes().forEach(schemaVertexType -> {
+        final Collection<SchemaVertexType> schematypes = getTypes();
+        // text to process (longest matching extracted type text is removed each iteration)
+        String runningText = text;
+        // final list of ExtractedVertexType
+        final List<ExtractedVertexType> finalExtractedTypesList = new ArrayList<>();
+        // map of matching identifiers and ExtractedVertexType
+        List<ExtractedVertexType> extractedTypesList;
+
+        // while there are still matching schema types, process then remove from text    
+        while (!(extractedTypesList = getExtractedTypesFromText(schematypes, runningText, extractedTypes)).isEmpty()) {
+            final Map<String, ExtractedVertexType> extractedTypesMap = new HashMap<>();
+            extractedTypesList.forEach(value -> extractedTypesMap.put(value.getIdentifier(), value));
+
+            // identify the longest text and add the matching type to final list
+            final String longest = extractedTypesMap.keySet().stream()
+                    .max(Comparator.comparingInt(String::length))
+                    .orElse("");
+
+            finalExtractedTypesList.add(extractedTypesMap.get(longest));
+            // remove the longest text from text and process for next longest matching identifier
+            runningText = runningText.replaceAll(longest, "");
+            extractedTypes.clear();
+        }
+
+        return Collections.unmodifiableList(finalExtractedTypesList);
+    }
+
+    /**
+     * Method to extract matching SchemaTypes in the form of ExtractedVertexType
+     * from the text that is passed in.
+     * @param schematypes List of SchemaTypes to match
+     * @param text Source text to extract SchemaTypes from
+     * @param extractedTypes List of existing extracted types
+     * @return 
+     */
+    protected static List<ExtractedVertexType> getExtractedTypesFromText(
+            final Collection<SchemaVertexType> schematypes, final String text, final List<ExtractedVertexType> extractedTypes) {
+        schematypes.forEach(schemaVertexType -> {
             final Pattern regex = schemaVertexType.getDetectionRegex();
             if (regex != null && text != null) {
                 final Matcher matcher = regex.matcher(text);
@@ -340,14 +378,21 @@ public class SchemaVertexTypeUtilities {
                         final ExtractedVertexType currentExtractedType = new ExtractedVertexType(identifier, schemaVertexType, text, matcher.start(), matcher.end());
                         final List<ExtractedVertexType> deficientResults = new ArrayList<>();
                         boolean isDeficientResult = false;
+                        final Comparator comparator = VertexDominanceCalculator.getDefault().getComparator();
                         for (final ExtractedVertexType extractedType : extractedTypes) {
-                            if (currentExtractedType.compareTo(extractedType) < 0) {
-                                isDeficientResult = true;
-                                break;
-                            } else if (currentExtractedType.compareTo(extractedType) > 0) {
-                                deficientResults.add(extractedType);
+                            // do compare only if identifiers are the same or new identifier is a substring of the existing extractedType
+                            if (identifier.equalsIgnoreCase(extractedType.identifier)) {
+                                // ignore current extracted type if existing extracted type is higher in the list (lower number)
+                                if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) < 0) {
+                                    isDeficientResult = true;
+                                    break;
+                                } else if (comparator.compare(extractedType.getType(), currentExtractedType.getType()) > 0
+                                        || currentExtractedType.compareTo(extractedType) < 0) {
+                                    deficientResults.add(extractedType);
+                                }
                             }
                         }
+                        // if there are deficientResults, replace it with the more dominant extractedType
                         if (!isDeficientResult) {
                             extractedTypes.removeAll(deficientResults);
                             extractedTypes.add(currentExtractedType);
@@ -356,8 +401,7 @@ public class SchemaVertexTypeUtilities {
                 }
             }
         });
-
-        return Collections.unmodifiableList(extractedTypes);
+        return extractedTypes;
     }
 
     /**

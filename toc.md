@@ -43,7 +43,7 @@
     <a href="../ext\docs\CoreVisualGraph\merge-nodes-tool.md">Merge Nodes</a><br/>
     <a href="../ext\docs\CoreVisualSchema\complete-with-schema.md">Complete With Schema</a><br/>
 <div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Cluster" aria-expanded="false" aria-controls="Cluster">Cluster</button></h2></div>
-<div id="Cluster" class="collapse" aria-labelledby="Cluster" data-parent="#Cluster"> <div class="card-body">      <a href="../ext\docs\CoreAlgorithmPlugins\chinese-whispers.md">Chinese Whispers</a><br/>
+<div id="Cluster" class="collapse" aria-labelledby="Cluster" data-parent="#Cluster"> <div class="card-body">      <a href="../ext\docs\CoreAlgorithmPlugins\label-propagation-clustering.md">Label Propagation Clustering</a><br/>
       <a href="../ext\docs\CoreAlgorithmPlugins\k-truss.md">K-Truss</a><br/>
       <a href="../ext\docs\CoreAlgorithmPlugins\hierarchical-clustering.md">Hierarchical</a><br/>
       <a href="../ext\docs\CoreAlgorithmPlugins\info-map-clustering.md">Info Map</a><br/>

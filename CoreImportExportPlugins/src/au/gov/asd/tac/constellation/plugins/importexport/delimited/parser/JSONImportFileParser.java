@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,8 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.Strings;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -292,7 +293,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * @return line of data. This is effectively an array of strings, one per
      * column.
      */
-    private String[] getLineContent(final JsonNode node, final Map<String, Integer> columnMap, final String prefix, String[] line) {
+    private String[] getLineContent(final JsonNode node, final MutableObjectIntMap<String> columnMap, final String prefix, String[] line) {
         // Ensure the line is created if it wasn't already.
         if (line == null) {
             line = new String[columnMap.size()];
@@ -373,10 +374,9 @@ public class JSONImportFileParser extends ImportFileParser {
      * resulting table.
      */
     private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
-        try {
-            final ArrayList<String[]> results = new ArrayList<>();
-            ObjectMapper mapper = new ObjectMapper();
-            InputStream in = input.getInputStream();
+        try (final InputStream in = input.getInputStream()) {
+            final List<String[]> results = new ArrayList<>();
+            final ObjectMapper mapper = new ObjectMapper();
 
             // Get root node and try to find a valid candidate list. If no list
             // is found there will be no data to import.
@@ -416,7 +416,7 @@ public class JSONImportFileParser extends ImportFileParser {
                 // names and store them in a dictionary mapping them to column
                 // number.
                 ArrayList<String> columns = extractAllColNames(selectedList, null, "");
-                Map<String, Integer> columnMap = new HashMap<>();
+                final MutableObjectIntMap<String> columnMap = new ObjectIntHashMap<>();
                 columns.forEach(column -> columnMap.put(column, columnMap.size()));
 
                 // Add a heading row to the return data
@@ -431,7 +431,7 @@ public class JSONImportFileParser extends ImportFileParser {
 
                         // If we are dealing with a list of lists, the first row is used
                         // as column headings, so skip over it.
-                        String[] line = getLineContent(listNode, columnMap, "", null);
+                        final String[] line = getLineContent(listNode, columnMap, "", null);
                         results.add(line);
 
                         if (results.size() > limit && limit > 0) {

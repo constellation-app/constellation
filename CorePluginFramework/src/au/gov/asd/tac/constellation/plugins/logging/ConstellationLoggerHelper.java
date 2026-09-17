@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -313,7 +313,8 @@ public class ConstellationLoggerHelper {
         sha256Digest.reset();
 
         final byte[] buffer = new byte[1024];
-        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
+        try (final FileInputStream stream = new FileInputStream(file);
+                final BufferedInputStream in = new BufferedInputStream(stream)) {
             int bytesRead = in.read(buffer);
             while (bytesRead >= 0) {
                 sha256Digest.update(buffer, 0, bytesRead);

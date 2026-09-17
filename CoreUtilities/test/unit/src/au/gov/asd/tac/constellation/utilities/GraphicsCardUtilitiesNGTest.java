@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,8 @@ public class GraphicsCardUtilitiesNGTest {
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
+                try (final FileWriter fileWriter = new FileWriter(DXDIAG_ABSOLUTE_PATH);
+                        final BufferedWriter writer = new BufferedWriter(fileWriter)) {
                     writer.write(DXDIAG_OUTPUT);
                 }
                 return null;
@@ -131,7 +132,8 @@ public class GraphicsCardUtilitiesNGTest {
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
+                try (final FileWriter fileWriter = new FileWriter(DXDIAG_ABSOLUTE_PATH);
+                        final BufferedWriter writer = new BufferedWriter(fileWriter)) {
                     writer.write(dummyDxDiag);
                 }
                 return null;
@@ -218,7 +220,8 @@ public class GraphicsCardUtilitiesNGTest {
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
+                try (final FileWriter fileWriter = new FileWriter(DXDIAG_ABSOLUTE_PATH);
+                        final BufferedWriter writer = new BufferedWriter(fileWriter)) {
                     writer.write(DXDIAG_ABSOLUTE_PATH);
                 }
                 return null;
@@ -251,7 +254,8 @@ public class GraphicsCardUtilitiesNGTest {
             final Runtime runtime = mock(Runtime.class);
             runtimeMockedStatic.when(Runtime::getRuntime).thenReturn(runtime);
             when(runtime.exec(any(String[].class))).thenAnswer(invocation -> {
-                try (final BufferedWriter writer = new BufferedWriter(new FileWriter(DXDIAG_ABSOLUTE_PATH))) {
+                try (final FileWriter fileWriter = new FileWriter(DXDIAG_ABSOLUTE_PATH);
+                        final BufferedWriter writer = new BufferedWriter(fileWriter)) {
                     writer.write(DXDIAG_OUTPUT);
                 }
                 return null;

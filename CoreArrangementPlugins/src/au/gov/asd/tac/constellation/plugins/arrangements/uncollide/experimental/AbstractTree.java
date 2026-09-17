@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * This class provides an abstract representation of a Tree designed to help
@@ -40,7 +40,7 @@ public abstract class AbstractTree {
 
     final int level;
     AbstractBoundingBox box;
-    List<Integer> objects;
+    MutableIntList objects;
     AbstractTree[] nodes;
 
     /**
@@ -50,14 +50,14 @@ public abstract class AbstractTree {
      */
     protected AbstractTree(final GraphReadMethods graph, final Dimensions d) {
         this.level = 0;
-        this.objects = new ArrayList<>();
+        this.objects = new IntArrayList();
         this.nodes = null;
         this.box = BoxFactory.create(graph, d);
 
         this.wg = graph;
-        this.xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        this.yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        this.rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        this.xId = VisualConcept.VertexAttribute.X.get(wg);
+        this.yId = VisualConcept.VertexAttribute.Y.get(wg);
+        this.rId = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
     }
 
     /**
@@ -69,7 +69,7 @@ public abstract class AbstractTree {
     protected AbstractTree(final AbstractTree parent, final AbstractBoundingBox box) {
         this.level = parent.level + 1;
         this.box = box;
-        objects = new ArrayList<>();
+        objects = new IntArrayList();
         nodes = null;
         // Inherit parent values for graph based variables.
         wg = parent.wg;
@@ -125,7 +125,7 @@ public abstract class AbstractTree {
             while (i < objects.size()) { // For each object get the index and insert it into the subnode if it fits in one. If it fits in a subnode remove it from this list of objects.
                 final int index = getIndex(objects.get(i));
                 if (index != -1) {
-                    nodes[index].insert(objects.remove(i));
+                    nodes[index].insert(objects.removeAtIndex(i));
                 } else {
                     i++;
                 }
@@ -134,7 +134,7 @@ public abstract class AbstractTree {
     }
 
     /**
-     * Insert all verticies in the graph into the tree.
+     * Insert all vertices in the graph into the tree.
      */
     protected final void insertAll() {
         for (int position = 0; position < wg.getVertexCount(); position++) {
@@ -142,10 +142,10 @@ public abstract class AbstractTree {
         }
     }
 
-    /*
+    /**
      * Return all objects that could collide with the given object.
      */
-    protected final List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
+    private MutableIntList getPossibleColliders(final MutableIntList colliders, final int vxId) {
         // Recursively find all child colliders...
         final int index = getIndex(vxId);
         if (index != -1 && nodes != null) {
@@ -153,7 +153,7 @@ public abstract class AbstractTree {
         }
 
         // ...and colliders at this level.
-        colliders.addAll(objects);
+        objects.forEach(colliders::add);
 
         return colliders;
     }
@@ -183,13 +183,15 @@ public abstract class AbstractTree {
      * @return the number of collisions.
      */
     protected final boolean nodeCollides(final int subject) {
-        final List<Integer> possibles = new ArrayList<>();
+        final MutableIntList possibles = new IntArrayList();
         getPossibleColliders(possibles, subject);
 
         // We need to deal with pathological cases such as everything at the same x,y point,
         // or everything co-linear.
         // We add a perturbation so points go different ways at different stages.
-        for (final int possible : possibles) {
+        final IntIterator possiblesIter = possibles.intIterator();
+        while (possiblesIter.hasNext()) {
+            final int possible = possiblesIter.next();
             if (subject != possible) {
                 final double delta = getDelta(subject, possible);
                 final double collisionDistance = getCollisionDistance(subject, possible);
@@ -217,11 +219,15 @@ public abstract class AbstractTree {
      * @return A set of vertex ideas for verticies that are twins with the
      * subject
      */
-    public List<Integer> getTwins(final int subject, final double twinThreshold) {
-        final List<Integer> possibles = new ArrayList<>();
+    public MutableIntList getTwins(final int subject, final double twinThreshold) {
+        final MutableIntList possibles = new IntArrayList();
         getPossibleColliders(possibles, subject);
-        final List<Integer> twins = new ArrayList<>();
-        for (final int possible : possibles) {
+        
+        final MutableIntList twins = new IntArrayList();
+        
+        final IntIterator possiblesIter = possibles.intIterator();
+        while (possiblesIter.hasNext()) {
+            final int possible = possiblesIter.next();
             if (subject != possible) {
                 final double delta = getDelta(subject, possible);
                 final double collisionDistance = getCollisionDistance(subject, possible);

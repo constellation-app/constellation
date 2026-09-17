@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,29 +97,31 @@ public class HttpsUtilities {
      * @throws IOException
      */
     public static void readErrorStreamAndThrowException(final HttpURLConnection connection, final String system) throws IOException {
-        final InputStream responseStream = HttpsUtilities.getErrorStream(connection);
-        if (responseStream != null) {
-            final StringBuilder message = new StringBuilder();
-            final Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8.name());
-            final char[] buffer = new char[8 * 1024];
-            int c;
-            while ((c = reader.read(buffer)) != -1) {
-                message.append(buffer, 0, c);
-            }
+        try (final InputStream responseStream = HttpsUtilities.getErrorStream(connection)) {
+            if (responseStream != null) {
+                final StringBuilder message = new StringBuilder();
+                try (final Reader reader = new InputStreamReader(responseStream, StandardCharsets.UTF_8.name())) {
+                    final char[] buffer = new char[8 * 1024];
+                    int c;
+                    while ((c = reader.read(buffer)) != -1) {
+                        message.append(buffer, 0, c);
+                    }
+                }
 
-            throw new IOException(
-                    String.format("""
-                                  An error occurred with the %s service: %d %s
-                                  
-                                  If problems persist, contact support via Help -> Support
-                                  
-                                  Technical Error: %s""",
-                            system,
-                            connection.getResponseCode(),
-                            connection.getResponseMessage(),
-                            message.toString()
-                    )
-            );
+                throw new IOException(
+                        String.format("""
+                                      An error occurred with the %s service: %d %s
+
+                                      If problems persist, contact support via Help -> Support
+
+                                      Technical Error: %s""",
+                                system,
+                                connection.getResponseCode(),
+                                connection.getResponseMessage(),
+                                message.toString()
+                        )
+                );
+            }
         }
     }
 }

@@ -4,19 +4,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](package-tree.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/utilities/package-tree.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/utilities/package-summary.md)
 -   Class
 -   Tree
--   [Deprecated](../deprecated-list.md)
--   [Index](../index-all.md)
--   [Help](../help-doc.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -28,12 +28,12 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <div class="subNav">
 
--   [Prev](../graph/iterators/package-tree.md)
+-   [Prev](../ext/docs/CoreScriptingView/docs/javadoc/graph/iterators/package-tree.md)
 -   Next
 
 <!-- -->
 
--   [All Classes](../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -49,7 +49,7 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <span class="packageHierarchyLabel">Package Hierarchies:</span>
 
--   [All Packages](../overview-tree.md)
+-   [All Packages](../ext/docs/CoreScriptingView/docs/javadoc/overview-tree.md)
 
 </div>
 
@@ -59,7 +59,7 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 -   java.lang.Object
     -   au.gov.asd.tac.constellation.views.scripting.utilities.[<span
-        class="typeNameLink">ScriptingUtilities</span>](ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")
+        class="typeNameLink">ScriptingUtilities</span>](../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md "class in au.gov.asd.tac.constellation.views.scripting.utilities")
         (implements
         au.gov.asd.tac.constellation.views.scripting.ScriptingModule)
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,10 +48,8 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -88,6 +86,10 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.openide.util.HelpCtx;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -143,8 +145,8 @@ public class NotesViewPane extends BorderPane {
     private static final String FONT_SIZE = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String USER_CHOSEN_COLOR = USER_COLOR;
 
-    private final List<Integer> nodesSelected = new ArrayList<>();
-    private final List<Integer> transactionsSelected = new ArrayList<>();
+    private final MutableIntList nodesSelected = new IntArrayList();
+    private final MutableIntList transactionsSelected = new IntArrayList();
     private final List<String> tagsUpdater = new ArrayList<>();
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
@@ -154,7 +156,7 @@ public class NotesViewPane extends BorderPane {
     private boolean creatingFirstNote = true;
     private final NewNotePane newNotePane;
     private int noteID = 0;
-    private final Map<Integer, String> previouseColourMap = new HashMap<>();
+    private final MutableIntObjectMap<String> previousColourMap = new IntObjectHashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -326,8 +328,7 @@ public class NotesViewPane extends BorderPane {
                             // Get selected transactions from the graph.
                             final List<Integer> selectedTransactions = new ArrayList<>();
 
-                            final ReadableGraph rg = activeGraph.getReadableGraph();
-                            try {
+                            try (final ReadableGraph rg = activeGraph.getReadableGraph()) {
                                 // Add selected nodes.
                                 final int vxSelectedAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
                                 if (vxSelectedAttr != Graph.NOT_FOUND) {
@@ -362,8 +363,6 @@ public class NotesViewPane extends BorderPane {
                                     notesViewEntries.get(notesViewEntries.size() - 1).setTransactionsSelected(selectedTransactions);
                                 }
 
-                            } finally {
-                                rg.release();
                             }
                         }
                     }
@@ -396,7 +395,10 @@ public class NotesViewPane extends BorderPane {
                         mdTree.parse();
                         note.setContentTextFlow(mdTree.getRenderedText());
 
-                        previouseColourMap.replace(note.getID(), note.getNodeColour());
+                        // replace if an entry already exists
+                        if (previousColourMap.contains(note.getID())) {
+                            previousColourMap.put(note.getID(), note.getNodeColour());
+                        }
 
                         note.setEditMode(false);
                         newNotePane.clearTextFields();
@@ -644,18 +646,18 @@ public class NotesViewPane extends BorderPane {
                         notesToRender.add(entry);
                     }
                     // Show notes related to the selected nodes.
-                    for (final int node : nodesSelected) {
+                    nodesSelected.forEach(node -> {
                         if (entry.getNodesSelected() != null && entry.getNodesSelected().contains(node) && !notesToRender.contains(entry)) {
                             notesToRender.add(entry);
                         }
-                    }
+                    });
                     // Shows notes related to the selected transactions.
-                    for (final int transaction : transactionsSelected) {
+                    transactionsSelected.forEach(transaction -> {
                         if (entry.getTransactionsSelected() != null && entry.getTransactionsSelected().contains(transaction)
                                 && !notesToRender.contains(entry)) {
                             notesToRender.add(entry);
                         }
-                    }
+                    });
                 }
 
             });
@@ -777,8 +779,8 @@ public class NotesViewPane extends BorderPane {
             newNote.setID(++noteID);
         }
 
-        if (!previouseColourMap.containsKey(newNote.getID())) {
-            previouseColourMap.put(newNote.getID(), newNote.getNodeColour());
+        if (!previousColourMap.containsKey(newNote.getID())) {
+            previousColourMap.put(newNote.getID(), newNote.getNodeColour());
         }
 
         // Define dateTime label
@@ -841,15 +843,17 @@ public class NotesViewPane extends BorderPane {
                 selectionLabelText = "Note linked to: the graph.";
             } else {
                 selectionLabelText = "Note linked to: ";
-                if (newNote.getNodesSelected().size() == 1) {
-                    selectionLabelText += newNote.getNodesSelected().size() + " node, ";
+                final int nodeCount = newNote.getNodesSelected().size();
+                final int transactionCount = newNote.getTransactionsSelected().size();
+                if (nodeCount == 1) {
+                    selectionLabelText += nodeCount + " node, ";
                 } else {
-                    selectionLabelText += newNote.getNodesSelected().size() + " nodes, ";
+                    selectionLabelText += nodeCount + " nodes, ";
                 }
-                if (newNote.getTransactionsSelected().size() == 1) {
-                    selectionLabelText += newNote.getTransactionsSelected().size() + " transaction. ";
+                if (transactionCount == 1) {
+                    selectionLabelText += transactionCount + " transaction. ";
                 } else {
-                    selectionLabelText += newNote.getTransactionsSelected().size() + " transactions. ";
+                    selectionLabelText += transactionCount + " transactions. ";
                 }
             }
             selectionLabel.setText(selectionLabelText);
@@ -894,13 +898,15 @@ public class NotesViewPane extends BorderPane {
         gap.setMinWidth(10);
         gap2.setMinWidth(10);
 
-        if (newNote.getNodeColour().isBlank()) {
-            newNote.setNodeColour(USER_COLOR);
-        }
-
         HBox.setHgrow(dateTimeLabel, Priority.NEVER);
 
-        final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
+        // fromHtmlColor returns null for blank/invalid colours; fall back to the default user colour.
+        ConstellationColor noteColour = ConstellationColor.fromHtmlColor(newNote.getNodeColour());
+        if (noteColour == null) {
+            newNote.setNodeColour(USER_COLOR);
+            noteColour = ConstellationColor.fromHtmlColor(USER_COLOR);
+        }
+        final ColorPicker colourPicker = new ColorPicker(noteColour.getJavaFXColor());
         colourPicker.setMinWidth(100);
         colourPicker.setMaxWidth(100);
         HBox.setHgrow(colourPicker, Priority.NEVER);
@@ -1000,15 +1006,15 @@ public class NotesViewPane extends BorderPane {
                 } else {
                     // Select the specific nodes and/or transactions applied to the note.
                     // Add nodes that are selected to the note.
-                    final int nodesLength = newNote.getNodesSelected().size();
                     final List<Integer> selectedNodes = newNote.getNodesSelected();
+                    final int nodesLength = selectedNodes.size();
                     for (int i = 0; i < nodesLength; i++) {
                         elementIdsVx.set(selectedNodes.get(i));
                     }
 
                     // Add transactions that are selected to the note.
-                    final int transactionsLength = newNote.getTransactionsSelected().size();
                     final List<Integer> selectedTransactions = newNote.getTransactionsSelected();
+                    final int transactionsLength = selectedTransactions.size();
                     for (int i = 0; i < transactionsLength; i++) {
                         elementIdsTx.set(selectedTransactions.get(i));
                     }
@@ -1046,7 +1052,7 @@ public class NotesViewPane extends BorderPane {
                 }
             });
 
-            if (newNote.getNodesSelected() != null && newNote.getTransactionsSelected() != null && newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
+            if (newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
                 addOnGraphMenuItem.disableProperty().set(true);
                 removeOnGraphMenuItem.disableProperty().set(true);
             }
@@ -1065,8 +1071,8 @@ public class NotesViewPane extends BorderPane {
 
             deleteAlert.showAndWait();
             if (deleteAlert.getResult() == ButtonType.OK) {
-                if (previouseColourMap.containsKey(newNote.getID())) {
-                    previouseColourMap.remove(newNote.getID());
+                if (previousColourMap.containsKey(newNote.getID())) {
+                    previousColourMap.remove(newNote.getID());
                 }
                 synchronized (LOCK) {
                     if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
@@ -1146,11 +1152,11 @@ public class NotesViewPane extends BorderPane {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
-            for (final int node : nodesSelected) {
+            nodesSelected.forEach(node -> {
                 if (!originalNodes.contains(node)) {
                     originalNodes.add(node);
                 }
-            }
+            });
             noteToEdit.setNodesSelected(originalNodes);
         }
 
@@ -1159,11 +1165,11 @@ public class NotesViewPane extends BorderPane {
                 noteToEdit.setGraphAttribute(false);
             }
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
-            for (final int transaction : transactionsSelected) {
+            transactionsSelected.forEach(transaction -> {
                 if (!originalTransactions.contains(transaction)) {
                     originalTransactions.add(transaction);
                 }
-            }
+            });
             noteToEdit.setTransactionsSelected(originalTransactions);
         }
     }
@@ -1176,23 +1182,23 @@ public class NotesViewPane extends BorderPane {
 
         if (!nodesSelected.isEmpty()) {
             final List<Integer> originalNodes = noteToEdit.getNodesSelected();
-            for (final int node : nodesSelected) {
+            nodesSelected.forEach(node -> {
                 if (originalNodes.contains(node)) {
                     final int index = originalNodes.indexOf(node);
                     originalNodes.remove(index);
                 }
-            }
+            });
             noteToEdit.setNodesSelected(originalNodes);
         }
 
         if (!transactionsSelected.isEmpty()) {
             final List<Integer> originalTransactions = noteToEdit.getTransactionsSelected();
-            for (final int transaction : transactionsSelected) {
+            transactionsSelected.forEach(transaction -> {
                 if (originalTransactions.contains(transaction)) {
                     final int index = originalTransactions.indexOf(transaction);
                     originalTransactions.remove(index);
                 }
-            }
+            });
             noteToEdit.setTransactionsSelected(originalTransactions);
         }
 

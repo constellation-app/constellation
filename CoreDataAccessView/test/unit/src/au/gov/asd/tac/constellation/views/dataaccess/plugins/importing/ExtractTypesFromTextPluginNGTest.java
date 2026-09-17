@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,12 @@ public class ExtractTypesFromTextPluginNGTest {
     @Test
     public void testGetDescription() {
         ExtractTypesFromTextPlugin instance = new ExtractTypesFromTextPlugin();
-        String expResult = "Identify schema type values within text and add them to your graph";
+        String expResult = """
+           All schema types that matches the regular expressions found in the
+           text are added to the graph. New nodes are added with the following
+           attributes:
+           * Seed = True
+           """;
         String result = instance.getDescription();
         assertEquals(result, expResult);
     }
@@ -150,7 +155,7 @@ public class ExtractTypesFromTextPluginNGTest {
         expResult.add();
         expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "abc@def.ghi");
         expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.EMAIL_ADDRESS);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SEED, "true");
+        expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SEED, "true");        
         assertEquals(result, expResult);
     }
 }

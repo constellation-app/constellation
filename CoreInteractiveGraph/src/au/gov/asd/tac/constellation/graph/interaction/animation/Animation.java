@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -171,7 +171,17 @@ public abstract class Animation {
                     && lockGraphSafely(graph)){    
                 // Animate a frame
                 animate(wg);
-                wg.commit();
+                if (this instanceof PanAnimation panAnimation) {
+                    // only add first animate step as undoable for PanAnimation                
+                    if (panAnimation.getStep() == 1) {
+                        wg.commit();
+                    } else {
+                        // flag for animation not finished, don't add to undo
+                        wg.commit(null, null, false);
+                    }
+                } else {
+                    wg.commit(null, null, false);
+                }
             }
             
             // Sleep until it is time for the next frame

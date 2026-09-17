@@ -4,19 +4,19 @@
 
 <div class="skipNav">
 
-[Skip navigation links](ScriptingUtilities.md#skip.navbar.top "Skip navigation links")
+[Skip navigation links](../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md#skip.navbar.top "Skip navigation links")
 
 </div>
 
 <span id="navbar.top.firstrow"></span>
 
--   [Overview](../overview-summary.md)
--   [Package](package-summary.md)
+-   [Overview](../ext/docs/CoreScriptingView/docs/javadoc/overview-summary.md)
+-   [Package](../ext/docs/CoreScriptingView/docs/javadoc/utilities/package-summary.md)
 -   Class
--   [Tree](package-tree.md)
--   [Deprecated](../deprecated-list.md)
--   [Index](../index-all.md)
--   [Help](../help-doc.md)
+-   [Tree](../ext/docs/CoreScriptingView/docs/javadoc/utilities/package-tree.md)
+-   [Deprecated](../ext/docs/CoreScriptingView/docs/javadoc/deprecated-list.md)
+-   [Index](../ext/docs/CoreScriptingView/docs/javadoc/index-all.md)
+-   [Help](../ext/docs/CoreScriptingView/docs/javadoc/help-doc.md)
 
 <div class="aboutLanguage">
 
@@ -33,7 +33,7 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 
 <!-- -->
 
--   [All Classes](../allclasses-noframe.md)
+-   [All Classes](../ext/docs/CoreScriptingView/docs/javadoc/allclasses-noframe.md)
 
 <div>
 
@@ -44,15 +44,15 @@ au.gov.asd.tac.constellation.views.scripting 1.0
 -   Summary: 
 -   Nested | 
 -   Field | 
--   [Constructor](#constructor.summary) | 
--   [Method](#method.summary)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md#constructor.summary) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md#method.summary)
 
 <!-- -->
 
 -   Detail: 
 -   Field | 
--   [Constructor](#constructor.detail) | 
--   [Method](#method.detail)
+-   [Constructor](../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md#constructor.detail) | 
+-   [Method](../ext/docs/CoreScriptingView/docs/javadoc/utilities/ScriptingUtilities.md#method.detail)
 
 </div>
 
@@ -256,7 +256,7 @@ au.gov.asd.tac.constellation.views.scripting.utilities
 
             <span class="returnLabel">Returns:</span>  
             a map of graph name to graph as a
-            [`SGraph`](../graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SGraph`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="copyGraph-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-"></span>
@@ -273,7 +273,7 @@ au.gov.asd.tac.constellation.views.scripting.utilities
 
             <span class="returnLabel">Returns:</span>  
             a copy of the given graph as an
-            [`SGraph`](../graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
+            [`SGraph`](../ext/docs/CoreScriptingView/docs/javadoc/graph/SGraph.md "class in au.gov.asd.tac.constellation.views.scripting.graph").
 
         <span
         id="executePlugin-au.gov.asd.tac.constellation.views.scripting.graph.SGraph-java.lang.String-"></span>

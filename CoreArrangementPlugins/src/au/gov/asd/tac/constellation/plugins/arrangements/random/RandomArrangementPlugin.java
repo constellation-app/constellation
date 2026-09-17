@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,16 +44,6 @@ public class RandomArrangementPlugin extends SimpleEditPlugin {
     public static final String DIMENSIONS_PARAMETER_ID = PluginParameter.buildId(RandomArrangementPlugin.class, "dimensions");
 
     @Override
-    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        final int dimensions = parameters.getParameters().get(DIMENSIONS_PARAMETER_ID).getIntegerValue();
-        final Arranger arranger = new RandomArranger(dimensions);
-        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
-        arranger.setMaintainMean(!selectedGraph.isArrangingAll());
-        arranger.arrange(selectedGraph.getInclusionGraph());
-        selectedGraph.retrieveCoords();
-    }
-
-    @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
@@ -64,5 +54,15 @@ public class RandomArrangementPlugin extends SimpleEditPlugin {
         parameters.addParameter(dimensionsParam);
 
         return parameters;
+    }
+    
+    @Override
+    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+        final int dimensions = parameters.getParameters().get(DIMENSIONS_PARAMETER_ID).getIntegerValue();
+        final Arranger arranger = new RandomArranger(dimensions);
+        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(wg, SelectedInclusionGraph.Connections.NONE);
+        arranger.setMaintainMean(!selectedGraph.isArrangingAll());
+        arranger.arrange(selectedGraph.getInclusionGraph());
+        selectedGraph.retrieveCoords();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,20 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss.
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import org.eclipse.collections.api.iterator.DoubleIterator;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
+import org.eclipse.collections.impl.list.mutable.primitive.DoubleArrayList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  *
@@ -49,24 +54,23 @@ public class SpectralArranger implements Arranger {
     // and avoiding over-exapnsion.
     // This method should probably be refactored so that it can be used by the whole arrangement framework.
     public void disperseVertices(final GraphWriteMethods wg) {
-
         final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
 
-        final List<Double> xValues = new ArrayList<>();
-        final List<Double> yValues = new ArrayList<>();
+        MutableDoubleList xValues = new DoubleArrayList();
+        MutableDoubleList yValues = new DoubleArrayList();
 
         for (int i = 0; i < wg.getVertexCount(); i++) {
             final int vxID = wg.getVertex(i);
             xValues.add(wg.getDoubleValue(xAttr, vxID));
             yValues.add(wg.getDoubleValue(yAttr, vxID));
         }
-        xValues.sort(null);
-        yValues.sort(null);
+        xValues = xValues.sortThis();
+        yValues = yValues.sortThis();
         double averageOverlap = 0;
-        final Iterator<Double> xValIter = xValues.iterator();
-        final Iterator<Double> yValIter = yValues.iterator();
+        final DoubleIterator xValIter = xValues.doubleIterator();
+        final DoubleIterator yValIter = yValues.doubleIterator();
         double currentX;
         double nextX = xValIter.next();
         double currentY;
@@ -97,8 +101,8 @@ public class SpectralArranger implements Arranger {
 
     private static class GetTrussResultHandler implements KTrussResultHandler {
 
-        private final Set<Integer> verticesInHighestTruss = new HashSet<>();
-        private final Set<Integer> otherVertices = new HashSet<>();
+        private final MutableIntSet verticesInHighestTruss = new IntHashSet();
+        private final MutableIntSet otherVertices = new IntHashSet();
         private int highestK;
 
         @Override
@@ -132,7 +136,6 @@ public class SpectralArranger implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-
         // Do nothing if the graph has no nodes.
         final int vxCount = wg.getVertexCount();
         if (vxCount == 0) {
@@ -152,7 +155,7 @@ public class SpectralArranger implements Arranger {
         }
 
         // Otherwise calculate the spectral (eigenvector) embedding of the most interconnected truss
-        final Map<Integer, double[]> vertexToCoordinates = GraphSpectrumEmbedder.spectralEmbedding(wg, handler.verticesInHighestTruss);
+        final MutableIntObjectMap<double[]> vertexToCoordinates = GraphSpectrumEmbedder.spectralEmbedding(wg, handler.verticesInHighestTruss);
         if (vertexToCoordinates.isEmpty()) {
             return;
         }
@@ -163,23 +166,25 @@ public class SpectralArranger implements Arranger {
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
 
         // Position vertices in the most interconnected truss by their spectra.
-        for (final Map.Entry<Integer, double[]> entry : vertexToCoordinates.entrySet()) {
-            wg.setDoubleValue(xAttr, entry.getKey(), entry.getValue()[0]);
-            wg.setDoubleValue(yAttr, entry.getKey(), entry.getValue()[1]);
-            wg.setDoubleValue(zAttr, entry.getKey(), 0);
+        for (final IntObjectPair<double[]> keyValue : vertexToCoordinates.keyValuesView()) {
+            wg.setDoubleValue(xAttr, keyValue.getOne(), keyValue.getTwo()[0]);
+            wg.setDoubleValue(yAttr, keyValue.getOne(), keyValue.getTwo()[1]);
+            wg.setDoubleValue(zAttr, keyValue.getOne(), 0);
         }
 
         // Position all the other vertices at a level (z-position) corresponding to their distance from the most interconnected truss, and at the centre (x,y-position) of their neighbours on the level above them.
         int level = 0;
         while (!handler.otherVertices.isEmpty()) {
             level++;
-            final Set<Integer> verticesPlacedThisLevel = new HashSet<>();
-            final Map<Set<Integer>, List<Integer>> significantNeighbourSets = new HashMap<>();
-            for (final int vxID : handler.otherVertices) {
+            final MutableIntSet verticesPlacedThisLevel = new IntHashSet();
+            final Map<MutableIntSet, MutableIntList> significantNeighbourSets = new HashMap<>();
+            final IntIterator otherVerticesIter = handler.otherVertices.intIterator();
+            while (otherVerticesIter.hasNext()) {
+                final int vxID = otherVerticesIter.next();
                 double xPos = 0;
                 double yPos = 0;
                 int significantNeighbourCount = 0;
-                final Set<Integer> significantNeighbourSet = new HashSet<>();
+                final MutableIntSet significantNeighbourSet = new IntHashSet();
                 for (int j = 0; j < wg.getVertexNeighbourCount(vxID); j++) {
                     final int neighbourID = wg.getVertexNeighbour(vxID, j);
                     if (handler.otherVertices.contains(neighbourID)) {
@@ -195,7 +200,7 @@ public class SpectralArranger implements Arranger {
                 }
                 verticesPlacedThisLevel.add(vxID);
                 if (!significantNeighbourSets.containsKey(significantNeighbourSet)) {
-                    final List<Integer> newList = new ArrayList<>();
+                    final MutableIntList newList = new IntArrayList();
                     newList.add(vxID);
                     significantNeighbourSets.put(significantNeighbourSet, newList);
                 } else {
@@ -209,15 +214,16 @@ public class SpectralArranger implements Arranger {
             handler.otherVertices.removeAll(verticesPlacedThisLevel);
 
             // Spread out vertices that clash a litle bit
-            for (final Entry<Set<Integer>, List<Integer>> set : significantNeighbourSets.entrySet()) {
-                final List<Integer> colocatedNodes = set.getValue();
+            for (final Entry<MutableIntSet, MutableIntList> set : significantNeighbourSets.entrySet()) {
+                final MutableIntList colocatedNodes = set.getValue();
                 final int colocatedSize = colocatedNodes.size();
                 if (colocatedSize > 1) {
                     final int firstNodeID = colocatedNodes.get(0);
                     final double xCentre = wg.getDoubleValue(xAttr, firstNodeID);
                     final double yCentre = wg.getDoubleValue(yAttr, firstNodeID);
                     double currentAngle = 0;
-                    for (int vxID : set.getValue()) {
+                    for (int i = 0; i < colocatedSize; i++) {
+                        final int vxID = colocatedNodes.get(i);
                         wg.setDoubleValue(xAttr, vxID, xCentre + (Math.cos(currentAngle) / 2));
                         wg.setDoubleValue(yAttr, vxID, yCentre + (Math.sin(currentAngle) / 2));
                         currentAngle += (2 * Math.PI) / colocatedSize;

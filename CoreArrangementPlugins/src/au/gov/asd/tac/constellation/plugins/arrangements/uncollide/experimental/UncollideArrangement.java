@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
 import au.gov.asd.tac.constellation.graph.GraphConstants;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -26,11 +25,11 @@ import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegist
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
 
 public class UncollideArrangement implements Arranger {
     
@@ -89,7 +88,6 @@ public class UncollideArrangement implements Arranger {
         }
 
         for (int i = 0; i < iter && tree.hasCollision(); i++) {
-
             PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
 
             tree = TreeFactory.create(wg, dimensions);
@@ -104,10 +102,9 @@ public class UncollideArrangement implements Arranger {
     }
 
     private int nudgeAllTwins(final GraphWriteMethods wg, final AbstractTree tree) {
-        List<Integer> twins;
         int numberNoTwins = 0;
         for (int subject = 0; subject < wg.getVertexCount(); subject++) {
-            twins = tree.getTwins(subject, twinScaling);
+            final MutableIntList twins = tree.getTwins(subject, twinScaling);
             if (twins.isEmpty()) {
                 numberNoTwins++;
             } else {
@@ -126,10 +123,10 @@ public class UncollideArrangement implements Arranger {
      * edges of each neighbor.
      */
     private void nudgeTwins(final GraphWriteMethods wg, final int subject, final int twin) {
-        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        final int xId = VisualConcept.VertexAttribute.X.get(wg);
+        final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+        final int zId = VisualConcept.VertexAttribute.Z.get(wg);
+        final int rId = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
 
         double[] deltas;
         float deltaX = wg.getFloatValue(xId, subject) - wg.getFloatValue(xId, twin);
@@ -139,12 +136,12 @@ public class UncollideArrangement implements Arranger {
         final double collisionDistance;
         final double delta;
         switch (dimensions) {
-            case TWO:
+            case TWO -> {
                 delta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
                 deltas = new double[2];
                 collisionDistance = Math.sqrt(2 * wg.getFloatValue(rId, subject)) + Math.sqrt(2 * wg.getFloatValue(rId, twin));
-                break;
-            case THREE:
+            }
+            case THREE -> {
                 if (zId == GraphConstants.NOT_FOUND) {
                     throw new IllegalArgumentException("Unable to perform 3D uncllide on 2D graph");
                 }
@@ -153,9 +150,8 @@ public class UncollideArrangement implements Arranger {
                 collisionDistance = Math.cbrt(3 * wg.getFloatValue(rId, subject)) + Math.cbrt(3 * wg.getFloatValue(rId, twin));
                 deltas = new double[3];
                 deltas[2] = deltaZ;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid number of dimensions");
+            }
+            default -> throw new IllegalArgumentException("Invalid number of dimensions");
         }
         deltas[0] = deltaX;
         deltas[1] = deltaY;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ package au.gov.asd.tac.constellation.plugins.arrangements.group;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 /**
  * Arrange the graph such that different values of the specified attribute are
@@ -35,8 +35,6 @@ import java.util.Set;
  * @author algol
  */
 public class LayerArranger implements Arranger {
-
-    private static final String VISIBILITY = "visibility";
 
     private int attr = Graph.NOT_FOUND;
 
@@ -56,13 +54,13 @@ public class LayerArranger implements Arranger {
 
         final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
-        final int xAttr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
-        final int yAttr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
-        final int zAttr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
-        final int x2Attr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
-        final int y2Attr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
-        final int z2Attr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
-        final int visAttr = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 2, null);
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
+        final int x2Attr = VisualConcept.VertexAttribute.X2.ensure(wg);
+        final int y2Attr = VisualConcept.VertexAttribute.Y2.ensure(wg);
+        final int z2Attr = VisualConcept.VertexAttribute.Z2.ensure(wg);
+        final int visAttr = VisualConcept.VertexAttribute.VISIBILITY.ensure(wg);
 
         // Discover the unique attribute values.
         // Collect the min and max z values along the way.
@@ -125,7 +123,7 @@ public class LayerArranger implements Arranger {
             final float levelHeight = Math.max(width * 0.05F, 4);
 
             // Figure out which value belongs in which level.
-            final String[] valueArray = values.toArray(new String[values.size()]);
+            final String[] valueArray = values.toArray(String[]::new);
             Arrays.sort(valueArray, (s1, s2) -> {
                 if (s1 == null) {
                     return s2 == null ? 0 : -1;
@@ -135,7 +133,7 @@ public class LayerArranger implements Arranger {
                     return s1.toLowerCase().compareTo(s2.toLowerCase());
                 }
             });
-            final Map<String, Integer> attrLevel = new HashMap<>();
+            final MutableObjectIntMap<String> attrLevel = new ObjectIntHashMap<>();
             for (int i = 0; i < valueArray.length; i++) {
                 attrLevel.put(valueArray[i], i);
             }
@@ -171,7 +169,7 @@ public class LayerArranger implements Arranger {
         }
 
         // Set the transaction visibility to be the minimum visibility of it's two vertices.
-        final int txVisAttr = wg.addAttribute(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
+        final int txVisAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(wg);
         final int txCount = wg.getTransactionCount();
         for (int position = 0; position < txCount; position++) {
             final int txId = wg.getTransaction(position);

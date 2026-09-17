@@ -20,8 +20,8 @@ RUN apt-get -y update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV SONAR_ZIP_FILENAME="sonar-scanner-cli-5.0.1.3006-linux.zip" \
-    SONAR_FILENAME="sonar-scanner-5.0.1.3006-linux" \
+ENV SONAR_ZIP_FILENAME="sonar-scanner-cli-8.1.0.6389-linux-x64.zip" \
+    SONAR_FILENAME="sonar-scanner-8.1.0.6389-linux-x64" \
     SONAR_DOWNLOAD_DIR="/tmp" \
     SONAR_HOME="/var/opt/sonar-scanner" 
 ENV SONAR_DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/${SONAR_ZIP_FILENAME}"
@@ -29,7 +29,7 @@ ENV SONAR_DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scan
 RUN cd "${SONAR_DOWNLOAD_DIR}" \
     && echo "Downloading sonar-scanner....." \
     && if [ -d "/tmp/${SONAR_ZIP_FILENAME}" ] ; then sudo rm "${SONAR_DOWNLOAD_DIR}"/"${SONAR_ZIP_FILENAME}" ; fi \
-    && wget -q "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip" \
+    && wget -q "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.1.0.6389-linux-x64.zip" \
     && echo "Download completed. Unziping downloaded file..." \
     && unzip "${SONAR_ZIP_FILENAME}" \
     && echo "Unzip completed." \
@@ -56,7 +56,7 @@ ENV NETBEANS_CHECKSUM="1bd5695755eb9547d88a5539a6e43884d787dba4da6ecadc1b261e07c
 
 COPY common.xml.modified ./
 
-RUN wget -q "https://dlcdn.apache.org/netbeans/netbeans/${NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
+RUN wget -q "https://archive.apache.org/dist/netbeans/netbeans/${NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
     && echo "${NETBEANS_CHECKSUM}" | sha512sum -c \
     && unzip -q "netbeans-${NETBEANS_VERSION}-bin.zip" \
     && mv common.xml.modified "netbeans/harness/common.xml" \

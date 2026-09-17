@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,9 +53,11 @@ public class RecentParameterValuesNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         final File file = new File(this.getClass().getResource("./resources/pluginframework.properties").getFile());
-        final BufferedReader in = new BufferedReader(new FileReader(file));
-        String readLine = in.readLine();
-        recentValues = readLine.replace("recentValues=", "");
+        try (final FileReader fileReader = new FileReader(file);
+                final BufferedReader in = new BufferedReader(fileReader)) {
+            final String readLine = in.readLine();
+            recentValues = readLine.replace("recentValues=", "");
+        }
     }
 
     @AfterMethod

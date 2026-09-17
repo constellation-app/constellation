@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,12 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
 
     @Override
     public String getDescription() {
-        return "Identify schema type values within text and add them to your graph";
+        return """
+           All schema types that matches the regular expressions found in the
+           text are added to the graph. New nodes are added with the following
+           attributes:
+           * Seed = True
+           """;
     }
 
     @Override

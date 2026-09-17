@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -97,7 +98,9 @@ public abstract class AbstractPlugin implements Plugin {
         final String helpFileResource = getClass().getSimpleName() + FileExtensionConstants.HTML;
         final URL helpURL = getClass().getResource(helpFileResource);
         if (helpURL != null) {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(helpURL.openStream(), StandardCharsets.UTF_8.name()))) {
+            try (final InputStream stream = helpURL.openStream();
+                    final InputStreamReader inputReader = new InputStreamReader(stream, StandardCharsets.UTF_8.name());
+                    final BufferedReader in = new BufferedReader(inputReader)) {
                 final StringBuilder out = new StringBuilder();
                 final char[] buffer = new char[1024];
                 int read = in.read(buffer);

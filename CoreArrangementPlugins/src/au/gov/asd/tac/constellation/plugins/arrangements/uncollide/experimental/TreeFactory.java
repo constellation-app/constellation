@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,10 @@ public class TreeFactory {
     }
 
     protected static AbstractTree create(final GraphReadMethods wg, final Dimensions d) {
-        switch (d) {
-            case TWO:
-                return new QuadTree(wg);
-            case THREE:
-                return new OctTree(wg);
-            default:
-                return null;
-        }
+        return switch (d) {
+            case TWO -> new QuadTree(wg);
+            case THREE -> new OctTree(wg);
+            default -> null;
+        };
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -443,13 +443,14 @@ public class AnalyticConfigurationPane extends VBox {
             } else {
                 try {
                     final Path path = Paths.get(documentationURL);
-                    final InputStream pageInput = new FileInputStream(path.toString());
-                    final String pageString = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
-                    final Parser parser = Parser.builder().build();
-                    final HtmlRenderer renderer = HtmlRenderer.builder().build();
-                    final Node tocDocument = parser.parse(pageString);
-                    final String pageHtml = renderer.render(tocDocument);
-                    documentationView.getEngine().loadContent(pageHtml, "text/html");
+                    try (final InputStream pageInput = new FileInputStream(path.toString())) {
+                        final String pageString = new String(pageInput.readAllBytes(), StandardCharsets.UTF_8);
+                        final Parser parser = Parser.builder().build();
+                        final HtmlRenderer renderer = HtmlRenderer.builder().build();
+                        final Node tocDocument = parser.parse(pageString);
+                        final String pageHtml = renderer.render(tocDocument);
+                        documentationView.getEngine().loadContent(pageHtml, "text/html");
+                    }
                 } catch (final IOException ex) {
                     LOGGER.log(Level.WARNING, ex.getMessage());
                 }
@@ -481,8 +482,10 @@ public class AnalyticConfigurationPane extends VBox {
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             final Class<? extends AnalyticAggregator<?>> questionAggregatorType = currentQuestion.getAggregatorType();
             aggregators.add(new AnalyticAggregatorParameterValue(AnalyticUtilities.lookupAnalyticAggregator(questionAggregatorType)));
-            SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
-            SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
+            if (aggregators != null) {
+                SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
+                SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
+            }         
         }
         pluginList.getItems().forEach(selectablePlugin
                 -> selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue()));

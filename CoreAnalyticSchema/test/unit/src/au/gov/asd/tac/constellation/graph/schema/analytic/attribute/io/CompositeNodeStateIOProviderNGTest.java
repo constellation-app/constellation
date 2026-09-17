@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,16 +113,16 @@ public class CompositeNodeStateIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            instance.writeObject(compositeStateAttribute, vxId, jsonGenerator, graph, null, true);
-            jsonGenerator.close();
-                        
-            jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeStringField("composite_state", compositeNodeString);
-            jsonGenerator.writeEndObject();
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                instance.writeObject(compositeStateAttribute, vxId, jsonGenerator, graph, null, true);
+            }
+
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeStringField("composite_state", compositeNodeString);
+                jsonGenerator.writeEndObject();
+            }
             
             assertEquals(actual.toString(), expected.toString());
         }
@@ -142,15 +142,15 @@ public class CompositeNodeStateIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            instance.writeObject(compositeStateAttribute, vxId, jsonGenerator, graph, null, false);
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                instance.writeObject(compositeStateAttribute, vxId, jsonGenerator, graph, null, false);
+            }
                         
-            jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8);
-            jsonGenerator.writeStartObject();
-            jsonGenerator.writeEndObject();
-            jsonGenerator.close();
+            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeEndObject();
+            }
             
             assertEquals(actual.toString(), expected.toString());
         }

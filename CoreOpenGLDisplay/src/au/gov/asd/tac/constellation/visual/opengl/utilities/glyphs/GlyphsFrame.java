@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +44,8 @@ import javax.swing.JLabel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
  * An application for viewing fonts rendered as glyphs in OpenGL.
@@ -386,7 +388,7 @@ public class GlyphsFrame extends JFrame {
         String line = (String) textLines.getModel().getSelectedItem();
         final boolean isZalgo = cbZalgo.isSelected();
         if (isZalgo) {
-            final List<Integer> codepoints = new ArrayList<>();
+            final MutableIntList codepoints = new IntArrayList();
             final int length = line.length();
             int offset = 0; 
             while (offset < length) {
@@ -398,7 +400,7 @@ public class GlyphsFrame extends JFrame {
 
                 offset += cc;
             }
-            final int[] cpi = codepoints.stream().mapToInt(i -> i).toArray();
+            final int[] cpi = codepoints.toArray();
             line = new String(cpi, 0, cpi.length);
         }
 
@@ -408,7 +410,9 @@ public class GlyphsFrame extends JFrame {
     }
 
     private static String[] loadText(final String fnam, final boolean raw) throws IOException {
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(GlyphsFrame.class.getResourceAsStream(fnam), StandardCharsets.UTF_8))) {
+        try (final InputStream stream = GlyphsFrame.class.getResourceAsStream(fnam);
+                final InputStreamReader inputReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+                final BufferedReader in = new BufferedReader(inputReader)) {
             final List<String> ls = in.lines().filter(line -> raw || (!line.isEmpty() && !line.startsWith("#"))).toList();
             return ls.toArray(new String[ls.size()]);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2025 Australian Signals Directorate
+ * Copyright 2010-2026 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ import au.gov.asd.tac.constellation.views.namedselection.NamedSelection;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.swing.AbstractAction;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
@@ -66,8 +66,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
+        try (final ReadableGraph rg = graph.getReadableGraph()) {
             NamedSelectionState nsState = null;
             final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
             if (namedSelectionId != Graph.NOT_FOUND) {
@@ -81,13 +80,11 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
             if (nsState == null) {
                 selectElementsAndRunArrangement(rg, null);
             }
-        } finally {
-            rg.release();
         }
     }
-    
+
     private void selectElementsAndRunArrangement(final ReadableGraph rg, final List<NamedSelection> namedSelections) {
-        final Set<Integer> rootVxIds = new HashSet<>();
+        final MutableIntList rootVxIds = new IntArrayList();
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(rg);
         for (int position = 0; position < rg.getVertexCount(); position++) {
             final int vxId = rg.getVertex(position);
@@ -102,19 +99,17 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
         final Object result = DialogDisplayer.getDefault().notify(dd);
 
         if (result == DialogDescriptor.OK_OPTION) {
-            final long selectionId = ssp.getNamedSelectionId();
+            final int selectionId = ssp.getNamedSelectionId();
 
-            if (selectionId == -2) {
-
+            if (selectionId == SelectNamedSelectionPanel.USE_CURRENTLY_SELECTED) {
                 PluginExecutor.startWith(VisualGraphPluginRegistry.DESELECT_ALL)
                         .followedBy(ArrangementPluginRegistry.BUBBLE_TREE)
                         .set(ArrangeInBubbleTreePlugin.ROOTS_PARAMETER_ID, rootVxIds)
                         .set(ArrangeInBubbleTreePlugin.IS_MINIMAL_PARAMETER_ID, true)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInBubbleTreeAction());
-                
-            } else if (selectionId != -1) {
-                
+
+            } else if (selectionId != SelectNamedSelectionPanel.NO_OPTION_SELECTED) {
                 final int namedSelectionId = rg.getAttribute(GraphElementType.VERTEX, "named_selection");
                 final long mask = 1L << selectionId;
                 rootVxIds.clear();
@@ -131,10 +126,10 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
                         .set(ArrangeInBubbleTreePlugin.IS_MINIMAL_PARAMETER_ID, true)
                         .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInBubbleTreeAction());
-                
+
             }
         }
 
     }
-    
+
 }
