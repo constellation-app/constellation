@@ -56,12 +56,11 @@ public class NewTreeArranger implements Arranger {
 
     @Override
     public void setMaintainMean(final boolean b) {
-        // Let Intentially blank
+        // Left Intentially blank
     }
 
     @Override
     public void arrange(final GraphWriteMethods graph) throws InterruptedException {
-        System.out.println("new arrange");
         this.graph = graph;
 
         xAttr = VisualConcept.VertexAttribute.X.ensure(graph);
@@ -163,6 +162,70 @@ public class NewTreeArranger implements Arranger {
         }
     }
 
+    /**
+     * Executes the radial tree layout algorithm.
+     *
+     * @param root The center node of the tree hierarchy.
+     * @param layerDistance The radial distance (radius step) between parent and child layers.
+     */
+    private void calculateLayout(final int root, final float layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
+        if (root == Graph.NOT_FOUND) {
+            return;
+        }
+
+        // Set root position to origin
+        graph.setFloatValue(xAttr, root, 0);
+        graph.setFloatValue(yAttr, root, 0);
+        graph.setFloatValue(zAttr, root, 0);
+
+        // Distribute children across 360 degrees
+        calculateNodePositions(root, 1, 0, 2 * Math.PI, layerDistance, orderedChildren);
+    }
+
+    private void calculateNodePositions(final int vxId, final int depth, final double startAngle, final double endAngle, final float layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
+        final List<VxInfo> children = orderedChildren.get(vxId);
+        if (children == null || children.isEmpty()) {
+            return;
+        }
+
+        final double totalParentLeaves = getLeafCount(vxId, orderedChildren);
+        final double angleRange = endAngle - startAngle;
+        final double radius = depth * layerDistance;
+
+        double currentAngle = startAngle;
+
+        for (final VxInfo child : children) {
+            // Allocate a slice of the angular wedge proportional to the child's leaf count
+            final double childAngleWedge = (getLeafCount(child.vxId, orderedChildren) / totalParentLeaves) * angleRange;
+
+            // Center the node within its angular slice
+            final double nodeAngle = currentAngle + (childAngleWedge / 2.0);
+
+            // Convert to Cartesian coordinates
+            graph.setFloatValue(xAttr, child.vxId, (float) (radius * Math.cos(nodeAngle)));
+            graph.setFloatValue(yAttr, child.vxId, (float) (radius * Math.sin(nodeAngle)));
+            graph.setFloatValue(zAttr, child.vxId, 0);
+
+            // Recursively layout the next subtree depth layer
+            calculateNodePositions(child.vxId, depth + 1, currentAngle, currentAngle + childAngleWedge, layerDistance, orderedChildren);
+
+            // Advance the angle pointer for the next sibling
+            currentAngle += childAngleWedge;
+        }
+    }
+
+    private int getLeafCount(final int vxId, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
+        final List<VxInfo> children = orderedChildren.get(vxId);
+        if (children == null || children.isEmpty()) {
+            return 1;
+        }
+        int count = 0;
+        for (final VxInfo child : children) {
+            count += getLeafCount(child.vxId, orderedChildren);
+        }
+        return count;
+    }
+
     // COPIED FROM CircTreeArranger
     /**
      * A vertex id and the number of children the vertex has.
@@ -186,71 +249,5 @@ public class NewTreeArranger implements Arranger {
         public String toString() {
             return String.format("VxInfo[vxId=%d,nChildren=%d]", vxId, nChildren);
         }
-    }
-
-    /**
-     * Executes the radial tree layout algorithm.
-     *
-     * @param root The center node of the tree hierarchy.
-     * @param layerDistance The radial distance (radius step) between parent and child layers.
-     */
-    private void calculateLayout(final int root, final float layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
-        if (root == Graph.NOT_FOUND) {
-            return;
-        }
-
-        // Root is always placed precisely at the origin (0, 0)
-        graph.setFloatValue(xAttr, root, 0);
-        graph.setFloatValue(yAttr, root, 0);
-        graph.setFloatValue(zAttr, root, 0);
-
-        // Distribute children across the full 360-degree circle (0 to 2*PI)
-        calculateNodePositions(root, 1, 0, 2 * Math.PI, layerDistance, orderedChildren);
-    }
-
-    private void calculateNodePositions(final int parent, final int depth, final double startAngle, final double endAngle, final float layerDistance, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
-        final List<VxInfo> children = orderedChildren.get(parent);
-        if (children == null || children.isEmpty()) {
-            return;
-        }
-
-        final double totalParentLeaves = getLeafCount(parent, orderedChildren);
-        final double angleRange = endAngle - startAngle;
-
-        // The radius grows linearly based on the tree depth
-        final double radius = depth * layerDistance;
-
-        double currentAngle = startAngle;
-
-        for (final VxInfo child : children) {
-            // Allocate a slice of the angular wedge proportional to the child's leaf count
-            final double childAngleWedge = (getLeafCount(child.vxId, orderedChildren) / totalParentLeaves) * angleRange;
-
-            // Center the node within its dedicated angular slice
-            final double nodeAngle = currentAngle + (childAngleWedge / 2.0);
-
-            // Convert Polar coordinates (radius, angle) to Cartesian coordinates (x, y)
-            graph.setFloatValue(xAttr, child.vxId, (float) (radius * Math.cos(nodeAngle)));
-            graph.setFloatValue(yAttr, child.vxId, (float) (radius * Math.sin(nodeAngle)));
-            graph.setFloatValue(zAttr, child.vxId, 0);
-
-            // Recursively layout the next subtree depth layer
-            calculateNodePositions(child.vxId, depth + 1, currentAngle, currentAngle + childAngleWedge, layerDistance, orderedChildren);
-
-            // Advance the angle pointer for the next sibling
-            currentAngle += childAngleWedge;
-        }
-    }
-
-    private int getLeafCount(final int vxId, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
-        final List<VxInfo> children = orderedChildren.get(vxId);
-        if (children == null || children.isEmpty()) {
-            return 1;
-        }
-        int count = 0;
-        for (final VxInfo child : children) {
-            count += getLeafCount(child.vxId, orderedChildren);
-        }
-        return count;
     }
 }

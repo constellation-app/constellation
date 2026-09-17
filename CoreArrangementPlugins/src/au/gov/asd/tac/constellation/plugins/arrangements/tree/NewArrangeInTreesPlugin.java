@@ -231,8 +231,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
                     }
 
                     // If neighbour is not in subgraph, dim/hide
-                    // This assumes that transaction position matches neighbour position
-                    final int txId = graph.getVertexTransaction(vxId, i);
+                    final int txId = graph.getVertexTransaction(vxId, i); // This assumes that transaction position matches neighbour position
                     if (dimTrans) {
                         graph.setBooleanValue(transactionDimmedAttribute, txId, dimTrans);
                     } else {
