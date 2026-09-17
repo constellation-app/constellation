@@ -100,7 +100,14 @@ public final class SharedDrawable {
         sharedDrawable.display();
         sharedDrawable.getContext().makeCurrent();
         try {
-            sharedDrawable.setGL(new DebugGL3(sharedDrawable.getGL().getGL3()));
+            final GL3 rawgl = sharedDrawable.getGL().getGL3();
+            int error = rawgl.glGetError();
+            while (error != GL3.GL_NO_ERROR) {
+                LOGGER.log(Level.WARNING, "OpenGL Error: {0}", error);
+                error = rawgl.glGetError();
+            }
+            
+            sharedDrawable.setGL(new DebugGL3(rawgl));
 
             // Create a shared texture object for the icon texture array.
             gl = sharedDrawable.getGL().getGL3();
