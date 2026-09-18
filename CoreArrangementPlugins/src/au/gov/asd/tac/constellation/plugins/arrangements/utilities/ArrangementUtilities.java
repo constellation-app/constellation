@@ -289,7 +289,7 @@ public final class ArrangementUtilities {
                 final MutableIntStack neighbours = new IntArrayStack();
                 neighbours.push(vxID);
                 while (!neighbours.isEmpty()) {
-                    final int nxID = neighbours.pop();;
+                    final int nxID = neighbours.pop();
                     for (int i = 0; i < wg.getVertexNeighbourCount(nxID); i++) {
                         final int nextNxID = wg.getVertexNeighbour(nxID, i);
                         if (potentials.get(nextNxID)) {
