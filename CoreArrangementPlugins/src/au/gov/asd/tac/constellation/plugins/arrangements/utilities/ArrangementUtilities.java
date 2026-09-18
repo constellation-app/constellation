@@ -383,9 +383,9 @@ public final class ArrangementUtilities {
         // Mark as visitied
         unvisitedNodes.clear(vxPos);
 
-        islandSet.add(vxPos);
-
         final int vxID = graph.getVertex(vxPos);
+        islandSet.add(vxID);
+
         final int numNeighbours = graph.getVertexNeighbourCount(vxID);
 
         // Recursively find all neighbours
