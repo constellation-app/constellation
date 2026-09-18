@@ -143,7 +143,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         final Arranger treeArranger = new NewTreeArranger(scale);
         final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
 
-        final TreeTaxonArranger arranger2 = new TreeTaxonArranger(treeArranger, middle, splitIntoTrees);
+        final GraphTaxonomyArranger arranger2 = splitIntoTrees ? new TreeTaxonArranger(treeArranger, middle) : new NewTaxonArranger(treeArranger, middle);
         arranger2.setInteraction(interaction);
 
         // Push the MDS parts further away from each other.
@@ -170,7 +170,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         selectedGraph.retrieveCoords();
 
         if (colorNodesByGroup) {
-            colourSubGraphs(graph, arranger2.getTreeTaxonomy(graph));
+            colourSubGraphs(graph, TreeTaxonArranger.getTreeTaxonomy(graph, true));
         }
 
         if (!NOTHING.equals(dimHideChoice)) {

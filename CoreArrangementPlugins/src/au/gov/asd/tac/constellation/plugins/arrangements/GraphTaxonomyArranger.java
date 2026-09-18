@@ -205,7 +205,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         }
     }
 
-    protected abstract GraphTaxonomy getTaxonomy(final GraphWriteMethods graph);
+    public abstract GraphTaxonomy getTaxonomy(final GraphWriteMethods graph);
 
     @Override
     public void setMaintainMean(final boolean b) {

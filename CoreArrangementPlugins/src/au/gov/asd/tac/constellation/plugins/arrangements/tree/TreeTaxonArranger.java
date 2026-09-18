@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
-import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
@@ -35,18 +34,10 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 public class TreeTaxonArranger extends GraphTaxonomyArranger {
 
     private boolean putSingletonTaxaWithSameNeighborsTogether;
-    private final boolean useTaxFromTrees; // TODO: I feel like this could be done better
-
-    public TreeTaxonArranger(final Arranger inner, final Arranger outer, final boolean newThing) {
-        super(inner, outer, Connections.LINKS, InducedSubgraph.getSubgraphFactory());
-        putSingletonTaxaWithSameNeighborsTogether = true;
-        useTaxFromTrees = newThing;
-    }
 
     public TreeTaxonArranger(final Arranger inner, final Arranger outer) {
         super(inner, outer, Connections.LINKS, InducedSubgraph.getSubgraphFactory());
         putSingletonTaxaWithSameNeighborsTogether = true;
-        useTaxFromTrees = true;
     }
 
     /**
@@ -61,7 +52,7 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
         this.putSingletonTaxaWithSameNeighborsTogether = putSingletonTaxaWithSameNeighborsTogether;
     }
 
-    public GraphTaxonomy getTreeTaxonomy(final GraphWriteMethods graph) {
+    public static GraphTaxonomy getTreeTaxonomy(final GraphWriteMethods graph, final boolean putSingletonTaxaWithSameNeighborsTogether) {
         final GraphTaxonomy taxByTrees = TaxFromTrees.getTaxonomy(graph, false);
 
         if (putSingletonTaxaWithSameNeighborsTogether) {
@@ -85,7 +76,7 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
     }
 
     @Override
-    protected GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
-        return useTaxFromTrees ?  getTreeTaxonomy(wg) : ArrangementUtilities.getWeakComponents(wg);
+    public GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
+        return getTreeTaxonomy(wg, putSingletonTaxaWithSameNeighborsTogether);
     }
 }
