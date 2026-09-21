@@ -55,11 +55,7 @@ public class ArrangeInTreesPlugin extends SimpleEditPlugin {
             final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
             radiusSetter.setRadii();
 
-            //final Arranger inner = new CircTreeArranger(CircTreeChoiceParameters.getDefaultParameters());
-            final Arranger inner = new NewTreeArranger();
-            // This has an inpact on how spread out the graph is, but it seems to compound?
-            // So if it's low then it's not as spread out, but then the nodes closer to leaves are too packed together
-            //final Arranger inner = new CircTreeArranger(new CircTreeChoiceParameters(0.02f, false));
+            final Arranger inner = new CircTreeArranger(CircTreeChoiceParameters.getDefaultParameters());
 
             final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
 
