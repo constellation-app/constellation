@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in September 2026
+-   Updated JOGL libraries to v2.6 and changed installation to be configured from ivy.
+
 ## Changes in July 2026
 -   Fixed a NullPointerException in the Notes View when rendering notes with null content, colour, or selection lists (e.g. auto notes from plugin reports).
 

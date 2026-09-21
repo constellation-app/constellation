@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 import au.gov.asd.tac.constellation.utilities.VersionUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL;
@@ -27,7 +26,6 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -168,26 +166,10 @@ public final class GLRenderer implements GLEventListener {
     public void reshape(final GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
         final GL3 gl = drawable.getGL().getGL3();
 
-        //  Windows-DPI-Scaling
-        //
-        // If JOGL is ever fixed or another solution is found, either change
-        // needsManualDPIScaling to return false (so there is effectively no
-        // DPI scaling here) or remove the scaled height and width below.         
-        float dpiScaleX = 1.0F;
-        float dpiScaleY = 1.0F;
-        if (GLTools.needsManualDPIScaling()) {
-            dpiScaleX = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleX();
-            dpiScaleY = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleY();
-        }
-
-        // These need to be final as they are used in the lambda function below
-        final int dpiScaledWidth = (int) (width * dpiScaleX);
-        final int dpiScaledHeight = (int) (height * dpiScaleY);
-
-        gl.glViewport(0, 0, dpiScaledWidth, dpiScaledHeight);
+        gl.glViewport(0, 0, width, height);
 
         // Create the projection matrix, and load it on the projection matrix stack.
-        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
+        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) width / (float) height, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
 
         projectionMatrix.set(viewFrustum.getProjectionMatrix());
 
@@ -195,12 +177,12 @@ public final class GLRenderer implements GLEventListener {
         // but never get smaller. Explicitly set the minimum size to get around this.
         ((Component) drawable).setMinimumSize(new Dimension(0, 0));
 
-        renderables.forEach(renderable -> renderable.reshape(x, y, dpiScaledWidth, dpiScaledHeight));
+        renderables.forEach(renderable -> renderable.reshape(x, y, width, height));
 
         viewport[0] = x;
         viewport[1] = y;
-        viewport[2] = dpiScaledWidth;
-        viewport[3] = dpiScaledHeight;
+        viewport[2] = width;
+        viewport[3] = height;
     }
 
     /**
