@@ -42,12 +42,6 @@ public class NewTreeArranger implements Arranger {
 
     final private float nodeDistance;
 
-    enum SubTreeMode {
-        NONE,
-        DIM,
-        HIDE
-    }
-
     public NewTreeArranger() {
         nodeDistance = 10F;
     }
