@@ -729,6 +729,6 @@ public class Shape {
             compatibleHeader = compatibleHeader.substring(0, 10);
         }
 
-        return compatibleHeader;
+        return compatibleHeader.strip();
     }
 }
