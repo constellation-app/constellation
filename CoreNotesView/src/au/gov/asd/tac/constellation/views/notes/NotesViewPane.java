@@ -843,15 +843,17 @@ public class NotesViewPane extends BorderPane {
                 selectionLabelText = "Note linked to: the graph.";
             } else {
                 selectionLabelText = "Note linked to: ";
-                if (newNote.getNodesSelected().size() == 1) {
-                    selectionLabelText += newNote.getNodesSelected().size() + " node, ";
+                final int nodeCount = newNote.getNodesSelected().size();
+                final int transactionCount = newNote.getTransactionsSelected().size();
+                if (nodeCount == 1) {
+                    selectionLabelText += nodeCount + " node, ";
                 } else {
-                    selectionLabelText += newNote.getNodesSelected().size() + " nodes, ";
+                    selectionLabelText += nodeCount + " nodes, ";
                 }
-                if (newNote.getTransactionsSelected().size() == 1) {
-                    selectionLabelText += newNote.getTransactionsSelected().size() + " transaction. ";
+                if (transactionCount == 1) {
+                    selectionLabelText += transactionCount + " transaction. ";
                 } else {
-                    selectionLabelText += newNote.getTransactionsSelected().size() + " transactions. ";
+                    selectionLabelText += transactionCount + " transactions. ";
                 }
             }
             selectionLabel.setText(selectionLabelText);
@@ -896,13 +898,15 @@ public class NotesViewPane extends BorderPane {
         gap.setMinWidth(10);
         gap2.setMinWidth(10);
 
-        if (newNote.getNodeColour().isBlank()) {
-            newNote.setNodeColour(USER_COLOR);
-        }
-
         HBox.setHgrow(dateTimeLabel, Priority.NEVER);
 
-        final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
+        // fromHtmlColor returns null for blank/invalid colours; fall back to the default user colour.
+        ConstellationColor noteColour = ConstellationColor.fromHtmlColor(newNote.getNodeColour());
+        if (noteColour == null) {
+            newNote.setNodeColour(USER_COLOR);
+            noteColour = ConstellationColor.fromHtmlColor(USER_COLOR);
+        }
+        final ColorPicker colourPicker = new ColorPicker(noteColour.getJavaFXColor());
         colourPicker.setMinWidth(100);
         colourPicker.setMaxWidth(100);
         HBox.setHgrow(colourPicker, Priority.NEVER);
@@ -1002,15 +1006,15 @@ public class NotesViewPane extends BorderPane {
                 } else {
                     // Select the specific nodes and/or transactions applied to the note.
                     // Add nodes that are selected to the note.
-                    final int nodesLength = newNote.getNodesSelected().size();
                     final List<Integer> selectedNodes = newNote.getNodesSelected();
+                    final int nodesLength = selectedNodes.size();
                     for (int i = 0; i < nodesLength; i++) {
                         elementIdsVx.set(selectedNodes.get(i));
                     }
 
                     // Add transactions that are selected to the note.
-                    final int transactionsLength = newNote.getTransactionsSelected().size();
                     final List<Integer> selectedTransactions = newNote.getTransactionsSelected();
+                    final int transactionsLength = selectedTransactions.size();
                     for (int i = 0; i < transactionsLength; i++) {
                         elementIdsTx.set(selectedTransactions.get(i));
                     }
@@ -1048,7 +1052,7 @@ public class NotesViewPane extends BorderPane {
                 }
             });
 
-            if (newNote.getNodesSelected() != null && newNote.getTransactionsSelected() != null && newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
+            if (newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
                 addOnGraphMenuItem.disableProperty().set(true);
                 removeOnGraphMenuItem.disableProperty().set(true);
             }

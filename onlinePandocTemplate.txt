@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 
 <head>
-  <base href="/constellation-app.github.io/help/constellation/">
+  <base href="/help/constellation/">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="../../../assets/css/app.css" />
-  <link rel="stylesheet" href="../../../assets/bootstrap/css/bootstrap.css" />
-  <link rel="stylesheet" href="../../../assets/bootstrap/css/search.css" />
+  <link rel="stylesheet" href="../../assets/css/app.css" />
+  <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.css" />
+  <link rel="stylesheet" href="../../assets/bootstrap/css/search.css" />
   <noscript>
-    <link rel="stylesheet" href="../../../assets/css/noscript.css" />
+    <link rel="stylesheet" href="../../assets/css/noscript.css" />
   </noscript>
 
   <!-- Scripts -->
-  <script src="../../../assets/js/jquery.min.js"></script>
-  <script src="../../../assets/js/js.cookie.min.js"></script>
-  <script src="../../../assets/js/jquery.dropotron.min.js"></script>
-  <script src="../../../assets/js/jquery.scrolly.min.js"></script>
-  <script src="../../../assets/js/jquery.scrollex.min.js"></script>
-  <script src="../../../assets/js/browser.min.js"></script>
-  <script src="../../../assets/js/breakpoints.min.js"></script>
-  <script src="../../../assets/js/app.js"></script>
-  <script src="../../../assets/bootstrap/js/bootstrap.js"></script>
-  <script src="../../../assets/bootstrap/js/index.min.js"></script>
+  <script src="../../assets/js/jquery.min.js"></script>
+  <script src="../../assets/js/js.cookie.min.js"></script>
+  <script src="../../assets/js/jquery.dropotron.min.js"></script>
+  <script src="../../assets/js/jquery.scrolly.min.js"></script>
+  <script src="../../assets/js/jquery.scrollex.min.js"></script>
+  <script src="../../assets/js/browser.min.js"></script>
+  <script src="../../assets/js/breakpoints.min.js"></script>
+  <script src="../../assets/js/app.js"></script>
+  <script src="../../assets/bootstrap/js/bootstrap.js"></script>
+  <script src="../../assets/bootstrap/js/index.min.js"></script>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-139401597-2"></script>
 
@@ -34,13 +34,13 @@
   <!-- Nav -->
   <nav id="nav">
     <ul>
-      <li><a href="../../../index.html">Home</a></li>
-      <li><a href="../../../index.html#banner" class="scrolly">About</a></li>
-      <li><a href="../../../index.html#features" class="scrolly">Features</a></li>
-      <li><a href="../../../download.html" class="scrolly">Download</a></li>
-      <li><a href="../../../blog.html" class="scrolly">Blog</a></li>
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../index.html#banner" class="scrolly">About</a></li>
+      <li><a href="../../index.html#features" class="scrolly">Features</a></li>
+      <li><a href="../../download.html" class="scrolly">Download</a></li>
+      <li><a href="../../blog.html" class="scrolly">Blog</a></li>
       <li><a href="../ext/docs/CoreFunctionality/about-constellation.html" class="scrolly">Documentation</a></li>
-      <li><a href="../../../index.html#contact" class="scrolly">Contact</a></li>
+      <li><a href="../../index.html#contact" class="scrolly">Contact</a></li>
     </ul>
   </nav>
 

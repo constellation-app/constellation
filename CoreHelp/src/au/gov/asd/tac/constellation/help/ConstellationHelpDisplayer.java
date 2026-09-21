@@ -59,7 +59,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
     private static final Logger LOGGER = Logger.getLogger(ConstellationHelpDisplayer.class.getName());
 
-    private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.com/help";
+    private static final String OFFICIAL_CONSTELLATION_WEBSITE = "https://www.constellation-app.github.io/help";
     
     private static final String NEWLINE = "\n";
     private static final Pattern SPLIT_REGEX = Pattern.compile("</a>");
@@ -280,7 +280,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                                         "id": %s,
                                         "title": "%s",
                                         "category": "%s",
-                                        "link": "%s"
+                                        "link": "../%s"
                                     }
                                     """, index, pageName, category, link);
                 documents.add(page);
