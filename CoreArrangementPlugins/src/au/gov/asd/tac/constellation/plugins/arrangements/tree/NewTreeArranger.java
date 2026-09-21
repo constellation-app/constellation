@@ -18,8 +18,10 @@ package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -56,7 +58,7 @@ public class NewTreeArranger implements Arranger {
 
     @Override
     public void setMaintainMean(final boolean b) {
-        // Left Intentially blank
+        // Left Intentially Blank
     }
 
     @Override
@@ -74,8 +76,7 @@ public class NewTreeArranger implements Arranger {
 
         final BitSet verticesToArrange = ArrangementUtilities.vertexBits(graph);
 
-        final int rootVxId = findRootNodeId(verticesToArrange, vxCount); // TODO: try most central node instead
-        //final int rootVxId = 28; // ONLY for strangetreearrangement.star, is the node thats most central (at least VETEX 28 is, idk if it has the same id)
+        final int rootVxId = findRootNodeId();
 
         // Make a list of what nodes have what "children"
         final MutableIntObjectMap<List<VxInfo>> orderedChildren = new IntObjectHashMap<>();
@@ -88,24 +89,20 @@ public class NewTreeArranger implements Arranger {
         calculateLayout(rootVxId, nodeDistance, orderedChildren);
     }
 
-    private int findRootNodeId(final BitSet verticesToArrange, final int vxCount) {
-        int rootVxId = graph.getVertex(0);
-        int bestValence = -1;
-        for (int position = 0; position < vxCount; position++) {
-            final int vxId = graph.getVertex(position);
+    private int findRootNodeId() {
+        final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilities.calculateScores(graph, PathScoringUtilities.ScoreType.BETWEENNESS, false, true, true, false);
+        final float[] betweennesses = scoreResult.getSecond();
 
-            if (!verticesToArrange.get(vxId)) {
-                continue;
-            }
-
-            final int valence = graph.getVertexNeighbourCount(vxId);
-            if (valence > bestValence) {
-                rootVxId = vxId;
-                bestValence = valence;
+        float maxScore = betweennesses[0];
+        int maxPos = 0;
+        for (int i = 0; i < betweennesses.length; i++) {
+            if (betweennesses[i] > maxScore) {
+                maxPos = i;
+                maxScore = betweennesses[i];
             }
         }
 
-        return rootVxId;
+        return graph.getVertex(maxPos);
     }
 
     // COPIED FROM CircTreeArranger
