@@ -24,20 +24,14 @@ import java.util.Map;
  */
 public final class Config {
     
-    private static final double TELEPORTATION_PROBABILITY = 0.15;
-    
     // Core algorithm
     private boolean directed;
     private boolean undirdir;
     private boolean outdirdir;
     private boolean rawdir;
-    //TODO: this variable isn't set anywhere, but its value is used for some important checks
-    private boolean recordedTeleportation;
 
     // Performance and accuracy
     private int numTrials;
-    private boolean randomizeCoreLoopLimit;
-    private int coreLoopLimit;
     private int levelAggregationLimit;
     private int tuneIterationLimit; // num iterations of fine-tune/coarse-tune in two-level partition)
     private boolean fastCoarseTunePartition;
@@ -96,8 +90,6 @@ public final class Config {
         switch (level) {
             case 0 -> {
                 // full coarse-tune
-                randomizeCoreLoopLimit = false;
-                coreLoopLimit = 0;
                 levelAggregationLimit = 0;
                 tuneIterationLimit = 0;
                 fastCoarseTunePartition = false;
@@ -106,8 +98,6 @@ public final class Config {
             }
             case 1 -> {
                 // fast coarse-tune
-                randomizeCoreLoopLimit = true;
-                coreLoopLimit = 10;
                 levelAggregationLimit = 0;
                 tuneIterationLimit = 0;
                 fastCoarseTunePartition = true;
@@ -116,8 +106,6 @@ public final class Config {
             }
             case 2 -> {
                 // no tuning
-                randomizeCoreLoopLimit = true;
-                coreLoopLimit = 10;
                 levelAggregationLimit = 0;
                 tuneIterationLimit = 1;
                 fastCoarseTunePartition = true;
@@ -126,8 +114,6 @@ public final class Config {
             }
             case 3 -> {
                 // no aggregation nor any tuning
-                randomizeCoreLoopLimit = true;
-                coreLoopLimit = 10;
                 levelAggregationLimit = 1;
                 tuneIterationLimit = 1;
                 fastCoarseTunePartition = true;
@@ -173,18 +159,6 @@ public final class Config {
     public void setRawdir(final boolean rawdir) {
         this.rawdir = rawdir;
     }
-
-    public boolean isRecordedTeleportation() {
-        return recordedTeleportation;
-    }
-
-    public void setRecordedTeleportation(final boolean recordedTeleportation) {
-        this.recordedTeleportation = recordedTeleportation;
-    }
-
-    public double getTeleportationProbability() {
-        return TELEPORTATION_PROBABILITY;
-    }
     
     public int getNumTrials() {
         return numTrials;
@@ -192,14 +166,6 @@ public final class Config {
 
     public void setNumTrials(final int numTrials) {
         this.numTrials = numTrials;
-    }
-    
-    public boolean isRandomizeCoreLoopLimit() {
-        return randomizeCoreLoopLimit;
-    }
-
-    public int getCoreLoopLimit() {
-        return coreLoopLimit;
     }
     
     public int getLevelAggregationLimit() {

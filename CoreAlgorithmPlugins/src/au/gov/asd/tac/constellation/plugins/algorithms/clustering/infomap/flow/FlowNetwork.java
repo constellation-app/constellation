@@ -32,6 +32,8 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 public class FlowNetwork {
 
     private static final Logger LOGGER = Logger.getLogger(FlowNetwork.class.getName());
+    
+    private static final double TELEPORTATION_PROBABILITY = 0.15;
 
     private double[] nodeFlow;
     private double[] nodeTeleportRates;
@@ -139,14 +141,10 @@ public class FlowNetwork {
             return;
         }
 
-        LOGGER.log(Level.INFO, String.format("using %s teleportation to %s... ", config.isRecordedTeleportation() ? "recorded" : "unrecorded",
-                "links"));
-
         // Calculate the teleport rate distribution.
         // Teleport proportionally to out-degree, or in-degree if recorded teleportation.
         for (final Connection conn : flowConns) {
-            final int toNode = config.isRecordedTeleportation() ? conn.getTarget() : conn.getSource();
-            nodeTeleportRates[toNode] += conn.getFlow() / totalConnWeight;
+            nodeTeleportRates[conn.getSource()] += conn.getFlow() / totalConnWeight;
         }
 
         // Normalize link weights with respect to its source nodes total out-link weight.
@@ -166,7 +164,7 @@ public class FlowNetwork {
         final double[] nodeFlowTmp = new double[numNodes];
         Arrays.fill(nodeFlowTmp, 0);
         int numIterations = 0;
-        double alpha = config.getTeleportationProbability();
+        double alpha = TELEPORTATION_PROBABILITY;
         double beta = 1.0 - alpha;
         double sqdiff = 1;
         double danglingRank = 0;
@@ -218,16 +216,14 @@ public class FlowNetwork {
 
         double sumNodeRank = 1.0;
 
-        if (!config.isRecordedTeleportation()) {
-            //Take one last power iteration excluding the teleportation (and normalize node flow to sum 1.0).
-            sumNodeRank = 1.0 - danglingRank;
-            Arrays.fill(nodeFlow, 0);
-            for (final Connection conn : flowConns) {
-                nodeFlow[conn.getTarget()] += conn.getFlow() * nodeFlowTmp[conn.getSource()] / sumNodeRank;
-            }
-
-            beta = 1.0;
+        //Take one last power iteration excluding the teleportation (and normalize node flow to sum 1.0).
+        sumNodeRank = 1.0 - danglingRank;
+        Arrays.fill(nodeFlow, 0);
+        for (final Connection conn : flowConns) {
+            nodeFlow[conn.getTarget()] += conn.getFlow() * nodeFlowTmp[conn.getSource()] / sumNodeRank;
         }
+
+        beta = 1.0;
 
         // Update the links with their global flow from the PageRank values. (Note: beta is set to 1 if unrec).
         for (final Connection conn : flowConns) {

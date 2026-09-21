@@ -191,22 +191,6 @@ public class NodeBase {
         return firstChild == null;
     }
 
-    public boolean isDangling() {
-        return outEdges.isEmpty();
-    }
-
-    public int getOutDegree() {
-        return outEdges.size();
-    }
-
-    public int getInDegree() {
-        return inEdges.size();
-    }
-
-    public int getDegree() {
-        return getOutDegree() + getInDegree();
-    }
-
     public int getChildDegree() {
         return childDegree;
     }

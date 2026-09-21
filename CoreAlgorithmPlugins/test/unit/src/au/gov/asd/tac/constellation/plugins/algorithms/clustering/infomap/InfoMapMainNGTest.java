@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirected;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirectedUnrecordedTeleportation;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirdir;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirected;
@@ -69,8 +68,6 @@ public class InfoMapMainNGTest {
             infoMap = new InfomapUndirected(config, rg);
         } else if (config.isUndirdir() || config.isOutdirdir() || config.isRawdir()) {
             infoMap = new InfomapUndirdir(config, rg);
-        } else if (config.isRecordedTeleportation()) {
-            infoMap = new InfomapDirected(config, rg);
         } else {
             infoMap = new InfomapDirectedUnrecordedTeleportation(config, rg);
         }

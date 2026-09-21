@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirected;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirectedUnrecordedTeleportation;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirdir;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirected;
@@ -163,8 +162,6 @@ public class InfoMapPlugin extends SimpleEditPlugin {
             infoMap = new InfomapUndirected(config, wg);
         } else if (config.isUndirdir() || config.isOutdirdir() || config.isRawdir()) {
             infoMap = new InfomapUndirdir(config, wg);
-        } else if (config.isRecordedTeleportation()) {
-            infoMap = new InfomapDirected(config, wg);
         } else {
             infoMap = new InfomapDirectedUnrecordedTeleportation(config, wg);
         }
