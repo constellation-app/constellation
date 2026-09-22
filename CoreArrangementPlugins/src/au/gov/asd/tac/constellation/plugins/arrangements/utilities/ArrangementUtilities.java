@@ -317,7 +317,16 @@ public final class ArrangementUtilities {
         return new GraphTaxonomy(wg, components, nodeToComponent, singletonsComponentID, doubletsComponentID);
     }
 
-    // TODO:  Also refactor this algorithm to construct the taxonmy as it goes, maybe
+    /**
+     * Returns a GraphTaxonomy, with each taxon representing the vertices in a weak component.
+     * <p>
+     * A weak component is a sub graph where all of the nodes are connected through transactions, where the direction of
+     * the transactions is ignored
+     * <p>
+     * @param wg The graph to get the components from.
+     *
+     * @return a GraphTaxonomy, with each taxon representing the vertices in a weak component.
+     */
     public static GraphTaxonomy getWeakComponents(final GraphWriteMethods wg) {
         final MutableIntObjectMap<MutableIntSet> weakComponents = new IntObjectHashMap<>();
         final MutableIntIntMap nodeToComponent = new IntIntHashMap();
