@@ -23,16 +23,13 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.collections.api.iterator.MutableIntIterator;
 import org.eclipse.collections.api.map.primitive.MutableIntIntMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
@@ -315,98 +312,6 @@ public final class ArrangementUtilities {
             }
         }
         return new GraphTaxonomy(wg, components, nodeToComponent, singletonsComponentID, doubletsComponentID);
-    }
-
-    /**
-     * Returns a GraphTaxonomy, with each taxon representing the vertices in a weak component.
-     * <p>
-     * A weak component is a sub graph where all of the nodes are connected through transactions, where the direction of
-     * the transactions is ignored
-     * <p>
-     * @param wg The graph to get the components from.
-     *
-     * @return a GraphTaxonomy, with each taxon representing the vertices in a weak component.
-     */
-    public static GraphTaxonomy getWeakComponents(final GraphWriteMethods wg) {
-        final MutableIntObjectMap<MutableIntSet> weakComponents = new IntObjectHashMap<>();
-        final MutableIntIntMap nodeToComponent = new IntIntHashMap();
-        final int singletonsComponentID = -1;
-        final int doubletsComponentID = -2;
-        weakComponents.put(singletonsComponentID, new IntHashSet());
-        weakComponents.put(doubletsComponentID, new IntHashSet());
-
-        // Get list of all weak components
-        final List<MutableIntSet> weakComponentList = findAllWeakComponents(wg);
-
-        // Construct data needed to create taxonomy
-        for (final MutableIntSet weakComponent : weakComponentList) {
-            final MutableIntIterator iterator = weakComponent.intIterator();
-            if (!iterator.hasNext()) {
-                continue;
-            }
-
-            final int firstVxID = iterator.next();
-            nodeToComponent.put(firstVxID, firstVxID);
-            while (iterator.hasNext()) {
-                final int vx = iterator.next();
-                nodeToComponent.put(firstVxID, vx);
-
-                switch (weakComponent.size()) {
-                    case 1 -> {
-                        weakComponents.get(singletonsComponentID).addAll(weakComponent);
-                        nodeToComponent.put(firstVxID, singletonsComponentID);
-                    }
-                    case 2 -> {
-                        weakComponents.get(doubletsComponentID).addAll(weakComponent);
-                        weakComponent.forEach(vert -> nodeToComponent.put(vert, doubletsComponentID));
-                    }
-                    default ->
-                        weakComponents.put(firstVxID, weakComponent);
-                }
-            }
-        }
-
-        return new GraphTaxonomy(wg, weakComponents, nodeToComponent, singletonsComponentID, doubletsComponentID);
-    }
-
-    private static List<MutableIntSet> findAllWeakComponents(final GraphWriteMethods graph) {
-        final List<MutableIntSet> weakComponentList = new ArrayList<>();
-        final BitSet unvisitedNodes = new BitSet(graph.getVertexCount()); // Represent node positions
-        unvisitedNodes.set(0, graph.getVertexCount());
-
-        // Iterate through every vertex's neighbour recrusively, remove them from list of visited verts
-        // Once done iterating, if any verts remain unvisited, begin the process anew as they are on a seperate island
-        while (!unvisitedNodes.isEmpty()) {
-            final MutableIntSet weakComponent = new IntHashSet();
-            final int nextUnvisitedPos = unvisitedNodes.nextSetBit(0);
-            weakComponentList.add(findAllConnectedNodes(graph, nextUnvisitedPos, unvisitedNodes, weakComponent));
-        }
-
-        return weakComponentList;
-    }
-
-    private static MutableIntSet findAllConnectedNodes(final GraphWriteMethods graph, final int vxPos, final BitSet unvisitedNodes, final MutableIntSet weakComponentSet) {
-        // If visited already
-        if (!unvisitedNodes.get(vxPos)) {
-            return weakComponentSet;
-        }
-
-        // Mark as visitied
-        unvisitedNodes.clear(vxPos);
-
-        final int vxID = graph.getVertex(vxPos);
-        weakComponentSet.add(vxID);
-
-        final int numNeighbours = graph.getVertexNeighbourCount(vxID);
-
-        // Recursively find all neighbours
-        for (int i = 0; i < numNeighbours; i++) {
-            final int nxID = graph.getVertexNeighbour(vxID, i);
-            final int nxPos = graph.getVertexPosition(nxID);
-            weakComponentSet.addAll(findAllConnectedNodes(graph, nxPos, unvisitedNodes, weakComponentSet));
-        }
-
-        return weakComponentSet;
     }
 
     /**

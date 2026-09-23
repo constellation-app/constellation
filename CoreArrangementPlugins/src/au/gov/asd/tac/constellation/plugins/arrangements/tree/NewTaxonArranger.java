@@ -37,6 +37,6 @@ public class NewTaxonArranger extends GraphTaxonomyArranger {
 
     @Override
     public GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
-        return ArrangementUtilities.getWeakComponents(wg);
+        return ArrangementUtilities.getComponents(wg);
     }
 }
