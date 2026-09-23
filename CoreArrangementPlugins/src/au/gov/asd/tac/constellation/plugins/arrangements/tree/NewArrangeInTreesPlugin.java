@@ -86,7 +86,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     private static final String SCALE_PARAMETER_ID_DESCRIPTION = "The distance between each layer of the arranged graph";
     private static final int SCALE_PARAMETER_ID_DEFAULT = 10;
 
-    private PluginParameter<SingleChoiceParameterValue> dimOrHideParam;
+    private static final SecureRandom random = new SecureRandom();
 
     @Override
     public PluginParameters createParameters() {
@@ -96,16 +96,17 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         splitIntoTreesParam.setName(SPLIT_INTO_TREES_PARAMETER_ID_NAME);
         splitIntoTreesParam.setDescription(SPLIT_INTO_TREES_PARAMETER_ID_DESCRIPTION);
         splitIntoTreesParam.setBooleanValue(SPLIT_INTO_TREES_DEFAULT);
-        splitIntoTreesParam.addListener((oldValue, newValue) -> dimOrHideParam.setEnabled(splitIntoTreesParam.getBooleanValue()));
         parameters.addParameter(splitIntoTreesParam);
 
-        dimOrHideParam = SingleChoiceParameterType.build(DIM_OR_HIDE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> dimOrHideParam = SingleChoiceParameterType.build(DIM_OR_HIDE_PARAMETER_ID);
         dimOrHideParam.setName(DIM_OR_HIDE_PARAMETER_ID_NAME);
         dimOrHideParam.setDescription(DIM_OR_HIDE_PARAMETER_ID_DESCRIPTION);
         SingleChoiceParameterType.setOptions(dimOrHideParam, DIM_OR_HIDE_PARAM_VALUES);
         SingleChoiceParameterType.setChoice(dimOrHideParam, DIM_OR_HIDE_PARAMETER_ID_DEFAULT);
         dimOrHideParam.setEnabled(SPLIT_INTO_TREES_DEFAULT); // Conditional on splitIntoTreesParam being checked
         parameters.addParameter(dimOrHideParam);
+
+        splitIntoTreesParam.addListener((oldValue, newValue) -> dimOrHideParam.setEnabled(splitIntoTreesParam.getBooleanValue()));
 
         final PluginParameter<BooleanParameterValue> colourSubgraphsParam = BooleanParameterType.build(COLOUR_SUBGRAPHS_PARAMETER_ID);
         colourSubgraphsParam.setName(COLOUR_SUBGRAPHS_PARAMETER_ID_NAME);
@@ -185,13 +186,12 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
             return;
         }
 
-        final SecureRandom r = new SecureRandom();
         final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(graph);
         final int colorAttr = VisualConcept.VertexAttribute.COLOR.ensure(graph);
 
         // Color each subgraph
         tax.getTaxa().forEachValue(subgraph -> {
-            final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
+            final ConstellationColor color = ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1F);
             subgraph.forEach(vxId -> {
                 graph.setStringValue(bgiconAttr, vxId, "Background.Round Circle");
                 graph.setObjectValue(colorAttr, vxId, color);
