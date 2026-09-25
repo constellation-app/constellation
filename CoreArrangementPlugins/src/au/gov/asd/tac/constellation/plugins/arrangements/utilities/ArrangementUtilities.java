@@ -40,38 +40,32 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.eclipse.collections.impl.stack.mutable.primitive.IntArrayStack;
 
 /**
- * provides a set of functions pertaining to a graph's components and its
- * vertices
+ * provides a set of functions pertaining to a graph's components and its vertices
  *
  * @author algol
  */
 public final class ArrangementUtilities {
 
     public static final int FUNDAMENTAL_SIZE = 2;
-    
+
     private static final int NO_DISTANCE = -1;
-    
+
     private ArrangementUtilities() {
         throw new IllegalStateException("Utility class");
     }
 
     /**
-     * Find the minimum sum of weighted edges that must be traversed to reach
-     * all other reachable vertices from the given one, moving either only
-     * forward, only backward, or both.
+     * Find the minimum sum of weighted edges that must be traversed to reach all other reachable vertices from the
+     * given one, moving either only forward, only backward, or both.
      *
-     * The edge weights here are special: the weight of a edge is the sum of the
-     * "radii" of the two vertices it joins. Results are appended to
-     * distancesToVertices, which should be cleared first, else the breadth
-     * first search will stop when vertices contained in distancesToVertices are
-     * encountered.
+     * The edge weights here are special: the weight of a edge is the sum of the "radii" of the two vertices it joins.
+     * Results are appended to distancesToVertices, which should be cleared first, else the breadth first search will
+     * stop when vertices contained in distancesToVertices are encountered.
      *
      * @param graph the read lock that will be used for the operation.
      * @param vxId the id of the vertex to start from.
-     * @param goForward can transactions be traveled along in the forward
-     * direction.
-     * @param goBackward can transactions be traveled along in the reverse
-     * direction.
+     * @param goForward can transactions be traveled along in the forward direction.
+     * @param goBackward can transactions be traveled along in the reverse direction.
      * @param minRadius the minimum radius of vertices.
      *
      * @return the minimum distance to each vertex in the graph.
@@ -141,8 +135,7 @@ public final class ArrangementUtilities {
     /**
      * Get the mean of the x,y,z coordinates of the vertices of a graph.
      *
-     * @param rg the graph read lock that will be used to perform this
-     * operation.
+     * @param rg the graph read lock that will be used to perform this operation.
      * @return the mean of the x,y,z coordinates of the vertices of a graph.
      */
     public static float[] getXyzMean(final GraphReadMethods rg) {
@@ -266,16 +259,14 @@ public final class ArrangementUtilities {
     }
 
     /**
-     * Returns a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * Returns a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      * <p>
-     * This procedure is fundamentally linear, but may be slowed by construction
-     * of reporting structures. It is implemented as a breadth-first traversal.
+     * This procedure is fundamentally linear, but may be slowed by construction of reporting structures. It is
+     * implemented as a breadth-first traversal.
      * <p>
      * @param wg The graph to get the components from.
      *
-     * @return a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * @return a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      */
     public static GraphTaxonomy getComponents(final GraphWriteMethods wg) {
         final MutableIntObjectMap<MutableIntSet> components = new IntObjectHashMap<>();
@@ -284,6 +275,7 @@ public final class ArrangementUtilities {
         final int doubletsComponentID = -2;
         components.put(singletonsComponentID, new IntHashSet());
         components.put(doubletsComponentID, new IntHashSet());
+
         final BitSet potentials = vertexBits(wg);
         for (int vxID = potentials.nextSetBit(0); vxID >= 0; vxID = potentials.nextSetBit(vxID + 1)) {
             final MutableIntSet component = new IntHashSet();
@@ -315,24 +307,23 @@ public final class ArrangementUtilities {
                     components.get(doubletsComponentID).addAll(component);
                     component.forEach(vert -> nodeToComponent.put(vert, doubletsComponentID));
                 }
-                default -> components.put(vxID, component);
+                default ->
+                    components.put(vxID, component);
             }
         }
         return new GraphTaxonomy(wg, components, nodeToComponent, singletonsComponentID, doubletsComponentID);
     }
 
     /**
-     * Returns a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * Returns a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      * <p>
-     * This procedure is fundamentally linear, but may be slowed by construction
-     * of reporting structures. It is implemented as a breadth-first traversal.
+     * This procedure is fundamentally linear, but may be slowed by construction of reporting structures. It is
+     * implemented as a breadth-first traversal.
      * <p>
      * @param graph The graph to get the components from.
      * @param verticesToArrange a bit set specifying which vertices to arrange.
      *
-     * @return a GraphTaxonomy, with each taxon representing the vertices in a
-     * (weak) component.
+     * @return a GraphTaxonomy, with each taxon representing the vertices in a (weak) component.
      */
     @Deprecated(forRemoval = true)
     public static GraphTaxonomy getComponents(final GraphWriteMethods graph, final BitSet verticesToArrange) {
@@ -368,8 +359,7 @@ public final class ArrangementUtilities {
      * @param seedVxId The vertex to start from.
      * @param verticesToArrange a BitSet specifying which vertices to arrange.
      *
-     * @return A Set&lt;Integer%gt; containing all of the vertices in the same
-     * component as rootVxId.
+     * @return A Set&lt;Integer%gt; containing all of the vertices in the same component as rootVxId.
      */
     @Deprecated(forRemoval = true)
     public static Set<Integer> getComponentContainingVertex(final GraphReadMethods graph, final int seedVxId, final BitSet verticesToArrange) {
@@ -397,8 +387,7 @@ public final class ArrangementUtilities {
     /**
      * Get the vertices that are sources, ie those with in-degree zero.
      *
-     * @param graph the graph write lock that will be used to perform this
-     * operation.
+     * @param graph the graph write lock that will be used to perform this operation.
      * @return the vertices that are sources, ie those with in-degree zero.
      */
     public static Deque<Integer> getSources(final GraphWriteMethods graph) {
@@ -419,8 +408,7 @@ public final class ArrangementUtilities {
     /**
      * Set x2,y2,z2 to be the same as x,y,z.
      *
-     * @param wg the graph write lock that will be used to perform this
-     * operation.
+     * @param wg the graph write lock that will be used to perform this operation.
      */
     public static void setXYZ2FromXYZ(final GraphWriteMethods wg) {
         final int x2Attr = VisualConcept.VertexAttribute.X2.get(wg);

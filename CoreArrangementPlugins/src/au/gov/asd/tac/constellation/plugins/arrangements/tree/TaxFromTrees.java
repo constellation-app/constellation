@@ -37,21 +37,17 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 public class TaxFromTrees {
 
     /**
-     * Given a Graph, build a taxonomy by trees. First, the graph will be
-     * reduced to a simple graph. Then, each taxon will be a set of vertices
-     * such that the subgraph induced from the set is a tree and such that the
-     * set contains at most one vertex that was a member of a cycle in the
-     * original graph (viewed as undirected). The taxonomy has minimum
-     * cardinality satisfying theses properties. The representative of each
-     * taxon will the member of the taxon that participated in the cycle, if one
-     * existed; else, a random member will be chosen. The edges of each tree are
+     * Given a Graph, build a taxonomy by trees. First, the graph will be reduced to a simple graph. Then, each taxon
+     * will be a set of vertices such that the subgraph induced from the set is a tree and such that the set contains at
+     * most one vertex that was a member of a cycle in the original graph (viewed as undirected). The taxonomy has
+     * minimum cardinality satisfying theses properties. The representative of each taxon will the member of the taxon
+     * that participated in the cycle, if one existed; else, a random member will be chosen. The edges of each tree are
      * also included in the taxon.
      *
-     * The supplied vertexAttributeManger is consulted to set the name of the
-     * taxa. Each taxon is given the name of the taxon leader's key.
+     * The supplied vertexAttributeManger is consulted to set the name of the taxa. Each taxon is given the name of the
+     * taxon leader's key.
      *
-     * If skipSingletonTaxa is true, does not record taxa that have only one
-     * element.
+     * If skipSingletonTaxa is true, does not record taxa that have only one element.
      *
      * @param graph the write lock that will be used to perform the operation.
      * @param skipSingletons should singletons be excluded.

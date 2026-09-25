@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.arrangements;
+package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.ComponentSubgraph;
+import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 
 /**
- * A GraphTaxonomyArranger that uses a taxonomy where each taxon is a component.
+ * A GraphTaxonomyArranger that uses a taxonomy where each taxon is a tree.
  *
  * @author algol
+ * @author sol
  */
-public final class GraphComponentArranger extends GraphTaxonomyArranger {
+public class NewTaxonArranger extends GraphTaxonomyArranger {
 
-    /**
-     * Construct a new GraphComponentArranger instance.
-     *
-     * @param inner The inner Arranger.
-     * @param outer The outer Arranger.
-     * @param connectionType the connection type.
-     */
-    public GraphComponentArranger(final Arranger inner, final Arranger outer, final SelectedInclusionGraph.Connections connectionType) {
-        super(inner, outer, connectionType, ComponentSubgraph.getSubgraphFactory());
+    public NewTaxonArranger(final Arranger inner, final Arranger outer) {
+        super(inner, outer, Connections.LINKS, InducedSubgraph.getSubgraphFactory());
     }
 
     @Override
