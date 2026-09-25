@@ -84,7 +84,7 @@ public class NewTreeArranger implements Arranger {
     }
 
     private int findRootNodeId() {
-        final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilities.calculateScores(graph, PathScoringUtilities.ScoreType.BETWEENNESS, false, true, true, false);
+        final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilities.calculateScores(graph, PathScoringUtilities.ScoreType.BETWEENNESS, true, true, true, false);
         final float[] betweennesses = scoreResult.getSecond();
 
         float maxScore = betweennesses[0];
