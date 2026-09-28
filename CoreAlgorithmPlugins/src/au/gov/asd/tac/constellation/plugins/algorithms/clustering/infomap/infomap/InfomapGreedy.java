@@ -154,16 +154,6 @@ public abstract class InfomapGreedy extends InfomapBase {
             codelength = indexCodelength + moduleCodelength;
         }
     }
-    
-    protected void addTeleportationDeltaFlowOnOldModuleIfMove(final Node nodeToMove, final DeltaFlow oldModuleDeltaFlow) {
-        // This method intentionally left blank.
-        // Specialized implementation for InfomapDirected.
-    }
-
-    protected void addTeleportationDeltaFlowOnNewModuleIfMove(final Node nodeToMove, final DeltaFlow newModuleDeltaFlow) {
-        // This method intentionally left blank.
-        // Specialized implementation for InfomapDirected.
-    }
 
     /**
      * Update the codelength to reflect the move of node current in oldModuleDelta to newModuleDelta (Specialized for
@@ -334,9 +324,6 @@ public abstract class InfomapGreedy extends InfomapBase {
             if (newM != oldM) {
                 final DeltaFlow oldModuleDelta = new DeltaFlow(oldM, 0, 0);
                 final DeltaFlow newModuleDelta = new DeltaFlow(newM, 0, 0);
-
-                addTeleportationDeltaFlowOnOldModuleIfMove(current, oldModuleDelta);
-                addTeleportationDeltaFlowOnNewModuleIfMove(current, newModuleDelta);
 
                 // For all outlinks.
                 for (final Edge<NodeBase> edge : current.getOutEdges()) {

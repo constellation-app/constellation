@@ -46,7 +46,6 @@ public class Network {
     private final int vxNameId;
 
     private final double[] nodeWeights;
-    private final double sumNodeWeights;
     private double totalWeight;
 
     public Network(final Config config, final GraphReadMethods rg) {
@@ -60,7 +59,6 @@ public class Network {
         // We assume that all vertices have weight 1.
         nodeWeights = new double[rg.getVertexCount()];
         Arrays.fill(nodeWeights, 1);
-        sumNodeWeights = rg.getVertexCount();
 
         graphConnections = () -> {
             switch (config.getConnectionType()) {
@@ -130,15 +128,7 @@ public class Network {
     public Map<IntIntPair, Double> getMap() {
         return Collections.unmodifiableMap(connectionMap);
     }
-
-    public double[] getNodeTeleportRates() {
-        return nodeWeights.clone();
-    }
-
-    public double getSumNodeWeights() {
-        return sumNodeWeights;
-    }
-
+    
     public String getNodeName(final int position) {
         return vxNameId == Graph.NOT_FOUND ? "" 
                 : String.format("[Node position=%d, vxId=%d]", position, rg.getVertex(position));

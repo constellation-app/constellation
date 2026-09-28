@@ -33,10 +33,6 @@ public class MultiMap<K, V> {
 
     private final TreeMap<K, List<V>> map;
 
-    public MultiMap() {
-        map = new TreeMap<>();
-    }
-
     public MultiMap(final Comparator<K> comparator) {
         map = new TreeMap<>(comparator);
     }

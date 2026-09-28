@@ -47,7 +47,7 @@ public class InfomapUndirdir extends InfomapGreedy {
 
         @Override
         public NodeBase createNode(final String name, final double flow, final double teleportWeight) {
-            final FlowDirectedNonDetailedBalance data = new FlowDirectedNonDetailedBalance(flow, teleportWeight);
+            final FlowDirectedNonDetailedBalance data = new FlowDirectedNonDetailedBalance(flow);
             return new Node(name, data);
         }
 
