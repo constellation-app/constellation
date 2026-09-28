@@ -20,14 +20,8 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util;
  * @author algol
  */
 public class InfoMath {
-
-    private static final double M_LOG2E = 1.4426950408889634074;
-
-    public static double log2(final double p) {
-        return Math.log(p) * M_LOG2E;
-    }
-
+    
     public static double plogp(final double p) {
-        return p > 0 ? p * log2(p) : 0;
+        return p > 0 ? p * (Math.log(p) / Math.log(2)) : 0D;
     }
 }
