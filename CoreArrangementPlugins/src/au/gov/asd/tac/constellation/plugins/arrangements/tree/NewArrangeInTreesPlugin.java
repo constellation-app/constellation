@@ -130,6 +130,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
 
         if (graph.getVertexCount() < 1) {
             interaction.setProgress(1, 0, "Finished", true);
+            return;
         }
 
         // Params
@@ -171,10 +172,12 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         selectedGraph.retrieveCoords();
 
         if (colorNodesByGroup) {
+            System.out.println("A");
             colourSubGraphs(graph, TreeTaxonArranger.getTreeTaxonomy(graph, true));
         }
 
         if (!NOTHING.equals(dimHideChoice)) {
+             System.out.println("B");
             dimOrHideTransactions(graph, arranger2.getTaxonomy(graph), DIM.equals(dimHideChoice));
         }
 
@@ -182,17 +185,21 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     }
 
     private void colourSubGraphs(final GraphWriteMethods graph, final GraphTaxonomy tax) {
+         System.out.println("C");
         if (tax == null) {
             return;
         }
 
+        System.out.println("D");
         final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(graph);
         final int colorAttr = VisualConcept.VertexAttribute.COLOR.ensure(graph);
 
         // Color each subgraph
         tax.getTaxa().forEachValue(subgraph -> {
+            System.out.println("E");
             final ConstellationColor color = ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1F);
             subgraph.forEach(vxId -> {
+                System.out.println("F");
                 graph.setStringValue(bgiconAttr, vxId, "Background.Round Circle");
                 graph.setObjectValue(colorAttr, vxId, color);
             });
@@ -205,12 +212,14 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
      *
      */
     private void dimOrHideTransactions(final GraphWriteMethods graph, final GraphTaxonomy taxonomy, final boolean dimTrans) {
+         System.out.println("G");
         final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
         final int transactionDimmedAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
         final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
 
         // For each subgraph, check each node's neighbour
         for (final IntObjectPair<MutableIntSet> keyValue : taxa.keyValuesView()) {
+             System.out.println("H");
             final MutableIntSet subGraphIds = keyValue.getTwo();
             // For each node
             final MutableIntIterator iterator = subGraphIds.intIterator();
