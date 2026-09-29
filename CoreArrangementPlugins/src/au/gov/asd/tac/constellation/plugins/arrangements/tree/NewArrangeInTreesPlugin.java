@@ -204,6 +204,9 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
      * Function that finds all transactions between sub graphs defined in the taxonomy, and then either dims or hides
      * them
      *
+     * @param graph The graph to dim or hide transactions of
+     * @param taxonomy The taxonomy that will be checked for transactions between sub graphs
+     * @param dimTrans If true transactions will be dimmed, if false they will be hidden
      */
     private void dimOrHideTransactions(final GraphWriteMethods graph, final GraphTaxonomy taxonomy, final boolean dimTrans) {
         final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
@@ -233,7 +236,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
                     // If neighbour is not in subgraph, dim/hide
                     final int txId = graph.getVertexTransaction(vxId, i); // This assumes that transaction position matches neighbour position
                     if (dimTrans) {
-                        graph.setBooleanValue(transactionDimmedAttribute, txId, dimTrans);
+                        graph.setBooleanValue(transactionDimmedAttribute, txId, true);
                     } else {
                         graph.setFloatValue(transactionVisibilityAttribute, txId, -2.0F);
                     }
