@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
+import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphComponentArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
@@ -145,7 +146,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         final Arranger treeArranger = new NewTreeArranger(scale);
         final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
 
-        final GraphTaxonomyArranger arranger2 = splitIntoTrees ? new TreeTaxonArranger(treeArranger, middle) : new NewTaxonArranger(treeArranger, middle);
+        final GraphTaxonomyArranger arranger2 = splitIntoTrees ? new TreeTaxonArranger(treeArranger, middle) : new GraphComponentArranger(treeArranger, middle, Connections.LINKS);
         arranger2.setInteraction(interaction);
 
         // Push the MDS parts further away from each other.
