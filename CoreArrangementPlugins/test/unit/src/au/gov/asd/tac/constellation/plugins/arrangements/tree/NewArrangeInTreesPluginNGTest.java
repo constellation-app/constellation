@@ -132,7 +132,7 @@ public class NewArrangeInTreesPluginNGTest {
 
         final PluginInteraction interaction = mock(PluginInteraction.class);
 
-        // Todo: move this to a fucntion or something because it's an eyesore
+        // Mock parameters
         final PluginParameters parameters = mock(PluginParameters.class);
         final Map<String, PluginParameter<?>> mockParams = mock(Map.class);
         final PluginParameter splitParam = mock(PluginParameter.class);
