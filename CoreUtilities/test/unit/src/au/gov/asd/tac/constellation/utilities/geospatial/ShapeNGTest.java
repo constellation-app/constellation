@@ -1495,6 +1495,10 @@ public class ShapeNGTest {
         final String id9compatible = "t-trs";
         final String id10 = "12345678901234567890";
         final String id10compatible = "1234567890";
+        final String id11 = " 234 6789 place ";
+        final String id11compatible = "234 6789"; //first 10 characters are Stripped
+        final String id12 = " 23 56789 place ";
+        final String id12compatible = "23 56789";
 
         final Map<String, Map<String, Object>> attributes = new HashMap<>();
         final Map<String, Object> pointAttr = new HashMap<>();
@@ -1508,6 +1512,8 @@ public class ShapeNGTest {
         pointAttr.put(id8, id8);
         pointAttr.put(id9, id9);
         pointAttr.put(id10, id10);
+        pointAttr.put(id11, id11);
+        pointAttr.put(id12, id12);
         attributes.put(POINT_ID, pointAttr);
 
         final File f = File.createTempFile("tmp", SHP_EXT);
@@ -1528,6 +1534,8 @@ public class ShapeNGTest {
                 assertEquals(id8, feature.getAttribute(id8compatible));
                 assertEquals(id9, feature.getAttribute(id9compatible));
                 assertEquals(id10, feature.getAttribute(id10compatible));
+                assertEquals(id11.strip(), feature.getAttribute(id11compatible));
+                assertEquals(id12.strip(), feature.getAttribute(id12compatible));
             }
         } finally {
             if (store != null) {
