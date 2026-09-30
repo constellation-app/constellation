@@ -45,10 +45,9 @@ import org.openide.util.NbBundle.Messages;
         iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/tree/resources/arrangeInTree.png",
         surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 200),
-    @ActionReference(path = "Toolbars/Arrange", position = 100), //@ActionReference(path = "Shortcuts", name = "C-T")
+    @ActionReference(path = "Menu/Experimental/Arrangements", position = 0)
 })
-@Messages("CTL_NewArrangeInTreesAction=Trees")
+@Messages("CTL_NewArrangeInTreesAction=New Trees Arranger")
 public final class NewArrangeInTreesAction extends AbstractAction {
 
     private final GraphNode context;
