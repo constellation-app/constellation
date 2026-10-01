@@ -48,7 +48,7 @@ public class ArrangeByGroupTaxonomy extends GraphTaxonomyArranger {
     }
 
     @Override
-    protected GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
+    public GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
         final int attrId = wg.getAttribute(GraphElementType.VERTEX, attrLabel);
 
         // Discover the unique attribute values.
