@@ -84,6 +84,8 @@ public class NewTreeArranger implements Arranger {
     }
 
     private int findRootNodeId() {
+        // Ensure selected so PathScoringUtilities.calculateScores works
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final Tuple<BitSet[], float[]> scoreResult = PathScoringUtilities.calculateScores(graph, PathScoringUtilities.ScoreType.BETWEENNESS, true, true, true, false);
         final float[] betweennesses = scoreResult.getSecond();
 
