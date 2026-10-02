@@ -17,19 +17,20 @@ package au.gov.asd.tac.constellation.utilities.json;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.MappingJsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Singleton containing a JsonFactory and a MappingJsonFactory, as only one of each need to be created application wide.
+ * Contains singleton instances JsonFactory, MappingJsonFactory, and ObjectMapper, 
+ * as only one of each needs to be created application wide.
  *
  * @author Quasar985
  */
 public class JsonFactoryUtilities {
 
-    /* Both of these take significant time to initialise (~3 seconds for JsonFactory, and ~30 for MappingJsonFactory).
-     * So they are only initialised when actually needed
-     */
+    // These take significant time to initialise so they are only initialised when actually needed
     private static JsonFactory jsonFactory = null;
     private static MappingJsonFactory mappingFactory = null;
+    private static ObjectMapper mapper = null;
 
     private JsonFactoryUtilities() {
         throw new IllegalStateException("Utility class");
@@ -49,5 +50,22 @@ public class JsonFactoryUtilities {
         }
 
         return mappingFactory;
+    }
+    
+    /**
+     * Returns the singleton instance of an ObjectMapper.
+     * 
+     * CAUTION: Don't alter the configuration of the mapper once retrieved! This will affect all uses of this mapper.
+     * If you need to add a specific configuration, consider creating an ObjectReader or ObjectWriter with those configurations enabled,
+     * or use a separate ObjectMapper to this one.
+     * 
+     * @return an ObjectMapper singleton
+     */
+    public static ObjectMapper getObjectMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+        }
+
+        return mapper;
     }
 }

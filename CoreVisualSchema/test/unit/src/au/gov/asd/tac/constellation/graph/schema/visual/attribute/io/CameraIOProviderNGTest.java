@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.CameraAttribut
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -141,7 +142,7 @@ public class CameraIOProviderNGTest {
         expected.setObjectFrame(objFrame);
         expected.boundingBox.set(new Vector3f(0.0f, 0.1f, 0.2f), new Vector3f(1.0f, 1.1f, 1.2f), new Vector3f(2.0f, 2.1f, 2.2f), new Vector3f(3.0f, 3.1f, 3.2f));
         
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         when(mockJsonNode.isNull()).thenReturn(false);
         final JsonNode testNode = mapper.readTree("{\"look_at_eye\": [0.0, 0.1, 0.2],\"look_at_centre\": [1.0, 1.1, 1.2],\"look_at_up\": [2.0, 2.1, 2.2],\"look_at_rotation\": [3.0, 3.1, 3.2],\"look_at_previous_eye\": [4.0, 4.1, 4.2],\"look_at_previous_centre\": [5.0, 5.1, 5.2],\"look_at_previous_up\": [6.0, 6.1, 6.2],\"look_at_previous_rotation\": [7.0, 7.1, 7.2],\"bounding_box\": {\"is_empty\": false, \"min\": [0.0, 0.1, 0.2], \"max\": [1.0, 1.1, 1.2], \"min2\": [2.0, 2.1, 2.2], \"max2\": [3.0, 3.1, 3.2]},\"frame\": {\"origin\": [0.0, 0.1, 0.2], \"forward\": [1.0, 1.1, 1.2], \"up\": [2.0, 2.1, 2.2]}, \"visibility_low\": 0.0, \"visibility_high\": 1.0, \"mix_ratio\": 2}");
         instance.readObject(attributeId, elementId, testNode, mockGraphWriteMethods, null, null, null, null);  

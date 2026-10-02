@@ -22,10 +22,12 @@ import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.File;
@@ -74,7 +76,7 @@ public class JsonIO {
 
     private static final String FILE_READ_ERROR = "An error occured reading file %s";    
     
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JsonFactoryUtilities.getObjectMapper();
 
     /**
      * Private constructor to hide implicit public one.
@@ -193,11 +195,9 @@ public class JsonIO {
 
         if (go) {
             try {
-                // Configure JSON mapper settings
-                mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-                mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-
-                mapper.writeValue(preferenceFile, rootNode);
+                // Configure JSON writer
+                final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter().with(SerializationFeature.CLOSE_CLOSEABLE);
+                writer.writeValue(preferenceFile, rootNode);
 
                 StatusDisplayer.getDefault().setStatusText(getFileSavedMessage(type, preferenceFile.getPath()));
             } catch (final IOException ex) {
@@ -269,7 +269,6 @@ public class JsonIO {
     }
 
     public static void saveJsonPreferencesWithKeyboardShortcut(final Optional<String> saveDir, final Object rootNode, final Window parentWindow, final String type) {
-        final ObjectMapper mapper = OBJECT_MAPPER;
         final File preferenceDirectory = getPrefereceFileDirectory(saveDir);
 
         // If the preference directory cannot be accessed then return
@@ -356,10 +355,9 @@ public class JsonIO {
                     ksResult.get().getExisitngTemplateWithKs().renameTo(new File(preferenceDirectory, FilenameEncoder.encode(rename.trim())));                    
                 }
 
-                // Configure JSON mapper settings
-                mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-                mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-                mapper.writeValue(preferenceFile, rootNode);
+                // Configure JSON writer
+                final ObjectWriter writer = OBJECT_MAPPER.writerWithDefaultPrettyPrinter().with(SerializationFeature.CLOSE_CLOSEABLE);
+                writer.writeValue(preferenceFile, rootNode);
                
                 StatusDisplayer.getDefault().setStatusText(
                         getFileSavedMessage(type, preferenceFile.getPath())

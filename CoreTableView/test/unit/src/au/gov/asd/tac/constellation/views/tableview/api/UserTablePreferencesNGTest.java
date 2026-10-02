@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.api;
 
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileInputStream;
@@ -40,7 +41,7 @@ public class UserTablePreferencesNGTest {
 
     private static final String JSON_RESOURCE = "resources/table-preferences.json";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = JsonFactoryUtilities.getObjectMapper();
 
     @Test
     public void serialization() throws IOException {

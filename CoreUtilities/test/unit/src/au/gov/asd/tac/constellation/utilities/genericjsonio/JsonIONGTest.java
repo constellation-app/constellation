@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.keyboardshortcut.KeyboardShortcutSelectionResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -65,6 +66,8 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class JsonIONGTest {
+    
+    private static final ObjectMapper OBJECT_MAPPER = JsonFactoryUtilities.getObjectMapper();
 
     private static final Optional<String> SUB_DIRECTORY = Optional.of("test");
     private static final Optional<String> FILE_PREFIX = Optional.of("my-");
@@ -214,7 +217,7 @@ public class JsonIONGTest {
             final JsonNode loadedPreferences = JsonIO
                     .loadJsonPreferences(SUB_DIRECTORY, filePrefix);
 
-            final JsonNode expectedJsonNode = new ObjectMapper()
+            final JsonNode expectedJsonNode = OBJECT_MAPPER
                     .createObjectNode()
                     .put("name", "Joe Bloggs")
                     .put("volume", 5);
@@ -254,7 +257,7 @@ public class JsonIONGTest {
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
             setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"), dialogType1);
 
-            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogType1);
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), OBJECT_MAPPER, dialogType1);
 
             verifyOutputFileMatchesFixture(outputFile);
         } finally {
@@ -443,12 +446,10 @@ public class JsonIONGTest {
                     .saveJsonPreferences(any(Optional.class), any(Object.class), any(ObjectMapper.class), anyString()))
                     .thenCallRealMethod();
 
-            final ObjectMapper mapper = new ObjectMapper();
-
-            JsonIO.saveJsonPreferences(SUB_DIRECTORY, fixture(), mapper, dialogType1);
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, fixture(), OBJECT_MAPPER, dialogType1);
 
             jsonIoMockedStatic.verify(() -> JsonIO
-                    .saveJsonPreferences(SUB_DIRECTORY, Optional.empty(), fixture(), mapper, dialogType1));
+                    .saveJsonPreferences(SUB_DIRECTORY, Optional.empty(), fixture(), OBJECT_MAPPER, dialogType1));
         } finally {
             Files.deleteIfExists(outputFile.toPath());
         }
@@ -490,7 +491,7 @@ public class JsonIONGTest {
             ) {
                 setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"), dialogType1);
 
-                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogType1);
+                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), OBJECT_MAPPER, dialogType1);
 
                 final Alert alert = alertConstruction.constructed().get(0);
 
@@ -532,7 +533,7 @@ public class JsonIONGTest {
                     });) {
                 setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("preferences"), dialogTypePreference);
 
-                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogTypePreference);
+                JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), OBJECT_MAPPER, dialogTypePreference);
                 verify(alertConstruction.constructed().get(0)).setContentText("'my-preferences' already exists. Do you want to overwrite it?");
                 verify(alertConstruction.constructed().get(0)).setHeaderText("Preference File Exists.");
             }
@@ -565,7 +566,7 @@ public class JsonIONGTest {
 
             setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.of("   "), dialogType1);
 
-            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), new ObjectMapper(), dialogType1);
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, fixture(), OBJECT_MAPPER, dialogType1);
 
             verifyOutputFileMatchesFixture(outputFile);
         } finally {
@@ -588,7 +589,7 @@ public class JsonIONGTest {
                     .saveJsonPreferences(any(Optional.class), any(Optional.class), any(), any(ObjectMapper.class), anyString()))
                     .thenCallRealMethod();
 
-            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new Object(), new ObjectMapper(), dialogType1);
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new Object(), OBJECT_MAPPER, dialogType1);
 
             // Verify no JSON IO dialogs were opened
             jsonIoDialogMockedStatic.verifyNoInteractions();
@@ -609,7 +610,7 @@ public class JsonIONGTest {
                 MockedStatic<JsonIODialog> jsonIoDialogMockedStatic = Mockito.mockStatic(JsonIODialog.class);) {
             setupStaticMocksForSavePreference(jsonIoMockedStatic, jsonIoDialogMockedStatic, Optional.empty(), dialogType1);
 
-            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new Object(), new ObjectMapper(), dialogType1);
+            JsonIO.saveJsonPreferences(SUB_DIRECTORY, FILE_PREFIX, new Object(), OBJECT_MAPPER, dialogType1);
 
             assertFalse(outputFile.exists());
         } finally {

@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import static au.gov.asd.tac.constellation.webserver.restapi.RestService.HTTP_UNPROCESSABLE_ENTITY;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
@@ -86,7 +87,7 @@ public class GetServiceDescription extends RestService {
         final HttpMethod httpMethod = HttpMethod.getValue(parameters.getStringValue(METHOD_NAME_PARAMETER_ID));
 
         try {
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
             final ObjectNode root = mapper.createObjectNode();
 
             final RestService rs = RestServiceRegistry.get(serviceName, httpMethod);

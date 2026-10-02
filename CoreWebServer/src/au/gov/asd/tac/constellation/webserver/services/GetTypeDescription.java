@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -78,7 +79,7 @@ public class GetTypeDescription extends RestService {
         if (!SchemaVertexTypeUtilities.getDefaultType().equals(SchemaVertexTypeUtilities.getType(typeName))) {
             final SchemaVertexType vertexType = SchemaVertexTypeUtilities.getType(typeName);
 
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
             final ObjectNode root = mapper.createObjectNode();
             root.put("name", vertexType.getName());
             if (vertexType.getDescription() != null) {
@@ -108,7 +109,7 @@ public class GetTypeDescription extends RestService {
         } else if (!SchemaTransactionTypeUtilities.getDefaultType().equals(SchemaTransactionTypeUtilities.getType(typeName))) {
             final SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(typeName);
 
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
             final ObjectNode root = mapper.createObjectNode();
             root.put("name", transactionType.getName());
             if (transactionType.getDescription() != null) {

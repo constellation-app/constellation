@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
@@ -109,7 +110,7 @@ public class OpenGraph extends RestService {
             final String newId = RestServiceUtilities.waitForGraphChange(existingId).get();
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
             final ObjectNode root = mapper.createObjectNode();
             root.put("id", graph.getId());
             root.put("name", GraphNode.getGraphNode(graph.getId()).getDisplayName());

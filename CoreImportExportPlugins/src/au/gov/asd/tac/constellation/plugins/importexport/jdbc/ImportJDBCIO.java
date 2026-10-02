@@ -31,8 +31,10 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -98,7 +100,7 @@ public final class ImportJDBCIO {
         if (templName != null) {
             // A JSON document to store everything in.
             // Two objects; the source data + the configuration data.
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
             final ObjectNode rootNode = mapper.createObjectNode();
 
             final ObjectNode source = rootNode.putObject(SOURCE);
@@ -122,11 +124,10 @@ public final class ImportJDBCIO {
             final String[] columns = importController.getCurrentColumns();
             definitions.stream().forEach(impdef -> definitionCompute(definitionArray, columns, impdef));
 
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-            mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
+            final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter().with(SerializationFeature.CLOSE_CLOSEABLE);
             final File f = new File(delimIoDir, FilenameEncoder.encode(templName + FileExtensionConstants.JSON));
             try {
-                mapper.writeValue(f, rootNode);
+                writer.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
             } catch (final IOException ex) {
                 LOGGER.log(Level.WARNING, ex.getMessage(), ex);
@@ -212,7 +213,7 @@ public final class ImportJDBCIO {
 
     private static void loadParameterFile(final JDBCImportController importController, final File delimIoDir, final String templName) {
         try {
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
             final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + FileExtensionConstants.JSON));
             final JsonNode source = TemplateUtilities.getRequiredFieldFromTemplate(root, SOURCE);
 

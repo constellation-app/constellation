@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -39,6 +40,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class ResponseNGTest {
+    
+    private static final ObjectMapper MAPPER = JsonFactoryUtilities.getObjectMapper(); 
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -96,9 +99,8 @@ public class ResponseNGTest {
     @Test
     public void testIsSuccessWithJson() throws IOException {
         System.out.println("isSuccessWithJson");
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectNode json = mapper.createObjectNode().put("test", "mytest");
+        
+        final ObjectNode json = MAPPER.createObjectNode().put("test", "mytest");
 
         final Response instance1 = new ResponseImpl(200, "", null, json.toString().getBytes());
         final Response instance2 = new ResponseImpl(200, "", null, null, false);
@@ -131,13 +133,12 @@ public class ResponseNGTest {
     @Test
     public void testGetRootNode() throws IOException {
         System.out.println("getRootNode");
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectNode json = mapper.createObjectNode().put("test", "mytest");
+        
+        final ObjectNode json = MAPPER.createObjectNode().put("test", "mytest");
 
         final Response instance = new ResponseImpl(200, "", null, null);
 
-        final JsonNode result = instance.getRootNode(mapper, json.toString().getBytes());
+        final JsonNode result = instance.getRootNode(MAPPER, json.toString().getBytes());
         assertEquals(result.toString(), "{\"test\":\"mytest\"}");
     }
 
@@ -148,10 +149,9 @@ public class ResponseNGTest {
     @Test
     public void testGetLogMessage() throws IOException {
         System.out.println("getLogMessage");
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectNode json1 = mapper.createObjectNode().put("test", "mytest");
-        final ObjectNode json2 = mapper.createObjectNode().put("logMessage", "my log message!");
+        
+        final ObjectNode json1 = MAPPER.createObjectNode().put("test", "mytest");
+        final ObjectNode json2 = MAPPER.createObjectNode().put("logMessage", "my log message!");
 
         final Response instance1 = new ResponseImpl(200, "test1", null, null);
         final Response instance2 = new ResponseImpl(200, "test2", null, json1.toString().getBytes());
@@ -254,9 +254,8 @@ public class ResponseNGTest {
     @Test
     public void testToStringJson() throws IOException {
         System.out.println("toStringJson");
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectNode jsonObject = mapper.createObjectNode().put("test", "mytest");
+        
+        final ObjectNode jsonObject = MAPPER.createObjectNode().put("test", "mytest");
 
         final Response instance = new ResponseImpl(200, "test", null, jsonObject.toString().getBytes());
 
@@ -286,12 +285,11 @@ public class ResponseNGTest {
     @Test
     public void testJsonToString() throws IOException {
         System.out.println("jsonToString");
-
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectNode json1 = mapper.createObjectNode();
-        final ObjectNode json2 = mapper.createObjectNode().put("test", "mytest");
-        final ArrayNode json3 = mapper.createArrayNode();
-        final ArrayNode json4 = mapper.createArrayNode().add("test");
+        
+        final ObjectNode json1 = MAPPER.createObjectNode();
+        final ObjectNode json2 = MAPPER.createObjectNode().put("test", "mytest");
+        final ArrayNode json3 = MAPPER.createArrayNode();
+        final ArrayNode json4 = MAPPER.createArrayNode().add("test");
 
         final String result1 = Response.jsonToString(null);
         final String result2 = Response.jsonToString(json1);

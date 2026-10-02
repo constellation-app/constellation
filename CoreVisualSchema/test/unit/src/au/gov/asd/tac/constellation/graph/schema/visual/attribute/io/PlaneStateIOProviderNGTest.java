@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.PlaneState;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -126,7 +127,7 @@ public class PlaneStateIOProviderNGTest {
         instance.readObject(attributeId, elementId, mockJsonNode, mockGraphWriteMethods, null, null, null, null);
         Mockito.verify(mockJsonNode, times(0)).get(anyString());
       
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         ObjectNode plane1 = mapper.createObjectNode();
         ObjectNode plane2 = mapper.createObjectNode();
         plane1.put("label", "tst_label1");

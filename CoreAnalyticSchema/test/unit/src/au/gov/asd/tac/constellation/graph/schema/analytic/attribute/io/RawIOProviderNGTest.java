@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -42,6 +43,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class RawIOProviderNGTest {
+    
+    private static final JsonFactory JSON_FACTORY = JsonFactoryUtilities.getJsonFactory();
     
     private StoreGraph graph;
     
@@ -83,7 +86,7 @@ public class RawIOProviderNGTest {
         System.out.println("readObject");
         
         final ImmutableObjectCache cache = new ImmutableObjectCache();
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final ObjectNode mainNode = mapper.createObjectNode();
         
         final ObjectNode identifierNode = mainNode.putObject("identifier");
@@ -126,12 +129,12 @@ public class RawIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(actual, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 instance.writeObject(rawAttribute, vxId, jsonGenerator, graph, null, true);
             }
                         
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(expected, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeObjectFieldStart("Raw");
                 jsonGenerator.writeStringField("rawIdentifier", "myIdentifier");
@@ -157,12 +160,12 @@ public class RawIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(actual, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 instance.writeObject(rawAttribute, vxId, jsonGenerator, graph, null, false);
             }
                         
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(expected, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeEndObject();
             }
