@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
@@ -80,7 +81,7 @@ public class GetAttributes extends RestService {
         if (graph == null) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
 
         final ReadableGraph rg = graph.getReadableGraph();

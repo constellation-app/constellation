@@ -156,8 +156,9 @@ public class CompositeNodeState {
      * JSON from this state.
      */
     public String convertToString() {
+        final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jg = new JsonFactory().createGenerator(outputStream)) {
+            try (final JsonGenerator jg = jsonFactory.createGenerator(outputStream)) {
                 jg.writeStartObject();
 
                 jg.writeNumberField(NODE_ID, nodeId);

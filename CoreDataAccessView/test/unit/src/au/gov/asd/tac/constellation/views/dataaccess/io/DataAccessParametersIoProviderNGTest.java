@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessUserPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.components.DataAccessTabPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -66,7 +67,10 @@ import org.testng.annotations.Test;
  * @author mimosa2
  */
 public class DataAccessParametersIoProviderNGTest {
+    
     private static final Logger LOGGER = Logger.getLogger(DataAccessParametersIoProviderNGTest.class.getName());
+    
+    private static final ObjectMapper OBJECT_MAPPER = JsonFactoryUtilities.getObjectMapper();
 
     @BeforeClass
     public void setUpClass() throws Exception {
@@ -181,7 +185,6 @@ public class DataAccessParametersIoProviderNGTest {
 
         try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class);
                 final FileInputStream inputStream = new FileInputStream(getClass().getResource("resources/preferences.json").getPath())) {
-            final ObjectMapper objectMapper = new ObjectMapper();
             final String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 
             // We do not know the mockito plugin names ahead of time so substitute them in now
@@ -191,7 +194,7 @@ public class DataAccessParametersIoProviderNGTest {
                             "INSERT_PLUGIN2_NAME", plugin2.getClass().getSimpleName()
                     )
             );
-            final List<DataAccessUserPreferences> preferences = objectMapper.readValue(
+            final List<DataAccessUserPreferences> preferences = OBJECT_MAPPER.readValue(
                     substitutor.replace(json), new TypeReference<List<DataAccessUserPreferences>>() {});
 
             jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferences(eq(Optional.of("DataAccessView")), any(TypeReference.class), anyString()))
@@ -275,7 +278,6 @@ public class DataAccessParametersIoProviderNGTest {
 
         try (final MockedStatic<JsonIO> jsonIOStaticMock = Mockito.mockStatic(JsonIO.class);
                 final FileInputStream inputStream = new FileInputStream(getClass().getResource("resources/preferences.json").getPath())) {
-            final ObjectMapper objectMapper = new ObjectMapper();
             final String json = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 
             // We do not know the mockito plugin names ahead of time so substitute them in now
@@ -285,7 +287,7 @@ public class DataAccessParametersIoProviderNGTest {
                             "INSERT_PLUGIN2_NAME", plugin2.getClass().getSimpleName()
                     )
             );
-            final List<DataAccessUserPreferences> preferences = objectMapper.readValue(
+            final List<DataAccessUserPreferences> preferences = OBJECT_MAPPER.readValue(
                     substitutor.replace(json), new TypeReference<List<DataAccessUserPreferences>>() {});
 
             jsonIOStaticMock.when(() -> JsonIO.loadJsonPreferencesWithFilePrefix(eq(Optional.of("DataAccessView")), eq(Optional.of("[Ctrl 1]")), any(TypeReference.class)))
