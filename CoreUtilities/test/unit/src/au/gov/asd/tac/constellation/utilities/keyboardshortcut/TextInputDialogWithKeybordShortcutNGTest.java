@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIODialog;
-import java.awt.Robot;
 import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
@@ -47,6 +46,8 @@ public class TextInputDialogWithKeybordShortcutNGTest {
     private static final Logger LOGGER = Logger.getLogger(TextInputDialogWithKeybordShortcutNGTest.class.getName());
 
     private final FxRobot robot = new FxRobot();
+
+    private final String dialogType1 = "Type1";
 
     @BeforeClass
     public static void setUpClass() throws Exception {        
@@ -93,7 +94,7 @@ public class TextInputDialogWithKeybordShortcutNGTest {
         final File preferenceDirectory = new File(System.getProperty("java.io.tmpdir") + "/my-preferences.json");
 
         WaitForAsyncUtils.asyncFx(
-                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty()));
+                () -> JsonIODialog.getPreferenceFileNameTest(ks, preferenceDirectory, Optional.empty(), dialogType1));
 
         final Stage dialog = getDialog(robot);
         dialog.setX(0);

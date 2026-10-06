@@ -280,7 +280,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
                                         "id": %s,
                                         "title": "%s",
                                         "category": "%s",
-                                        "link": "%s"
+                                        "link": "../%s"
                                     }
                                     """, index, pageName, category, link);
                 documents.add(page);
