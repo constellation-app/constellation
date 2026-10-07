@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,7 +80,7 @@ public class GetPluginDescription extends RestService {
             final Plugin plugin = PluginRegistry.get(pluginName);
             final PluginParameters pluginParams = plugin.createParameters();
 
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
             final ObjectNode root = mapper.createObjectNode();
 
             root.put("name", plugin.getName());

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -144,7 +145,7 @@ public final class AbstractGraphLabelsIOProviderNGTest {
         Mockito.verify(mockGraphWriteMethods, times(1)).setStringValue(attributeId, elementId, null);
         
         // Test case where a valid non null array exists
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final JsonNode testNode = mapper.readTree("[{\"attribute_name\":\"test_name1\",\"color\":{\"name\":\"red\"},\"radius\":0.1},{\"attribute_name\":\"test_name2\",\"color\":{\"name\":\"blue\"},\"radius\":0.2}]");
         resetMocking();
         when(mockJsonNode.isNull()).thenReturn(false);

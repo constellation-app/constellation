@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.tableview.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.views.tableview.api.UserTablePreferences;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,6 +56,8 @@ import org.testng.annotations.Test;
 public class TableViewPreferencesIoProviderNGTest {
     
     private static final Logger LOGGER = Logger.getLogger(TableViewPreferencesIoProviderNGTest.class.getName());
+    
+    private static final ObjectMapper OBJECT_MAPPER = JsonFactoryUtilities.getObjectMapper();
 
     private static MockedStatic<JsonIO> jsonIOStaticMock;
 
@@ -90,9 +93,8 @@ public class TableViewPreferencesIoProviderNGTest {
 
     @Test
     public void getPreferencesOldVersionWithEmptyEmptySort() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
         try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/old-preferences.json").getPath())) {
-            final List<UserTablePreferences> tablePrefs = objectMapper.readValue(stream,
+            final List<UserTablePreferences> tablePrefs = OBJECT_MAPPER.readValue(stream,
                     new TypeReference<List<UserTablePreferences>>() {
                         // nothing to add here
                     });
@@ -113,10 +115,8 @@ public class TableViewPreferencesIoProviderNGTest {
 
     @Test
     public void getPreferencesMultiplePrefsPicksLast() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-
         try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/vertex-preferences.json").getPath())) {
-            final List<UserTablePreferences> tablePrefs = objectMapper.readValue(stream,
+            final List<UserTablePreferences> tablePrefs = OBJECT_MAPPER.readValue(stream,
                     new TypeReference<List<UserTablePreferences>>() {
                         // nothing to add here
                     });
@@ -137,9 +137,8 @@ public class TableViewPreferencesIoProviderNGTest {
 
     @Test
     public void getPreferencesSinglePreference() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
         try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())) {
-            final List<UserTablePreferences> tablePrefs = objectMapper.readValue(stream,
+            final List<UserTablePreferences> tablePrefs = OBJECT_MAPPER.readValue(stream,
                     new TypeReference<List<UserTablePreferences>>() {
                         // nothing to add here
                     });
@@ -199,10 +198,8 @@ public class TableViewPreferencesIoProviderNGTest {
 
         TableViewPreferencesIoProvider.savePreferences(GraphElementType.TRANSACTION, tableView, 5);
 
-        final ObjectMapper objectMapper = new ObjectMapper();
-
         try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/transaction-preferences.json").getPath())) {
-            final List<UserTablePreferences> expectedTablePrefs = objectMapper.readValue(stream,
+            final List<UserTablePreferences> expectedTablePrefs = OBJECT_MAPPER.readValue(stream,
                     new TypeReference<List<UserTablePreferences>>() {
                         // nothing to add here
                     });

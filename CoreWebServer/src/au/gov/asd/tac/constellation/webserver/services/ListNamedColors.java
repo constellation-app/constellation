@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.webserver.services;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -54,7 +55,7 @@ public class ListNamedColors extends RestService {
 
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         ConstellationColor.NAMED_COLOR_LIST
                 .forEach(cocol -> root.put(cocol.getName(), cocol.getHtmlColor()));

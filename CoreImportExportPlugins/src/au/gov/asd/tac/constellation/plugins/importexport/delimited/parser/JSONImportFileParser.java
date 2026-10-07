@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -376,7 +377,7 @@ public class JSONImportFileParser extends ImportFileParser {
     private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
         try (final InputStream in = input.getInputStream()) {
             final List<String[]> results = new ArrayList<>();
-            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
 
             // Get root node and try to find a valid candidate list. If no list
             // is found there will be no data to import.
@@ -397,13 +398,12 @@ public class JSONImportFileParser extends ImportFileParser {
             }
             // Maps newline delimited JSON to valid JSON in the format
             // {"results": [<ndjson>]}
-            switch(counter){
+            switch (counter){
                 case 0 -> throw new IOException(WARN_NO_VALID_LIST);
                 case 1 -> root = node;
                 default -> {
                     // Changes the ndJSON to valid JSON
-                    final ObjectMapper newJSON = new ObjectMapper();
-                    final ObjectNode rootNode = newJSON.createObjectNode();
+                    final ObjectNode rootNode = mapper.createObjectNode();
                     rootNode.set("results", childNode);
                     root = rootNode;
                 }

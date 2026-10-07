@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -47,6 +48,9 @@ import org.testng.annotations.Test;
  * @author formalhaunt
  */
 public class TableViewStateIoProviderNGTest {
+    
+    private static final JsonFactory JSON_FACTORY = JsonFactoryUtilities.getJsonFactory();
+    private static final ObjectMapper OBJECT_MAPPER = JsonFactoryUtilities.getObjectMapper();
 
     private static final int ATTRIBUTE_ID = 55;
     private static final int ELEMENT_ID = 77;
@@ -60,9 +64,8 @@ public class TableViewStateIoProviderNGTest {
 
     @Test
     public void readObject() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
         try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/tableViewStateRead.json").getPath())) {
-            final JsonNode jsonNode = objectMapper.readTree(stream);
+            final JsonNode jsonNode = OBJECT_MAPPER.readTree(stream);
             
             final GraphWriteMethods graph = mock(GraphWriteMethods.class);
 
@@ -97,8 +100,7 @@ public class TableViewStateIoProviderNGTest {
 
     @Test
     public void readObjectNullJson() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode root = objectMapper.readTree("null");
+        final JsonNode root = OBJECT_MAPPER.readTree("null");
 
         final GraphWriteMethods graph = mock(GraphWriteMethods.class);
 
@@ -109,8 +111,7 @@ public class TableViewStateIoProviderNGTest {
 
     @Test
     public void readObjectObjectJson() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode root = objectMapper.readTree("{}");
+        final JsonNode root = OBJECT_MAPPER.readTree("{}");
 
         final GraphWriteMethods graph = mock(GraphWriteMethods.class);
 
@@ -144,10 +145,9 @@ public class TableViewStateIoProviderNGTest {
         final GraphWriteMethods graph = mock(GraphWriteMethods.class);
         when(graph.isDefaultValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(false);
         when(graph.getObjectValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(state);
-
-        final JsonFactory factory = new JsonFactory();
+        
         try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jsonGenerator = factory.createGenerator(output)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(output)) {
                 // The code is written with the assumption that it is called within a document
                 // that has already started being written. Without starting the object in the test
                 // the code would throw invalid json exceptions.
@@ -159,12 +159,11 @@ public class TableViewStateIoProviderNGTest {
 
                 jsonGenerator.flush();
             }
-
-            final ObjectMapper objectMapper = new ObjectMapper();
-            final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
+            
+            final JsonNode actual = OBJECT_MAPPER.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 
             try (final FileInputStream stream = new FileInputStream(getClass().getResource("resources/tableViewStateWrite.json").getPath())) {
-                final JsonNode expected = objectMapper.readTree(stream);
+                final JsonNode expected = OBJECT_MAPPER.readTree(stream);
 
                 assertEquals(actual, expected);
             }
@@ -180,10 +179,9 @@ public class TableViewStateIoProviderNGTest {
         final GraphWriteMethods graph = mock(GraphWriteMethods.class);
         when(graph.isDefaultValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(false);
         when(graph.getObjectValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(null);
-
-        final JsonFactory factory = new JsonFactory();
+        
         try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jsonGenerator = factory.createGenerator(output)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(output)) {
                 // The code is written with the assumption that it is called within a document
                 // that has already started being written. Without starting the object in the test
                 // the code would throw invalid json exceptions.
@@ -195,11 +193,10 @@ public class TableViewStateIoProviderNGTest {
 
                 jsonGenerator.flush();
             }
+            
+            final JsonNode expected = OBJECT_MAPPER.readTree("{\"ATTR NAME\": null}");
 
-            final ObjectMapper objectMapper = new ObjectMapper();
-            final JsonNode expected = objectMapper.readTree("{\"ATTR NAME\": null}");
-
-            final JsonNode actual = objectMapper.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
+            final JsonNode actual = OBJECT_MAPPER.readTree(new String(output.toByteArray(), StandardCharsets.UTF_8));
 
             assertEquals(actual, expected);
         }
@@ -213,10 +210,9 @@ public class TableViewStateIoProviderNGTest {
 
         final GraphWriteMethods graph = mock(GraphWriteMethods.class);
         when(graph.isDefaultValue(ATTRIBUTE_ID, ELEMENT_ID)).thenReturn(true);
-
-        final JsonFactory factory = new JsonFactory();
+        
         try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jsonGenerator = factory.createGenerator(output)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(output)) {
                 tableViewStateIoProvider.writeObject(attribute, ELEMENT_ID, jsonGenerator, graph, null, false);
 
                 jsonGenerator.flush();

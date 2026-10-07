@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Image;
 import java.awt.Point;
@@ -169,7 +170,7 @@ public class DragAction extends AbstractAction {
             final Map<String, List<Map<String, String>>> gmap = new HashMap<>();
             gmap.put("vertex", vxList);
             gmap.put("transaction", txList);
-            final ObjectMapper om = new ObjectMapper();
+            final ObjectMapper om = JsonFactoryUtilities.getObjectMapper();
             final String json = om.writeValueAsString(gmap);
             return String.format("JSON=%s", json);
         }

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -42,6 +43,8 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class CompositeNodeStateIOProviderNGTest {
+    
+    private static final JsonFactory JSON_FACTORY = JsonFactoryUtilities.getJsonFactory();
     
     private final String compositeNodeString = "{\"nodeId\":1,\"expandedState\":null,\"contractedState\":{\"constituentNodeStore\":\"[{\\\"source.Identifier\\\":\\\"Vertex #0\\\",\\\"source.[id]\\\":\\\"copy.Identifier<Vertex #0>Type<Unknown>\\\"},{\\\"source.Identifier\\\":\\\"Vertex #1\\\",\\\"source.[id]\\\":\\\"copy.Identifier<Vertex #1>Type<Unknown>\\\"}]\",\"expandedIds\":[\"copy.Identifier<Vertex #0>Type<Unknown>\",\"copy.Identifier<Vertex #1>Type<Unknown>\"],\"affectedExpandedIds\":[\"copy.Identifier<Vertex #0>Type<Unknown>\",\"copy.Identifier<Vertex #1>Type<Unknown>\"],\"mean\":[0.0,1.0,0.5]}}";
     
@@ -85,7 +88,7 @@ public class CompositeNodeStateIOProviderNGTest {
         System.out.println("readObject");
         
         final ImmutableObjectCache cache = new ImmutableObjectCache();
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final ObjectNode compositeStateNode = mapper.createObjectNode();
         compositeStateNode.put("composite_state", compositeNodeString);
         
@@ -113,12 +116,12 @@ public class CompositeNodeStateIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(actual, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 instance.writeObject(compositeStateAttribute, vxId, jsonGenerator, graph, null, true);
             }
 
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(expected, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeStringField("composite_state", compositeNodeString);
                 jsonGenerator.writeEndObject();
@@ -142,12 +145,12 @@ public class CompositeNodeStateIOProviderNGTest {
         
         try (final ByteArrayOutputStream actual = new ByteArrayOutputStream();
                 final ByteArrayOutputStream expected = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(actual, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(actual, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 instance.writeObject(compositeStateAttribute, vxId, jsonGenerator, graph, null, false);
             }
                         
-            try (final JsonGenerator jsonGenerator = new JsonFactory().createGenerator(expected, JsonEncoding.UTF8)) {
+            try (final JsonGenerator jsonGenerator = JSON_FACTORY.createGenerator(expected, JsonEncoding.UTF8)) {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeEndObject();
             }

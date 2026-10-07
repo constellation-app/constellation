@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -252,7 +253,8 @@ public final class GraphJsonWriter implements Cancellable {
     public boolean writeGraphToStream(final GraphReadMethods graph, final OutputStream out, final boolean verbose, final List<GraphElementType> elementTypes) throws IOException {
         // Get a new JSON writer.
         // Don't close the underlying zip stream automatically.
-        final JsonGenerator jg = new JsonFactory().createGenerator(out, JsonEncoding.UTF8);
+        final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();
+        final JsonGenerator jg = jsonFactory.createGenerator(out, JsonEncoding.UTF8);
         jg.configure(JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
         jg.useDefaultPrettyPrinter();
 
