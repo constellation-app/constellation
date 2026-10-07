@@ -38,7 +38,7 @@ public final class GraphComponentArranger extends GraphTaxonomyArranger {
     }
 
     @Override
-    protected GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
+    public GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
         return ArrangementUtilities.getComponents(wg);
     }
 }
