@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,6 +133,22 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         LOGGER.log(Level.FINE, "Handling new graph");
     }
 
+
+    /**
+     * Add a note to the pane if this view is currently showing the given graph.
+     *
+     * @param graph The graph the note belongs to.
+     * @param note The note to add.
+     * @return true if the note was added to the pane (and will be written to
+     * the graph by the pane), false if the caller should write it to the graph.
+     */
+    public boolean addNoteIfShowing(final Graph graph, final NotesViewEntry note) {
+        if (graph == null || graph != activeGraph || !isOpened()) {
+            return false;
+        }
+        notesViewPane.addExternalNote(note, graph);
+        return true;
+    }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {

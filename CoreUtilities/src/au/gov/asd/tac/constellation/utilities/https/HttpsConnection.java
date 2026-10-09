@@ -48,7 +48,7 @@ public class HttpsConnection {
     public static final String KEEP_ALIVE = "keep-alive";
 
     // messages
-    private static final String NO_CERTIFICATE_ERROR = "Failed to create a secure connection. Make sure CONSTELLATION has access to your certificate.";
+    public static final String NO_CERTIFICATE_ERROR = "Failed to create a secure connection. Make sure CONSTELLATION has access to your certificate.";
 
     private final HttpURLConnection httpConnection;
 

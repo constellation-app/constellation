@@ -128,7 +128,9 @@
                     </test-dependency>
                 </test-type>
             </test-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>au.gov.asd.tac.constellation.views.notes.api</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

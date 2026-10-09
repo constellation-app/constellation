@@ -64,6 +64,9 @@
                 <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3</package>
                 <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3.bte</package>
                 <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_21_3.chr</package>
+                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_22_1</package>
+                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_22_1.bte</package>
+                <package>com.fasterxml.jackson.core.internal.shaded.fdp.v2_22_1.chr</package>
                 <package>com.fasterxml.jackson.core.io</package>
                 <package>com.fasterxml.jackson.core.io.schubfach</package>
                 <package>com.fasterxml.jackson.core.json</package>
@@ -304,6 +307,110 @@
                 <package>de.fhpotsdam.unfolding.ui</package>
                 <package>de.fhpotsdam.unfolding.utils</package>
                 <package>de.fhpotsdam.utils</package>
+                <package>dev.langchain4j</package>
+                <package>dev.langchain4j.agent.tool</package>
+                <package>dev.langchain4j.classinstance</package>
+                <package>dev.langchain4j.code</package>
+                <package>dev.langchain4j.data.audio</package>
+                <package>dev.langchain4j.data.document</package>
+                <package>dev.langchain4j.data.embedding</package>
+                <package>dev.langchain4j.data.image</package>
+                <package>dev.langchain4j.data.message</package>
+                <package>dev.langchain4j.data.pdf</package>
+                <package>dev.langchain4j.data.segment</package>
+                <package>dev.langchain4j.data.video</package>
+                <package>dev.langchain4j.exception</package>
+                <package>dev.langchain4j.guardrail</package>
+                <package>dev.langchain4j.guardrail.config</package>
+                <package>dev.langchain4j.http.client</package>
+                <package>dev.langchain4j.http.client.jdk</package>
+                <package>dev.langchain4j.http.client.log</package>
+                <package>dev.langchain4j.http.client.sse</package>
+                <package>dev.langchain4j.internal</package>
+                <package>dev.langchain4j.invocation</package>
+                <package>dev.langchain4j.memory</package>
+                <package>dev.langchain4j.model</package>
+                <package>dev.langchain4j.model.anthropic</package>
+                <package>dev.langchain4j.model.anthropic.internal.api</package>
+                <package>dev.langchain4j.model.anthropic.internal.client</package>
+                <package>dev.langchain4j.model.anthropic.internal.mapper</package>
+                <package>dev.langchain4j.model.audio</package>
+                <package>dev.langchain4j.model.batch</package>
+                <package>dev.langchain4j.model.catalog</package>
+                <package>dev.langchain4j.model.chat</package>
+                <package>dev.langchain4j.model.chat.listener</package>
+                <package>dev.langchain4j.model.chat.request</package>
+                <package>dev.langchain4j.model.chat.request.json</package>
+                <package>dev.langchain4j.model.chat.response</package>
+                <package>dev.langchain4j.model.chat.router</package>
+                <package>dev.langchain4j.model.decision</package>
+                <package>dev.langchain4j.model.decision.listener</package>
+                <package>dev.langchain4j.model.decision.request</package>
+                <package>dev.langchain4j.model.decision.response</package>
+                <package>dev.langchain4j.model.embedding</package>
+                <package>dev.langchain4j.model.embedding.listener</package>
+                <package>dev.langchain4j.model.embedding.request</package>
+                <package>dev.langchain4j.model.embedding.response</package>
+                <package>dev.langchain4j.model.image</package>
+                <package>dev.langchain4j.model.input</package>
+                <package>dev.langchain4j.model.input.structured</package>
+                <package>dev.langchain4j.model.language</package>
+                <package>dev.langchain4j.model.moderation</package>
+                <package>dev.langchain4j.model.moderation.listener</package>
+                <package>dev.langchain4j.model.openai</package>
+                <package>dev.langchain4j.model.openai.internal</package>
+                <package>dev.langchain4j.model.openai.internal.audio.texttospeech</package>
+                <package>dev.langchain4j.model.openai.internal.audio.transcription</package>
+                <package>dev.langchain4j.model.openai.internal.chat</package>
+                <package>dev.langchain4j.model.openai.internal.completion</package>
+                <package>dev.langchain4j.model.openai.internal.decision</package>
+                <package>dev.langchain4j.model.openai.internal.embedding</package>
+                <package>dev.langchain4j.model.openai.internal.image</package>
+                <package>dev.langchain4j.model.openai.internal.models</package>
+                <package>dev.langchain4j.model.openai.internal.moderation</package>
+                <package>dev.langchain4j.model.openai.internal.shared</package>
+                <package>dev.langchain4j.model.openai.internal.spi</package>
+                <package>dev.langchain4j.model.openai.spi</package>
+                <package>dev.langchain4j.model.output</package>
+                <package>dev.langchain4j.model.output.structured</package>
+                <package>dev.langchain4j.model.scoring</package>
+                <package>dev.langchain4j.model.scoring.request</package>
+                <package>dev.langchain4j.model.scoring.response</package>
+                <package>dev.langchain4j.observability</package>
+                <package>dev.langchain4j.observability.api</package>
+                <package>dev.langchain4j.observability.api.event</package>
+                <package>dev.langchain4j.observability.api.listener</package>
+                <package>dev.langchain4j.observability.event</package>
+                <package>dev.langchain4j.rag</package>
+                <package>dev.langchain4j.rag.content</package>
+                <package>dev.langchain4j.rag.content.aggregator</package>
+                <package>dev.langchain4j.rag.content.injector</package>
+                <package>dev.langchain4j.rag.content.retriever</package>
+                <package>dev.langchain4j.rag.content.retriever.listener</package>
+                <package>dev.langchain4j.rag.query</package>
+                <package>dev.langchain4j.rag.query.router</package>
+                <package>dev.langchain4j.rag.query.transformer</package>
+                <package>dev.langchain4j.reactive.streaming</package>
+                <package>dev.langchain4j.spi</package>
+                <package>dev.langchain4j.spi.agent.tool</package>
+                <package>dev.langchain4j.spi.classloading</package>
+                <package>dev.langchain4j.spi.data.document.parser</package>
+                <package>dev.langchain4j.spi.data.document.splitter</package>
+                <package>dev.langchain4j.spi.data.message</package>
+                <package>dev.langchain4j.spi.guardrail</package>
+                <package>dev.langchain4j.spi.guardrail.config</package>
+                <package>dev.langchain4j.spi.json</package>
+                <package>dev.langchain4j.spi.model.embedding</package>
+                <package>dev.langchain4j.spi.observability</package>
+                <package>dev.langchain4j.spi.prompt</package>
+                <package>dev.langchain4j.spi.prompt.structured</package>
+                <package>dev.langchain4j.store.embedding</package>
+                <package>dev.langchain4j.store.embedding.filter</package>
+                <package>dev.langchain4j.store.embedding.filter.comparison</package>
+                <package>dev.langchain4j.store.embedding.filter.logical</package>
+                <package>dev.langchain4j.store.embedding.listener</package>
+                <package>dev.langchain4j.store.memory.chat</package>
+                <package>dev.langchain4j.web.search</package>
                 <package>edu.washington.cs.knowitall.logic</package>
                 <package>edu.washington.cs.knowitall.regex</package>
                 <package>gov.nasa.worldwind</package>
@@ -623,6 +730,9 @@
                 <package>morfologik.fsa.builders</package>
                 <package>morfologik.speller</package>
                 <package>morfologik.stemming</package>
+                <package>mutiny.zero</package>
+                <package>mutiny.zero.internal</package>
+                <package>mutiny.zero.operators</package>
                 <package>net.bytebuddy</package>
                 <package>net.bytebuddy.agent</package>
                 <package>net.bytebuddy.agent.builder</package>
@@ -2929,16 +3039,16 @@
                 <binary-origin>release/modules/ext/j2objc-annotations-3.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-annotations-2.21.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-annotations-2.21.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-annotations-2.22.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-annotations-2.22.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-core-2.21.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-core-2.21.3.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-core-2.22.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-core-2.22.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jackson-databind-2.21.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jackson-databind-2.21.3.jar</binary-origin>
+                <runtime-relative-path>ext/jackson-databind-2.22.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jackson-databind-2.22.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jakarta.activation-1.2.2.jar</runtime-relative-path>
@@ -3069,8 +3179,8 @@
                 <binary-origin>release/modules/ext/json-simple-1.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jspecify-1.0.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jspecify-1.0.0.jar</binary-origin>
+                <runtime-relative-path>ext/jspecify-1.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jspecify-1.0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jsr305-3.0.2.jar</runtime-relative-path>
@@ -3083,6 +3193,30 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jython-standalone-2.7.4.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jython-standalone-2.7.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/langchain4j-anthropic-1.22.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/langchain4j-anthropic-1.22.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/langchain4j-core-1.22.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/langchain4j-core-1.22.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/langchain4j-http-client-1.22.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/langchain4j-http-client-1.22.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/langchain4j-http-client-jdk-1.22.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/langchain4j-http-client-jdk-1.22.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/langchain4j-open-ai-1.22.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/langchain4j-open-ai-1.22.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/langchain4j-reactive-streaming-1.22.0-beta32.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/langchain4j-reactive-streaming-1.22.0-beta32.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/language-en-6.8.jar</runtime-relative-path>
@@ -3123,6 +3257,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/morfologik-stemming-2.1.9.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/morfologik-stemming-2.1.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/mutiny-zero-1.3.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/mutiny-zero-1.3.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/nashorn-core-15.7.jar</runtime-relative-path>
@@ -3237,8 +3375,8 @@
                 <binary-origin>release/modules/ext/si-units-2.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/slf4j-api-2.0.17.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/slf4j-api-2.0.17.jar</binary-origin>
+                <runtime-relative-path>ext/slf4j-api-2.0.18.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/slf4j-api-2.0.18.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.41.2.2.jar</runtime-relative-path>
