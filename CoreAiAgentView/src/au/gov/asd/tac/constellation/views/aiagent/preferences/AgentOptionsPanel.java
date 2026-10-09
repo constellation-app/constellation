@@ -58,7 +58,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingWorker;
 
 /**
- * The AI Assistant options panel: endpoints and API keys, behaviour, per-tool
+ * The Assistant options panel: endpoints and API keys, behaviour, per-tool
  * approval policies and the system prompt.
  *
  * @author doubtsec

@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AgentTool.class, position = 410)
 public class RunDataAccessPluginTool extends AbstractAgentTool {
 
-    static final String DEFAULT_QUERY_NAME = "AI Assistant query";
+    static final String DEFAULT_QUERY_NAME = "Assistant query";
     private static final long NEW_GRAPH_TIMEOUT_MILLIS = 30_000;
 
     @Override

@@ -78,7 +78,7 @@ public final class ApiKeyStore {
         }
         SESSION_KEYS.put(endpoint.apiKeyRef(), key);
         try {
-            Keyring.save(endpoint.apiKeyRef(), key.toCharArray(), "Constellation AI Assistant API key for " + endpoint.name());
+            Keyring.save(endpoint.apiKeyRef(), key.toCharArray(), "Constellation Assistant API key for " + endpoint.name());
             return true;
         } catch (final RuntimeException | LinkageError ex) {
             LOGGER.log(Level.WARNING, "Couldn't save the API key in the keyring; it will be kept for this session only: {0}", ex.getMessage());

@@ -25,7 +25,7 @@ import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 
 /**
- * Registers the AI Assistant options under Tools &gt; Options &gt;
+ * Registers the Assistant options under Tools &gt; Options &gt;
  * Constellation.
  *
  * @author doubtsec
@@ -38,12 +38,12 @@ import org.openide.util.RequestProcessor;
         keywordsCategory = "constellation/AiAssistant",
         position = 1300)
 @org.openide.util.NbBundle.Messages({
-    "AgentOptions_DisplayName=AI Assistant",
+    "AgentOptions_DisplayName=Assistant",
     "AgentOptions_Keywords=ai assistant llm openai ollama model agent"
 })
 public final class AgentOptionsPanelController extends OptionsPanelController implements HelpCtx.Provider {
 
-    private static final RequestProcessor KEYRING = new RequestProcessor("AI Assistant keyring", 1);
+    private static final RequestProcessor KEYRING = new RequestProcessor("Assistant keyring", 1);
 
     private AgentOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);

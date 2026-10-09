@@ -87,7 +87,7 @@ public final class AgentViewController implements AgentEnvironment {
     private final AgentViewPane pane;
     private final ToolRegistry registry;
     private final ExecutorService background = Executors.newSingleThreadExecutor(runnable -> {
-        final Thread thread = new Thread(runnable, "AI Assistant Background");
+        final Thread thread = new Thread(runnable, "Assistant Background");
         thread.setDaemon(true);
         return thread;
     });
@@ -285,7 +285,7 @@ public final class AgentViewController implements AgentEnvironment {
                     session.send(message);
                 }
             } catch (final RuntimeException ex) {
-                LOGGER.log(Level.INFO, "Couldn't start the AI assistant", ex);
+                LOGGER.log(Level.INFO, "Couldn't start the assistant", ex);
                 Platform.runLater(() -> {
                     pane.addError(ex.getMessage() == null ? ex.toString() : ex.getMessage());
                     pane.setRunning(false);
@@ -551,7 +551,7 @@ public final class AgentViewController implements AgentEnvironment {
     }
 
     String transcriptMarkdown() {
-        final StringBuilder markdown = new StringBuilder("# AI Assistant transcript\n\n");
+        final StringBuilder markdown = new StringBuilder("# Assistant transcript\n\n");
         for (final ObjectNode entry : transcriptLog) {
             final String text = entry.path("text").asText();
             switch (entry.path("role").asText()) {
@@ -594,7 +594,7 @@ public final class AgentViewController implements AgentEnvironment {
         final String json = transcriptJson();
         SwingUtilities.invokeLater(() -> {
             final JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("Export AI Assistant transcript");
+            chooser.setDialogTitle("Export Assistant transcript");
             final FileNameExtensionFilter md = new FileNameExtensionFilter("Markdown (*.md)", "md");
             final FileNameExtensionFilter js = new FileNameExtensionFilter("JSON (*.json)", "json");
             chooser.addChoosableFileFilter(md);

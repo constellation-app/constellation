@@ -1,8 +1,8 @@
-# AI Assistant View
+# Assistant View
 
-The AI Assistant is a chat panel that can inspect and act on the active graph. It talks to a large language model through the OpenAI API, an OpenAI-compatible server such as Ollama, vLLM or LM Studio, Azure OpenAI, or Anthropic. The assistant works in steps: it can call *tools* that read the graph, run plugins and Data Access View plugins, select elements and write notes, and then use the results to answer you.
+The Assistant is a chat panel that can inspect and act on the active graph. It talks to a large language model through the OpenAI API, an OpenAI-compatible server such as Ollama, vLLM or LM Studio, Azure OpenAI, or Anthropic. The assistant works in steps: it can call *tools* that read the graph, run plugins and Data Access View plugins, select elements and write notes, and then use the results to answer you.
 
-Open it from *Views > AI Assistant* or press <kbd>Ctrl+Shift+K</kbd>.
+Open it from *Views > Assistant* or press <kbd>Ctrl+Shift+K</kbd>.
 
 ## Choosing a model
 
@@ -45,7 +45,7 @@ Every change the assistant makes runs as a normal plugin, so it can be undone wi
 | `add_note` | Write a note tagged "AI" to the Notes View | Auto |
 | `set_active_graph`, `undo_last_change` | Switch graphs, undo the last change | Ask |
 
-Change these policies under *Tools > Options > Constellation > AI Assistant > Tools*: **AUTO** runs without asking, **ASK** asks each time and **NEVER** hides the tool from the assistant.
+Change these policies under *Tools > Options > Constellation > Assistant > Tools*: **AUTO** runs without asking, **ASK** asks each time and **NEVER** hides the tool from the assistant.
 
 ## Using Ollama
 
@@ -61,7 +61,7 @@ Small models are less reliable at multi-step tool use than large hosted models. 
 
 ## Options
 
-*Tools > Options > Constellation > AI Assistant* (or *⋯ > Options…* in the view):
+*Tools > Options > Constellation > Assistant* (or *⋯ > Options…* in the view):
 
 - **Endpoints** – add, edit and remove endpoints. For each endpoint set the base URL (for example `http://localhost:11434/v1` for Ollama or `https://api.openai.com/v1`), the API dialect (*Responses* for OpenAI, *Chat Completions* for compatible servers), an optional default model and extra HTTP headers. **Test connection** lists the endpoint's models and shows which client certificate is in use.
 - **API keys** are stored in your operating system's keyring (macOS Keychain, Windows Credential Store or the Linux Secret Service), never in Constellation's preferences. If no key is saved, the `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` environment variable is used.

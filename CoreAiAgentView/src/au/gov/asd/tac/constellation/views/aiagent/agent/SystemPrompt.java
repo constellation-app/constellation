@@ -44,7 +44,7 @@ public final class SystemPrompt {
             try (final InputStream in = SystemPrompt.class.getResourceAsStream(RESOURCE)) {
                 defaultPrompt = in == null ? "" : new String(in.readAllBytes(), StandardCharsets.UTF_8);
             } catch (final IOException ex) {
-                LOGGER.log(Level.WARNING, "Couldn't read the default AI assistant system prompt", ex);
+                LOGGER.log(Level.WARNING, "Couldn't read the default assistant system prompt", ex);
                 defaultPrompt = "";
             }
         }

@@ -55,7 +55,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 /**
- * The AI Assistant view: a header with endpoint and model selection, a
+ * The Assistant view: a header with endpoint and model selection, a
  * scrolling transcript, and an input area with Send and Stop buttons.
  * <p>
  * This class only lays out and updates nodes; {@link AgentViewController}
@@ -203,7 +203,7 @@ public final class AgentViewPane extends BorderPane {
             }
         });
 
-        final Label title = new Label("AI Assistant");
+        final Label title = new Label("Assistant");
         title.getStyleClass().add("agent-empty-title");
         final Label text = new Label("Ask about the active graph. The assistant can inspect the graph, run analytics, "
                 + "arrangements and Data Access View plugins, and select elements. Changes it makes can be undone, "

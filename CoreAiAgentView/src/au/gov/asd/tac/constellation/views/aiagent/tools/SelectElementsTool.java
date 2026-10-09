@@ -148,7 +148,7 @@ public class SelectElementsTool extends AbstractAgentTool {
 
         @Override
         public String getName() {
-            return "AI Assistant: Select Elements";
+            return "Assistant: Select Elements";
         }
 
         @Override

@@ -118,7 +118,7 @@ public class AddRecordsTool extends AbstractAgentTool {
             }
             hasTransactions |= columns.stream().anyMatch(c -> c.startsWith(GraphRecordStoreUtilities.TRANSACTION));
             if (hasTransactions && !columns.contains(GraphRecordStoreUtilities.TRANSACTION + "Source")) {
-                recordStore.set(GraphRecordStoreUtilities.TRANSACTION + "Source", "AI Assistant");
+                recordStore.set(GraphRecordStoreUtilities.TRANSACTION + "Source", "Assistant");
             }
         }
 
@@ -153,7 +153,7 @@ public class AddRecordsTool extends AbstractAgentTool {
 
         @Override
         public String getName() {
-            return "AI Assistant: Add Records";
+            return "Assistant: Add Records";
         }
 
         @Override

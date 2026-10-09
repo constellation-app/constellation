@@ -141,7 +141,7 @@ public final class LangChain4jProvider implements LlmProvider {
             return PLACEHOLDER_API_KEY;
         }
         throw new IllegalStateException("No API key is configured for " + endpoint.name()
-                + ". Set one in Tools > Options > Constellation > AI Assistant.");
+                + ". Set one in Tools > Options > Constellation > Assistant.");
     }
 
     private Map<String, String> headers() {

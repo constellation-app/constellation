@@ -93,7 +93,7 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
                 endpoints = mapper.readValue(endpointsJson, new TypeReference<List<EndpointConfig>>() {
                 });
             } catch (final JsonProcessingException ex) {
-                LOGGER.log(Level.WARNING, "Couldn't read the AI assistant endpoints; using defaults", ex);
+                LOGGER.log(Level.WARNING, "Couldn't read the assistant endpoints; using defaults", ex);
             }
         }
         if (endpoints.isEmpty()) {
@@ -108,7 +108,7 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
                 });
                 raw.forEach((tool, policy) -> policies.put(tool, ToolPolicy.parse(policy, ToolPolicy.ASK)));
             } catch (final JsonProcessingException ex) {
-                LOGGER.log(Level.WARNING, "Couldn't read the AI assistant tool policies", ex);
+                LOGGER.log(Level.WARNING, "Couldn't read the assistant tool policies", ex);
             }
         }
 
@@ -154,7 +154,7 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
             toolPolicies.forEach((tool, policy) -> raw.put(tool, policy.name()));
             prefs.put(AgentPreferenceKeys.TOOL_POLICIES, mapper.writeValueAsString(raw));
         } catch (final JsonProcessingException ex) {
-            LOGGER.log(Level.WARNING, "Couldn't save the AI assistant settings", ex);
+            LOGGER.log(Level.WARNING, "Couldn't save the assistant settings", ex);
         }
         prefs.put(AgentPreferenceKeys.DEFAULT_ENDPOINT, defaultEndpointId);
         prefs.putInt(AgentPreferenceKeys.MAX_STEPS, maxSteps);

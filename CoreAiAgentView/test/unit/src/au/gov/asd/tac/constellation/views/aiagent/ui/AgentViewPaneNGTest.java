@@ -44,7 +44,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * A smoke test of the AI Assistant view: send a message, approve a tool call
+ * A smoke test of the Assistant view: send a message, approve a tool call
  * on its card, and see the streamed answer rendered as Markdown.
  */
 public class AgentViewPaneNGTest {

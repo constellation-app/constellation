@@ -22,12 +22,12 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Help pages for the AI Assistant view.
+ * Help pages for the Assistant view.
  *
  * @author doubtsec
  */
 @ServiceProvider(service = HelpPageProvider.class, position = 3100)
-@NbBundle.Messages("AgentViewHelpProvider=AI Assistant View Help Provider")
+@NbBundle.Messages("AgentViewHelpProvider=Assistant View Help Provider")
 public class AgentViewHelpProvider extends HelpPageProvider {
 
     private static final String MODULE_PATH = "ext" + SEP + "docs" + SEP + "CoreAiAgentView" + SEP;

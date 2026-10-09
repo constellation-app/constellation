@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.io.IOException;
+import java.io.ObjectInput;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -27,7 +29,7 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * The AI Assistant view: a chat with a model that can inspect and act on the
+ * The Assistant view: a chat with a model that can inspect and act on the
  * active graph.
  *
  * @author doubtsec
@@ -43,15 +45,15 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.aiagent.ui.AgentViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1750),
+    @ActionReference(path = "Menu/Views", position = 100),
     @ActionReference(path = "Shortcuts", name = "CS-K")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_AgentViewAction",
         preferredID = "AgentViewTopComponent")
 @Messages({
-    "CTL_AgentViewAction=AI Assistant",
-    "CTL_AgentViewTopComponent=AI Assistant",
-    "HINT_AgentViewTopComponent=Chat with an AI assistant that can inspect and act on the graph"})
+    "CTL_AgentViewAction=Assistant",
+    "CTL_AgentViewTopComponent=Assistant",
+    "HINT_AgentViewTopComponent=Chat with an assistant that can inspect and act on the graph"})
 public final class AgentViewTopComponent extends JavaFxTopComponent<AgentViewPane> {
 
     private final AgentViewPane pane;
@@ -71,6 +73,18 @@ public final class AgentViewTopComponent extends JavaFxTopComponent<AgentViewPan
         addStructureChangeHandler(graph -> controller.updateContext());
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> controller.updateContext());
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> controller.updateContext());
+    }
+
+    /**
+     * The window system saves a view's name and tooltip with its state and
+     * restores them over the ones set in the constructor. Always use the
+     * current ones, so renaming the view takes effect for existing users.
+     */
+    @Override
+    public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        setName(Bundle.CTL_AgentViewTopComponent());
+        setToolTipText(Bundle.HINT_AgentViewTopComponent());
     }
 
     @Override

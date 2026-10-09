@@ -88,7 +88,7 @@ public class AddNoteTool extends AbstractAgentTool {
                 }
             });
         }
-        final String title = text(args, "title", "AI Assistant note");
+        final String title = text(args, "title", "Assistant note");
         NotesViewApi.addNote(graph, title, text(args, "content", ""), true, tags);
         return ToolResult.ok("Note \"" + title + "\" added to the Notes View.", "Note added: " + title);
     }
