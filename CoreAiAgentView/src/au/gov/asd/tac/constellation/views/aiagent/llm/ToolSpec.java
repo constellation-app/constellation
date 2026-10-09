@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @param description the model-facing description.
  * @param parameters the JSON Schema for the tool's arguments.
  *
- * @author constellation
+ * @author doubtsec
  */
 public record ToolSpec(String name, String description, JsonNode parameters) {
 }

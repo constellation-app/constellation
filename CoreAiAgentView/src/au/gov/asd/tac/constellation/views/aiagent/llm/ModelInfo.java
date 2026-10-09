@@ -21,7 +21,7 @@ package au.gov.asd.tac.constellation.views.aiagent.llm;
  * @param id the model id sent in requests.
  * @param displayName a name for display, may equal the id.
  *
- * @author constellation
+ * @author doubtsec
  */
 public record ModelInfo(String id, String displayName) {
 

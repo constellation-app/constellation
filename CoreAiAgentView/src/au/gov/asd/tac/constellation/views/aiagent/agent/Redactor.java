@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * Masks secrets in tool arguments before they are displayed.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class Redactor {
 

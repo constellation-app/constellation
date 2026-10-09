@@ -19,7 +19,7 @@ package au.gov.asd.tac.constellation.views.aiagent.api;
  * How risky running an {@link AgentTool} is. The risk determines the default
  * approval policy for the tool.
  *
- * @author constellation
+ * @author doubtsec
  */
 public enum ToolRisk {
     /**

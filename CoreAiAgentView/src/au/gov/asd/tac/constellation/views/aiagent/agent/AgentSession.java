@@ -63,7 +63,7 @@ import java.util.logging.Logger;
  * Tool denials and errors are returned to the model as tool results rather
  * than thrown, so the model can change course.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class AgentSession {
 

@@ -28,7 +28,7 @@ import org.openide.util.RequestProcessor;
  * Registers the AI Assistant options under Tools &gt; Options &gt;
  * Constellation.
  *
- * @author constellation
+ * @author doubtsec
  */
 @OptionsPanelController.SubRegistration(
         id = "AiAssistant",

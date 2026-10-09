@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Runs a plugin on the graph as an undoable step.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 320)
 public class RunPluginTool extends AbstractAgentTool {

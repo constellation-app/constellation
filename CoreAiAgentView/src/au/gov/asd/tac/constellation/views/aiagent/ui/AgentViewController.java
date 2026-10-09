@@ -58,9 +58,6 @@ import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.util.Duration;
@@ -78,7 +75,7 @@ import org.openide.util.HelpCtx;
  * the JavaFX thread in batches (at most every {@value #FLUSH_MILLIS} ms) so a
  * fast stream doesn't flood the JavaFX event queue.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class AgentViewController implements AgentEnvironment {
 
@@ -129,8 +126,7 @@ public final class AgentViewController implements AgentEnvironment {
         this.keyReader = keyReader;
         this.settings = AgentSettings.load();
         this.preferenceListener = event -> {
-            if (event.getKey() != null && event.getKey().startsWith("aiagent.") && !event.getKey().startsWith(LAST_MODEL_PREFIX)
-                    && !event.getKey().startsWith("aiagent.acknowledged.")) {
+            if (event.getKey() != null && event.getKey().startsWith("aiagent.") && !event.getKey().startsWith(LAST_MODEL_PREFIX)) {
                 Platform.runLater(this::reloadSettings);
             }
         };
@@ -202,7 +198,7 @@ public final class AgentViewController implements AgentEnvironment {
     }
 
     private void endpointChanged(final EndpointConfig endpoint) {
-        pane.setBanner(endpoint, blockedReason(endpoint));
+        pane.setBanner(endpoint == null ? "Choose an endpoint, or add one in Options." : null);
         pane.getModelCombo().getItems().clear();
         if (endpoint == null) {
             pane.getModelCombo().setValue(null);
@@ -211,13 +207,6 @@ public final class AgentViewController implements AgentEnvironment {
         final String remembered = AgentSettings.preferences().get(LAST_MODEL_PREFIX + endpoint.id(), "");
         pane.getModelCombo().setValue(!remembered.isBlank() ? remembered : endpoint.defaultModel().isBlank() ? null : endpoint.defaultModel());
         loadModels(endpoint);
-    }
-
-    private String blockedReason(final EndpointConfig endpoint) {
-        if (endpoint != null && settings.requireLocalOnly() && !endpoint.isLocal()) {
-            return "Only local endpoints are allowed. " + endpoint.host() + " is not local.";
-        }
-        return null;
     }
 
     private void loadModels(final EndpointConfig endpoint) {
@@ -250,11 +239,7 @@ public final class AgentViewController implements AgentEnvironment {
                 } else {
                     pane.getModelCombo().setValue(current);
                 }
-                if (failure != null && pane.isTranscriptEmpty()) {
-                    pane.setBanner(endpoint, "Couldn't list models: " + failure);
-                } else {
-                    pane.setBanner(endpoint, blockedReason(endpoint));
-                }
+                pane.setBanner(failure != null && pane.isTranscriptEmpty() ? "Couldn't list models: " + failure : null);
             });
         });
     }
@@ -280,15 +265,6 @@ public final class AgentViewController implements AgentEnvironment {
             pane.addError("Choose or type a model first.");
             return;
         }
-        final String blocked = blockedReason(endpoint);
-        if (blocked != null) {
-            pane.addError(blocked);
-            return;
-        }
-        if (!endpoint.isLocal() && !AgentSettings.isAcknowledged(endpoint) && !confirmDataEgress(endpoint)) {
-            return;
-        }
-
         final String message = text.trim();
         pane.getInput().clear();
         pane.addUserMessage(message);
@@ -316,23 +292,6 @@ public final class AgentViewController implements AgentEnvironment {
                 });
             }
         });
-    }
-
-    private boolean confirmDataEgress(final EndpointConfig endpoint) {
-        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("AI Assistant");
-        alert.setHeaderText("Send graph data to " + endpoint.host() + "?");
-        alert.setContentText(String.format("The assistant sends your messages, a summary of the active graph and the results of the tools "
-                + "it uses (which can include attribute values from the graph) to %s at %s.%n%nOnly continue if this is allowed for the data "
-                + "you are working with. You won't be asked again for this endpoint.", endpoint.name(), endpoint.baseUrl()));
-        final ButtonType allow = new ButtonType("Send to " + endpoint.host(), ButtonBar.ButtonData.OK_DONE);
-        alert.getButtonTypes().setAll(allow, ButtonType.CANCEL);
-        alert.getDialogPane().getStylesheets().addAll(pane.getScene() == null ? List.of() : pane.getScene().getStylesheets());
-        final boolean ok = alert.showAndWait().filter(allow::equals).isPresent();
-        if (ok) {
-            AgentSettings.acknowledge(endpoint);
-        }
-        return ok;
     }
 
     AgentConfig buildConfig(final String model) {

@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Summarises a graph: counts, schema, selection and the most common types.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 100)
 public class GraphSummaryTool extends AbstractAgentTool {

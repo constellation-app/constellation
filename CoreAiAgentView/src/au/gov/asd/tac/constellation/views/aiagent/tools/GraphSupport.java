@@ -34,7 +34,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Helpers shared by the graph tools.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class GraphSupport {
 

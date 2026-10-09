@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.aiagent.llm;
 /**
  * A handle to a response being streamed.
  *
- * @author constellation
+ * @author doubtsec
  */
 public interface LlmStream {
 

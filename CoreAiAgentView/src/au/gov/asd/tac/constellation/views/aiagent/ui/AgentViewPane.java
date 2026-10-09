@@ -61,7 +61,7 @@ import javafx.scene.text.TextFlow;
  * This class only lays out and updates nodes; {@link AgentViewController}
  * wires the actions. All methods must be called on the JavaFX thread.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class AgentViewPane extends BorderPane {
 
@@ -165,6 +165,8 @@ public final class AgentViewPane extends BorderPane {
         HBox.setHgrow(bannerLabel, Priority.ALWAYS);
         banner.getChildren().add(bannerLabel);
         banner.getStyleClass().add("agent-banner");
+        banner.setVisible(false);
+        banner.setManaged(false);
 
         final VBox header = new VBox(toolbar, chatSettingsRow, banner);
         header.getStyleClass().add("agent-header");
@@ -354,26 +356,16 @@ public final class AgentViewPane extends BorderPane {
     }
 
     /**
-     * Show where data will be sent.
+     * Show a problem with the selected endpoint under the toolbar, or hide the
+     * banner when there is none.
      *
-     * @param endpoint the selected endpoint, may be null.
-     * @param blocked a reason the endpoint can't be used, or null.
+     * @param problem the problem, or null.
      */
-    public void setBanner(final EndpointConfig endpoint, final String blocked) {
-        banner.getStyleClass().removeAll("local", "remote");
-        if (endpoint == null) {
-            bannerLabel.setText("Choose an endpoint, or add one in Options.");
-            banner.getStyleClass().add("remote");
-        } else if (blocked != null) {
-            bannerLabel.setText("⛔ " + blocked);
-            banner.getStyleClass().add("remote");
-        } else if (endpoint.isLocal()) {
-            bannerLabel.setText(String.format("✓ Local endpoint: graph data stays on %s", endpoint.isLoopback() ? "this machine" : "your network (" + endpoint.host() + ")"));
-            banner.getStyleClass().add("local");
-        } else {
-            bannerLabel.setText("⚠ Graph data will be sent to " + endpoint.host());
-            banner.getStyleClass().add("remote");
-        }
+    public void setBanner(final String problem) {
+        final boolean show = problem != null && !problem.isBlank();
+        bannerLabel.setText(show ? "\u26a0 " + problem : "");
+        banner.setVisible(show);
+        banner.setManaged(show);
     }
 
     public void setContext(final String text) {

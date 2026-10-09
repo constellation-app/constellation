@@ -46,7 +46,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Integration test against a local Ollama server. Skipped unless the
+ * Integration test against an Ollama server. Skipped unless the
  * environment variable {@code OLLAMA_TEST_MODEL} names a model that supports
  * tool calling (e.g. {@code gemma4:e4b}); {@code OLLAMA_TEST_URL} overrides
  * the default {@code http://localhost:11434/v1}.

@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Finds vertices or transactions matching attribute filters and returns
  * selected columns, a page at a time.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 140)
 public class QueryElementsTool extends AbstractAgentTool {

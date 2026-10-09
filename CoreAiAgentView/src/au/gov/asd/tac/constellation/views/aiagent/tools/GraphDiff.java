@@ -28,7 +28,7 @@ import java.util.Set;
  * Before and after snapshots of a graph, used to tell the model what a plugin
  * changed (plugin execution returns no value).
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class GraphDiff {
 

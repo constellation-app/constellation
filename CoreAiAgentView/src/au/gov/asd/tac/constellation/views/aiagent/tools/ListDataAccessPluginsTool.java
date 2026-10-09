@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Lists the Data Access View plugins by category.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 400)
 public class ListDataAccessPluginsTool extends AbstractAgentTool {

@@ -28,7 +28,7 @@ import java.util.List;
  * "none"), or null for the model default.
  * @param maxOutputTokens the maximum number of output tokens, or null.
  *
- * @author constellation
+ * @author doubtsec
  */
 public record LlmRequest(String model, List<ChatTurn> history, List<ToolSpec> tools,
         Double temperature, String reasoningEffort, Integer maxOutputTokens) {

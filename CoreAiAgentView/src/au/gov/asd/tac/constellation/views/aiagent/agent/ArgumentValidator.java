@@ -26,7 +26,7 @@ import java.util.Locale;
  * and array items. Its messages are returned to the model so it can correct
  * its arguments.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class ArgumentValidator {
 

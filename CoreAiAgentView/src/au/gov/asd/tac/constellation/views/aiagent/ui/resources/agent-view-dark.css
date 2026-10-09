@@ -11,7 +11,6 @@
     -agent-code-text: #f0a6c0;
     -agent-warn-bg: #4a3a1a;
     -agent-warn-text: #f5cf86;
-    -agent-info-bg: #22382a;
     -agent-ok: #5cc27d;
     -agent-err: #f07a70;
     -agent-err-bg: #43282a;
@@ -46,17 +45,9 @@
     -fx-background-radius: 4;
     -fx-spacing: 6;
     -fx-alignment: center-left;
-}
-.agent-view .agent-banner.remote {
     -fx-background-color: -agent-warn-bg;
 }
-.agent-view .agent-banner.local {
-    -fx-background-color: -agent-info-bg;
-}
 .agent-view .agent-banner .label {
-    -fx-text-fill: -agent-text;
-}
-.agent-view .agent-banner.remote .label {
     -fx-text-fill: -agent-warn-text;
 }
 .agent-view .agent-transcript-scroll,

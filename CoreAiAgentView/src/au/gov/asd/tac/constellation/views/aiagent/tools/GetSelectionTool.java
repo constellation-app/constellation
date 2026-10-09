@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Returns the selected vertices and transactions.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 160)
 public class GetSelectionTool extends AbstractAgentTool {

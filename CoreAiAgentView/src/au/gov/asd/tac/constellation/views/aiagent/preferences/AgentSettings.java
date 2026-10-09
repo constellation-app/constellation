@@ -38,7 +38,6 @@ import org.openide.util.NbPreferences;
  * @param maxSteps the maximum number of model calls per user message.
  * @param maxToolResultChars the maximum length of a tool result sent to the
  * model.
- * @param requireLocalOnly refuse endpoints that aren't local or private.
  * @param includeSelection include selection counts in the context header.
  * @param systemPromptOverride replacement system prompt, empty for the default.
  * @param toolPolicies per-tool policy overrides.
@@ -47,10 +46,10 @@ import org.openide.util.NbPreferences;
  * default.
  * @param debugLogging log redacted request summaries.
  *
- * @author constellation
+ * @author doubtsec
  */
 public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpointId, int maxSteps, int maxToolResultChars,
-        boolean requireLocalOnly, boolean includeSelection, String systemPromptOverride, Map<String, ToolPolicy> toolPolicies,
+        boolean includeSelection, String systemPromptOverride, Map<String, ToolPolicy> toolPolicies,
         Double temperature, String reasoningEffort, boolean debugLogging) {
 
     private static final Logger LOGGER = Logger.getLogger(AgentSettings.class.getName());
@@ -123,14 +122,10 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
             }
         }
 
-        final boolean localOnly = Boolean.getBoolean(AgentPreferenceKeys.REQUIRE_LOCAL_ONLY_SYSTEM_PROPERTY)
-                || prefs.getBoolean(AgentPreferenceKeys.REQUIRE_LOCAL_ONLY, AgentPreferenceKeys.REQUIRE_LOCAL_ONLY_DEFAULT);
-
         return new AgentSettings(endpoints,
                 prefs.get(AgentPreferenceKeys.DEFAULT_ENDPOINT, endpoints.get(0).id()),
                 Math.max(1, prefs.getInt(AgentPreferenceKeys.MAX_STEPS, AgentPreferenceKeys.MAX_STEPS_DEFAULT)),
                 Math.max(1000, prefs.getInt(AgentPreferenceKeys.MAX_TOOL_RESULT_CHARS, AgentPreferenceKeys.MAX_TOOL_RESULT_CHARS_DEFAULT)),
-                localOnly,
                 prefs.getBoolean(AgentPreferenceKeys.INCLUDE_SELECTION, AgentPreferenceKeys.INCLUDE_SELECTION_DEFAULT),
                 prefs.get(AgentPreferenceKeys.SYSTEM_PROMPT_OVERRIDE, ""),
                 policies,
@@ -164,7 +159,6 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
         prefs.put(AgentPreferenceKeys.DEFAULT_ENDPOINT, defaultEndpointId);
         prefs.putInt(AgentPreferenceKeys.MAX_STEPS, maxSteps);
         prefs.putInt(AgentPreferenceKeys.MAX_TOOL_RESULT_CHARS, maxToolResultChars);
-        prefs.putBoolean(AgentPreferenceKeys.REQUIRE_LOCAL_ONLY, requireLocalOnly);
         prefs.putBoolean(AgentPreferenceKeys.INCLUDE_SELECTION, includeSelection);
         prefs.put(AgentPreferenceKeys.SYSTEM_PROMPT_OVERRIDE, systemPromptOverride);
         prefs.put(AgentPreferenceKeys.TEMPERATURE, temperature == null ? "" : temperature.toString());
@@ -178,25 +172,5 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
      */
     public EndpointConfig defaultEndpoint() {
         return endpoints.stream().filter(e -> e.id().equals(defaultEndpointId)).findFirst().orElse(endpoints.isEmpty() ? null : endpoints.get(0));
-    }
-
-    /**
-     * Whether the user has acknowledged that data may be sent to an endpoint.
-     *
-     * @param endpoint the endpoint.
-     * @return true if acknowledged.
-     */
-    public static boolean isAcknowledged(final EndpointConfig endpoint) {
-        return preferences().getBoolean(AgentPreferenceKeys.ACKNOWLEDGED_PREFIX + endpoint.id() + "." + endpoint.host(), false);
-    }
-
-    /**
-     * Record that the user has acknowledged that data may be sent to an
-     * endpoint.
-     *
-     * @param endpoint the endpoint.
-     */
-    public static void acknowledge(final EndpointConfig endpoint) {
-        preferences().putBoolean(AgentPreferenceKeys.ACKNOWLEDGED_PREFIX + endpoint.id() + "." + endpoint.host(), true);
     }
 }

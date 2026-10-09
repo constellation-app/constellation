@@ -53,7 +53,7 @@ import org.commonmark.parser.Parser;
  * headings, monospace blocks for code and GridPanes for (GitHub style) tables.
  * Links are shown as text; nothing is fetched or opened.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class MarkdownFxRenderer {
 

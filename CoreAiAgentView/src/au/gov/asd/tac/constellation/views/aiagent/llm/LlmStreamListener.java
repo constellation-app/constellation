@@ -19,7 +19,7 @@ package au.gov.asd.tac.constellation.views.aiagent.llm;
  * Receives streamed output from a model. Methods are called on a provider
  * thread.
  *
- * @author constellation
+ * @author doubtsec
  */
 public interface LlmStreamListener {
 

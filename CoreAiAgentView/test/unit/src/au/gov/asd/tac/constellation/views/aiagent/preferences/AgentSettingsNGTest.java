@@ -57,7 +57,6 @@ public class AgentSettingsNGTest {
         assertEquals(settings.maxSteps(), AgentPreferenceKeys.MAX_STEPS_DEFAULT);
         assertNull(settings.temperature());
         assertTrue(settings.includeSelection());
-        assertFalse(settings.requireLocalOnly());
         assertTrue(settings.toolPolicies().isEmpty());
     }
 
@@ -65,7 +64,7 @@ public class AgentSettingsNGTest {
     public void testRoundTrip() {
         final EndpointConfig vllm = new EndpointConfig("vllm", "vLLM", EndpointKind.OPENAI_COMPATIBLE, "http://gpu.lan:8000/v1",
                 ApiMode.CHAT_COMPLETIONS, "qwen", Map.of("X-Org", "abc"), true, true);
-        final AgentSettings settings = new AgentSettings(List.of(vllm), "vllm", 7, 5000, true, false, "custom prompt",
+        final AgentSettings settings = new AgentSettings(List.of(vllm), "vllm", 7, 5000, false, "custom prompt",
                 Map.of("run_plugin", ToolPolicy.AUTO, "add_note", ToolPolicy.NEVER), 0.3, "low", true);
         settings.save(prefs);
         final AgentSettings loaded = AgentSettings.load(prefs);
@@ -75,7 +74,7 @@ public class AgentSettingsNGTest {
 
     @Test
     public void testApiKeysAreNotStoredInPreferences() throws BackingStoreException {
-        new AgentSettings(List.of(EndpointConfig.openAiDefault()), "openai", 5, 5000, false, true, "", Map.of(), null, "", false).save(prefs);
+        new AgentSettings(List.of(EndpointConfig.openAiDefault()), "openai", 5, 5000, true, "", Map.of(), null, "", false).save(prefs);
         for (final String key : prefs.keys()) {
             assertFalse(key.toLowerCase().contains("apikey"), key);
         }

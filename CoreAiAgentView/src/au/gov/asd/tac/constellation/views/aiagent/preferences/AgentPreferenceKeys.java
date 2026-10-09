@@ -21,7 +21,7 @@ package au.gov.asd.tac.constellation.views.aiagent.preferences;
  * <p>
  * API keys are never stored in preferences; see {@link ApiKeyStore}.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class AgentPreferenceKeys {
 
@@ -44,14 +44,6 @@ public final class AgentPreferenceKeys {
     public static final String MAX_TOOL_RESULT_CHARS = "aiagent.maxToolResultChars";
     public static final int MAX_TOOL_RESULT_CHARS_DEFAULT = 12000;
     /**
-     * Refuse endpoints that aren't on this machine or a private network.
-     * Can be preset with {@code -J-Dconstellation.aiagent.localOnly=true} in
-     * constellation.conf.
-     */
-    public static final String REQUIRE_LOCAL_ONLY = "aiagent.requireLocalOnly";
-    public static final boolean REQUIRE_LOCAL_ONLY_DEFAULT = false;
-    public static final String REQUIRE_LOCAL_ONLY_SYSTEM_PROPERTY = "constellation.aiagent.localOnly";
-    /**
      * Include counts of selected elements in the context sent with each
      * message.
      */
@@ -65,11 +57,6 @@ public final class AgentPreferenceKeys {
      * JSON object mapping tool names to policies (AUTO, ASK, NEVER).
      */
     public static final String TOOL_POLICIES = "aiagent.toolPolicies";
-    /**
-     * Prefix for "data may leave this machine" acknowledgements, one per
-     * endpoint id.
-     */
-    public static final String ACKNOWLEDGED_PREFIX = "aiagent.acknowledged.";
     /**
      * Default sampling temperature; empty for the model default.
      */

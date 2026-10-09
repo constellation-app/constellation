@@ -29,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Makes another open graph the active graph.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 120)
 public class SetActiveGraphTool extends AbstractAgentTool {

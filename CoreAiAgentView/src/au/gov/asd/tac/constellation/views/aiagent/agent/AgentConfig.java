@@ -33,7 +33,7 @@ import java.util.Map;
  * @param maxHistoryChars compact old tool results when the history grows
  * beyond this many characters.
  *
- * @author constellation
+ * @author doubtsec
  */
 public record AgentConfig(String model, String systemPrompt, int maxSteps, int maxToolResultChars,
         Double temperature, String reasoningEffort, Map<String, ToolPolicy> policyOverrides, int maxHistoryChars) {

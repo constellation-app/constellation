@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.aiagent.agent;
 /**
  * The user's decision about a tool call that needs approval.
  *
- * @author constellation
+ * @author doubtsec
  */
 public sealed interface Decision {
 

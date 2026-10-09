@@ -49,7 +49,7 @@ import java.util.Set;
  * required the plugin is reported as needing interactive use. Hidden and
  * disabled parameters are left out.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class PluginParametersSchema {
 

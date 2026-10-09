@@ -41,7 +41,7 @@ import org.openide.windows.WindowManager;
 /**
  * Public API for adding user notes to a graph's Notes View from other modules.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class NotesViewApi {
 

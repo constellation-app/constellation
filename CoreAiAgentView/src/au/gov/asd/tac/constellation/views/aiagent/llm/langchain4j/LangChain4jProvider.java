@@ -77,7 +77,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * current Constellation security context (client certificate) and proxy
  * settings.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class LangChain4jProvider implements LlmProvider {
 

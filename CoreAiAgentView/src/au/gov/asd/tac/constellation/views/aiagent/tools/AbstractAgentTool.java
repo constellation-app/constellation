@@ -29,7 +29,7 @@ import java.util.List;
  * Base class for the built in tools, with helpers for building schemas and
  * results.
  *
- * @author constellation
+ * @author doubtsec
  */
 public abstract class AbstractAgentTool implements AgentTool {
 

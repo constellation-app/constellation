@@ -44,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Changes which vertices or transactions are selected. Runs as an undoable
  * plugin.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 200)
 public class SelectElementsTool extends AbstractAgentTool {

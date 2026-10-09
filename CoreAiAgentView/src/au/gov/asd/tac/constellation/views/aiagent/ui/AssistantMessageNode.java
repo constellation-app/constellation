@@ -29,7 +29,7 @@ import javafx.scene.text.TextFlow;
  * An assistant message in the transcript. Text is shown as plain text while it
  * streams and rendered as Markdown when the message is complete.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class AssistantMessageNode extends VBox {
 

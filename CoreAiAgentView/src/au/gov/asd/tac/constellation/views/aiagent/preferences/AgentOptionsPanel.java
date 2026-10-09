@@ -61,7 +61,7 @@ import javax.swing.SwingWorker;
  * The AI Assistant options panel: endpoints and API keys, behaviour, per-tool
  * approval policies and the system prompt.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class AgentOptionsPanel extends JPanel {
 
@@ -94,7 +94,6 @@ public final class AgentOptionsPanel extends JPanel {
     private final JSpinner maxResultSpinner = new JSpinner(new SpinnerNumberModel(12000, 1000, 200000, 1000));
     private final JTextField temperatureField = new JTextField(6);
     private final JComboBox<String> reasoningCombo = new JComboBox<>(new String[]{"", "none", "low", "medium", "high"});
-    private final JCheckBox localOnlyCheck = new JCheckBox("Require local endpoints only (this machine or a private network)");
     private final JCheckBox includeSelectionCheck = new JCheckBox("Include selection counts in the context sent with each message");
     private final JCheckBox debugCheck = new JCheckBox("Log a redacted summary of each model request (for debugging)");
 
@@ -215,7 +214,6 @@ public final class AgentOptionsPanel extends JPanel {
         row = addRow(form, row, "Default temperature:", temperatureField);
         reasoningCombo.setToolTipText("Blank for the model default");
         row = addRow(form, row, "Default reasoning effort:", reasoningCombo);
-        row = addRow(form, row, "", localOnlyCheck);
         row = addRow(form, row, "", includeSelectionCheck);
         row = addRow(form, row, "", debugCheck);
         final GridBagConstraints filler = new GridBagConstraints();
@@ -335,10 +333,6 @@ public final class AgentOptionsPanel extends JPanel {
         maxResultSpinner.setValue(settings.maxToolResultChars());
         temperatureField.setText(settings.temperature() == null ? "" : settings.temperature().toString());
         reasoningCombo.setSelectedItem(settings.reasoningEffort());
-        final boolean forcedLocal = Boolean.getBoolean(AgentPreferenceKeys.REQUIRE_LOCAL_ONLY_SYSTEM_PROPERTY);
-        localOnlyCheck.setSelected(settings.requireLocalOnly());
-        localOnlyCheck.setEnabled(!forcedLocal);
-        localOnlyCheck.setToolTipText(forcedLocal ? "Set by the administrator (-D" + AgentPreferenceKeys.REQUIRE_LOCAL_ONLY_SYSTEM_PROPERTY + ")" : null);
         includeSelectionCheck.setSelected(settings.includeSelection());
         debugCheck.setSelected(settings.debugLogging());
 
@@ -380,7 +374,7 @@ public final class AgentOptionsPanel extends JPanel {
         final String prompt = promptArea.getText().equals(SystemPrompt.getDefault()) ? "" : promptArea.getText();
         final EndpointConfig defaultEndpoint = (EndpointConfig) defaultEndpointCombo.getSelectedItem();
         return new AgentSettings(endpoints, defaultEndpoint == null ? "" : defaultEndpoint.id(), (Integer) maxStepsSpinner.getValue(),
-                (Integer) maxResultSpinner.getValue(), localOnlyCheck.isSelected(), includeSelectionCheck.isSelected(), prompt, policies,
+                (Integer) maxResultSpinner.getValue(), includeSelectionCheck.isSelected(), prompt, policies,
                 temperature, Objects.toString(reasoningCombo.getSelectedItem(), ""), debugCheck.isSelected());
     }
 

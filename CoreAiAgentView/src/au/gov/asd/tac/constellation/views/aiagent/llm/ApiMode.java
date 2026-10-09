@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.aiagent.llm;
 /**
  * Which OpenAI API dialect to use for an endpoint.
  *
- * @author constellation
+ * @author doubtsec
  */
 public enum ApiMode {
     /**

@@ -30,7 +30,7 @@ import org.openide.windows.TopComponent;
  * The AI Assistant view: a chat with a model that can inspect and act on the
  * active graph.
  *
- * @author constellation
+ * @author doubtsec
  */
 @TopComponent.Description(
         preferredID = "AgentViewTopComponent",

@@ -38,7 +38,7 @@ import java.util.List;
  * supported: objects, arrays, strings, enums, integers, numbers, booleans and
  * {@code anyOf}. Anything else becomes an unconstrained string.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class ToolSpecAdapter {
 

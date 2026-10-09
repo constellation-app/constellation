@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * One entry in the conversation history sent to the model.
  *
- * @author constellation
+ * @author doubtsec
  */
 public sealed interface ChatTurn {
 

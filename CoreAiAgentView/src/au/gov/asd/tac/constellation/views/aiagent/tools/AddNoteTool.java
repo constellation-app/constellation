@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Writes a Markdown note to the graph's Notes View.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 600)
 public class AddNoteTool extends AbstractAgentTool {

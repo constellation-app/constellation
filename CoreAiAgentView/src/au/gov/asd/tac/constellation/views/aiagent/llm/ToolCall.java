@@ -22,7 +22,7 @@ package au.gov.asd.tac.constellation.views.aiagent.llm;
  * @param name the tool name.
  * @param arguments the arguments as a JSON string (may be malformed).
  *
- * @author constellation
+ * @author doubtsec
  */
 public record ToolCall(String id, String name, String arguments) {
 }

@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 /**
  * What a tool can see of the environment it is running in.
  *
- * @author constellation
+ * @author doubtsec
  */
 public interface ToolContext {
 

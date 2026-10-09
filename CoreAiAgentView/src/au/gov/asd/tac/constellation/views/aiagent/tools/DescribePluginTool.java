@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Describes a plugin and the JSON Schema of its parameters.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 310)
 public class DescribePluginTool extends AbstractAgentTool {

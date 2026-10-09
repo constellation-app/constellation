@@ -24,7 +24,7 @@ package au.gov.asd.tac.constellation.views.aiagent.api;
  * @param error true if the tool failed; the text then describes the failure so
  * the model can correct itself.
  *
- * @author constellation
+ * @author doubtsec
  */
 public record ToolResult(String text, String summary, boolean error) {
 

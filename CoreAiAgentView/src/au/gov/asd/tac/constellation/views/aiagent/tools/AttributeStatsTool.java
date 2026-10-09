@@ -32,7 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Summary statistics for one attribute.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 150)
 public class AttributeStatsTool extends AbstractAgentTool {

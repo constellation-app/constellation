@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.views.aiagent.llm.langchain4j.LangChain4jPro
 /**
  * Creates {@link LlmProvider}s for endpoints.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class LlmProviders {
 

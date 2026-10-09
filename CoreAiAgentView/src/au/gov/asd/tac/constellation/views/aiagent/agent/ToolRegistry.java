@@ -33,7 +33,7 @@ import org.openide.util.Lookup;
 /**
  * The tools available to the agent.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class ToolRegistry {
 

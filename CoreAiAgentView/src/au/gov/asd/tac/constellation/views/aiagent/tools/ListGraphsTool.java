@@ -31,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Lists the open graphs.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 110)
 public class ListGraphsTool extends AbstractAgentTool {

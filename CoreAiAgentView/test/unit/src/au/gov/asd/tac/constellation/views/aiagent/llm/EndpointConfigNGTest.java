@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.aiagent.llm;
 
-import java.util.Map;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -26,29 +25,8 @@ import org.testng.annotations.Test;
  */
 public class EndpointConfigNGTest {
 
-    private static EndpointConfig endpoint(final String url) {
-        return new EndpointConfig("id", "name", EndpointKind.OPENAI_COMPATIBLE, url, ApiMode.CHAT_COMPLETIONS, "", Map.of(), false, false);
-    }
-
-    @Test
-    public void testLocal() {
-        assertTrue(endpoint("http://localhost:11434/v1").isLocal());
-        assertTrue(endpoint("http://localhost:11434/v1").isLoopback());
-        assertTrue(endpoint("http://127.0.0.1:8000/v1").isLoopback());
-        assertTrue(endpoint("http://[::1]:8000/v1").isLoopback());
-        assertTrue(endpoint("http://192.168.1.20/v1").isLocal());
-        assertTrue(endpoint("http://10.0.0.5/v1").isLocal());
-        assertTrue(endpoint("http://172.20.1.1/v1").isLocal());
-        assertTrue(endpoint("https://vllm.internal/v1").isLocal());
-        assertFalse(endpoint("http://172.32.1.1/v1").isLocal());
-        assertFalse(endpoint("https://api.openai.com/v1").isLocal());
-        assertFalse(endpoint("not a url").isLocal());
-    }
-
     @Test
     public void testDefaults() {
-        assertFalse(EndpointConfig.defaultRequireSecurityContext("http://localhost:11434/v1"));
-        assertTrue(EndpointConfig.defaultRequireSecurityContext("https://api.openai.com/v1"));
         assertFalse(EndpointConfig.ollamaDefault().requireSecurityContext());
         assertTrue(EndpointConfig.openAiDefault().requireSecurityContext());
         assertEquals(EndpointConfig.ollamaDefault().apiKeyRef(), "constellation.aiagent.ollama-local.apiKey");

@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.views.aiagent.llm.ToolCall;
  * render. Events are published on the agent's executor thread or a provider
  * thread, never on the Swing or JavaFX thread.
  *
- * @author constellation
+ * @author doubtsec
  */
 public sealed interface AgentEvent {
 

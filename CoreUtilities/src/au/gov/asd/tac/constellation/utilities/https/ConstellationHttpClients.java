@@ -39,7 +39,7 @@ import javax.net.ssl.SSLContext;
  * the default selector is at the time of each request, so changes made by
  * {@code ProxyUtilities} take effect without rebuilding the client.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class ConstellationHttpClients {
 

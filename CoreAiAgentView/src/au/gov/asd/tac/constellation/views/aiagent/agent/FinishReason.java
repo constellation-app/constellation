@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.aiagent.agent;
 /**
  * Why a turn ended.
  *
- * @author constellation
+ * @author doubtsec
  */
 public enum FinishReason {
     /**

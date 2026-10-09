@@ -39,7 +39,7 @@ import java.util.Map;
  * can't set from JSON arrays, accepts short parameter names, and refuses
  * password parameters.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class PluginParametersJson {
 

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 /**
  * A searchable index of the registered plugins.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class PluginCatalog {
 

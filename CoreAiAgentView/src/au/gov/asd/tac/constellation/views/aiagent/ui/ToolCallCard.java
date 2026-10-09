@@ -41,7 +41,7 @@ import javafx.scene.layout.VBox;
  * shows Approve, Always allow, Deny and Edit JSON controls; Enter approves and
  * Escape denies when the card has focus.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class ToolCallCard extends VBox {
 

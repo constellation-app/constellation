@@ -31,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Undoes the most recent change to the graph.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 700)
 public class UndoLastChangeTool extends AbstractAgentTool {

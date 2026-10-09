@@ -31,7 +31,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Lists a graph's attributes.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 130)
 public class GetAttributesTool extends AbstractAgentTool {

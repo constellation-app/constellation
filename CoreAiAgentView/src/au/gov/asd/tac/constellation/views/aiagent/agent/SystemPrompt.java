@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 /**
  * The system prompt sent at the start of every conversation.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class SystemPrompt {
 

@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.aiagent.api;
 /**
  * Whether a tool call needs the user's approval before it runs.
  *
- * @author constellation
+ * @author doubtsec
  */
 public enum ToolPolicy {
     /**

@@ -28,7 +28,7 @@ import java.util.List;
  * @param outputTokens the number of output tokens used, or -1 if unknown.
  * @param finishReason the provider's finish reason, may be null.
  *
- * @author constellation
+ * @author doubtsec
  */
 public record LlmResponse(String text, String reasoning, List<ToolCall> toolCalls,
         int inputTokens, int outputTokens, String finishReason) {

@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.aiagent.llm;
 /**
  * The kind of LLM endpoint.
  *
- * @author constellation
+ * @author doubtsec
  */
 public enum EndpointKind {
     OPENAI("OpenAI"),

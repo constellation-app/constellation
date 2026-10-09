@@ -29,7 +29,7 @@ import org.netbeans.api.keyring.Keyring;
  * libsecret), then an environment variable ({@code OPENAI_API_KEY} or
  * {@code ANTHROPIC_API_KEY}). Keys are never written to preferences or logs.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class ApiKeyStore {
 

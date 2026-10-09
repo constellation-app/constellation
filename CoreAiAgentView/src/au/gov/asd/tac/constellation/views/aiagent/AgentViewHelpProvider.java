@@ -24,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Help pages for the AI Assistant view.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = HelpPageProvider.class, position = 3100)
 @NbBundle.Messages("AgentViewHelpProvider=AI Assistant View Help Provider")

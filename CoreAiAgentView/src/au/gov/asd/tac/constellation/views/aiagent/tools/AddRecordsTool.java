@@ -44,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Adds vertices and transactions to the graph from a table of records, as the
  * REST API's add_recordstore service does.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 500)
 public class AddRecordsTool extends AbstractAgentTool {

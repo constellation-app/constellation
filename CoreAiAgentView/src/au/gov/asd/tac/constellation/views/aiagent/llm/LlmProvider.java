@@ -23,7 +23,7 @@ import java.util.OptionalInt;
  * A source of model responses. All LLM client library types stay behind this
  * interface so the agent loop and UI don't depend on them.
  *
- * @author constellation
+ * @author doubtsec
  */
 public interface LlmProvider {
 

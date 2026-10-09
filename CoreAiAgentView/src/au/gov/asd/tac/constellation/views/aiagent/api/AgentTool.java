@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * thread. Tools that change the graph should do so through a plugin so that
  * the change is undoable and recorded in the Notes View.
  *
- * @author constellation
+ * @author doubtsec
  */
 public interface AgentTool {
 
@@ -59,7 +59,7 @@ public interface AgentTool {
 
     /**
      * Tidy up arguments before they are validated, for example by accepting
-     * common alternative names for a property. Models, especially small local
+     * common alternative names for a property. Models, especially small
      * ones, don't always use the exact property names in the schema.
      *
      * @param args the arguments as the model sent them.

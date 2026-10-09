@@ -23,7 +23,7 @@ import java.util.List;
  * Keeps the conversation history within a size budget by truncating tool
  * results and compacting old ones into one-line summaries.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class HistoryCompactor {
 

@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * A provider that plays back scripted responses, for testing the agent loop
  * without a network.
  *
- * @author constellation
+ * @author doubtsec
  */
 public final class FakeLlmProvider implements LlmProvider {
 

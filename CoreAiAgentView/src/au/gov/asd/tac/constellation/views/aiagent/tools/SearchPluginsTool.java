@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Keyword search over the registered plugins.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 300)
 public class SearchPluginsTool extends AbstractAgentTool {

@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
  * What the agent needs from the application. Separated out so the agent loop
  * can be tested without a running application.
  *
- * @author constellation
+ * @author doubtsec
  */
 public interface AgentEnvironment {
 

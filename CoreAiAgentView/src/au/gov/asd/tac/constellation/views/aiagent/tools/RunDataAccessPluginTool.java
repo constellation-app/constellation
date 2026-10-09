@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Runs a Data Access View plugin, creating a graph first if none is open.
  *
- * @author constellation
+ * @author doubtsec
  */
 @ServiceProvider(service = AgentTool.class, position = 410)
 public class RunDataAccessPluginTool extends AbstractAgentTool {
