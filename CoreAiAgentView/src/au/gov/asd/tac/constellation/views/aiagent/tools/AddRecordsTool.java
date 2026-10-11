@@ -62,7 +62,9 @@ public class AddRecordsTool extends AbstractAgentTool {
                 + "'source.<Attribute>' for a vertex, plus 'destination.<Attribute>' and 'transaction.<Attribute>' for a connection. "
                 + "Example: columns ['source.Identifier','source.Type','destination.Identifier','destination.Type','transaction.Type'], "
                 + "rows [['alice@example.com','Email','bob@example.com','Email','Communication']]. "
-                + "Vertices with the same Identifier and Type are merged. The change is undoable.";
+                + "Vertices with the same Identifier and Type are merged. The change is undoable. "
+                + "Use this for structured records; to pull entities (emails, URLs, phone numbers, ...) out of free text, "
+                + "use the 'Extract Types from Text' Data Access View plugin instead.";
     }
 
     @Override
@@ -82,6 +84,27 @@ public class AddRecordsTool extends AbstractAgentTool {
     @Override
     public ToolRisk risk() {
         return ToolRisk.MODIFIES_GRAPH;
+    }
+
+    /**
+     * Vertices are matched on Identifier and Type, so a vertex without a Type
+     * never merges with the existing one and becomes a duplicate.
+     */
+    @Override
+    public String checkArguments(final JsonNode args) {
+        if (args == null || !args.has("columns")) {
+            return null;
+        }
+        final List<String> columns = new ArrayList<>();
+        args.get("columns").forEach(node -> columns.add(node.asText()));
+        for (final String end : List.of("source.", "destination.")) {
+            if (columns.contains(end + "Identifier") && !columns.contains(end + "Type")) {
+                return "Add a '" + end + "Type' column: vertices are matched on Identifier and Type, so without a Type they "
+                        + "won't merge with existing vertices and will be duplicated. Use the Type from query_elements for "
+                        + "existing vertices.";
+            }
+        }
+        return null;
     }
 
     @Override

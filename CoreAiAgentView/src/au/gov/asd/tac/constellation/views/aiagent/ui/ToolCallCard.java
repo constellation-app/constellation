@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.aiagent.agent.Decision;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolResult;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolRisk;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Locale;
 import java.util.function.Consumer;
 import javafx.scene.control.Button;
@@ -234,6 +235,22 @@ public final class ToolCallCard extends VBox {
     }
 
     /**
+     * Compare arguments as JSON, so key order and formatting don't count as an
+     * edit.
+     */
+    static boolean sameJson(final String a, final String b) {
+        if (a == null || b == null) {
+            return a == b;
+        }
+        try {
+            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
+            return mapper.readTree(a).equals(mapper.readTree(b));
+        } catch (final JsonProcessingException ex) {
+            return a.equals(b);
+        }
+    }
+
+    /**
      * The call has started, possibly with arguments the user edited.
      *
      * @param arguments the arguments it runs with.
@@ -241,7 +258,7 @@ public final class ToolCallCard extends VBox {
     public void started(final String arguments) {
         if (arguments != null && !arguments.isBlank()) {
             final String pretty = prettyResult(arguments);
-            if (!pretty.equals(originalArguments)) {
+            if (!sameJson(pretty, originalArguments)) {
                 argsArea.setText(pretty);
                 description.setText(description.getText() + " (arguments edited)");
             }

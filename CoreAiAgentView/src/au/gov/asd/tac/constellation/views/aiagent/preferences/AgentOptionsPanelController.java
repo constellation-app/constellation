@@ -20,6 +20,8 @@ import java.beans.PropertyChangeSupport;
 import java.util.List;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
@@ -39,7 +41,7 @@ import org.openide.util.RequestProcessor;
         position = 1300)
 @org.openide.util.NbBundle.Messages({
     "AgentOptions_DisplayName=Assistant",
-    "AgentOptions_Keywords=ai assistant llm openai ollama model agent"
+    "AgentOptions_Keywords=ai assistant llm openai anthropic model agent endpoint"
 })
 public final class AgentOptionsPanelController extends OptionsPanelController implements HelpCtx.Provider {
 
@@ -56,6 +58,9 @@ public final class AgentOptionsPanelController extends OptionsPanelController im
     @Override
     public void applyChanges() {
         if (!isValid()) {
+            // otherwise the dialog closes and the changes are silently dropped
+            DialogDisplayer.getDefault().notifyLater(new NotifyDescriptor.Message(
+                    "The Assistant settings weren't saved: every endpoint needs a base URL.", NotifyDescriptor.WARNING_MESSAGE));
             return;
         }
         pcs.firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
@@ -80,7 +85,8 @@ public final class AgentOptionsPanelController extends OptionsPanelController im
     @Override
     public boolean isValid() {
         final AgentSettings settings = getPanel().toSettings();
-        return !settings.endpoints().isEmpty() && settings.endpoints().stream().noneMatch(e -> e.baseUrl().isBlank());
+        // no endpoints is valid: the assistant then asks the user to configure one
+        return settings.endpoints().stream().noneMatch(e -> e.baseUrl().isBlank());
     }
 
     @Override
@@ -106,6 +112,11 @@ public final class AgentOptionsPanelController extends OptionsPanelController im
     private AgentOptionsPanel getPanel() {
         if (panel == null) {
             panel = new AgentOptionsPanel();
+            // lets the Options dialog disable OK while an endpoint has no base URL
+            panel.setOnChange(() -> {
+                pcs.firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
+                pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, null, null);
+            });
         }
         return panel;
     }

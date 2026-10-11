@@ -26,8 +26,8 @@ import org.netbeans.api.keyring.Keyring;
 /**
  * Stores endpoint API keys. Keys are looked up in this order: keys entered
  * this session, the NetBeans keyring (macOS Keychain, Windows DPAPI or
- * libsecret), then an environment variable ({@code OPENAI_API_KEY} or
- * {@code ANTHROPIC_API_KEY}). Keys are never written to preferences or logs.
+ * libsecret), then, for Anthropic endpoints, the {@code ANTHROPIC_API_KEY}
+ * environment variable. Keys are never written to preferences or logs.
  *
  * @author doubtsec
  */
@@ -105,18 +105,11 @@ public final class ApiKeyStore {
      * @return the API key from the environment for the kind, or null.
      */
     static String environmentKey(final EndpointKind kind) {
-        final String variable = switch (kind) {
-            case ANTHROPIC ->
-                "ANTHROPIC_API_KEY";
-            case OPENAI, AZURE_OPENAI ->
-                "OPENAI_API_KEY";
-            case OPENAI_COMPATIBLE ->
-                null;
-        };
-        if (variable == null) {
+        // an OpenAI-compatible endpoint could be any server, so it never gets a key from the environment
+        if (kind != EndpointKind.ANTHROPIC) {
             return null;
         }
-        final String value = System.getenv(variable);
+        final String value = System.getenv("ANTHROPIC_API_KEY");
         return value == null || value.isBlank() ? null : value;
     }
 }

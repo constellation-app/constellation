@@ -145,6 +145,7 @@ public final class AgentViewController implements AgentEnvironment {
             final EndpointConfig endpoint = pane.getEndpointCombo().getValue();
             if (endpoint != null && newValue != null && !newValue.isBlank()) {
                 AgentSettings.preferences().put(LAST_MODEL_PREFIX + endpoint.id(), newValue.trim());
+                pane.setBanner(null);
             }
         });
         pane.getRefreshModelsButton().setOnAction(event -> loadModels(pane.getEndpointCombo().getValue()));
@@ -153,12 +154,17 @@ public final class AgentViewController implements AgentEnvironment {
         pane.getNewChatButton().setOnAction(event -> newChat());
         pane.getCopyTranscriptItem().setOnAction(event -> copyTranscript());
         pane.getExportTranscriptItem().setOnAction(event -> exportTranscript());
-        pane.getOptionsItem().setOnAction(event -> SwingUtilities.invokeLater(() -> OptionsDisplayer.getDefault().open(OPTIONS_PATH)));
+        pane.getOptionsItem().setOnAction(event -> openOptions());
+        pane.getConfigureButton().setOnAction(event -> openOptions());
         pane.getHelpItem().setOnAction(event -> SwingUtilities.invokeLater(() -> new HelpCtx(AgentViewTopComponent.class.getName()).display()));
         pane.setOnSuggestion(this::send);
         applyChatDefaults();
         populateEndpoints();
         pane.setRunning(false);
+    }
+
+    private static void openOptions() {
+        SwingUtilities.invokeLater(() -> OptionsDisplayer.getDefault().open(OPTIONS_PATH));
     }
 
     private void applyChatDefaults() {
@@ -179,6 +185,7 @@ public final class AgentViewController implements AgentEnvironment {
     }
 
     private void populateEndpoints() {
+        pane.setConfigured(settings.isConfigured());
         final EndpointConfig selected = pane.getEndpointCombo().getValue();
         updatingEndpoints = true;
         try {
@@ -198,7 +205,8 @@ public final class AgentViewController implements AgentEnvironment {
     }
 
     private void endpointChanged(final EndpointConfig endpoint) {
-        pane.setBanner(endpoint == null ? "Choose an endpoint, or add one in Options." : null);
+        // with no endpoints at all the transcript shows the set up prompt instead
+        pane.setBanner(endpoint == null && settings.isConfigured() ? "Choose an endpoint." : null);
         pane.getModelCombo().getItems().clear();
         if (endpoint == null) {
             pane.getModelCombo().setValue(null);
@@ -206,7 +214,19 @@ public final class AgentViewController implements AgentEnvironment {
         }
         final String remembered = AgentSettings.preferences().get(LAST_MODEL_PREFIX + endpoint.id(), "");
         pane.getModelCombo().setValue(!remembered.isBlank() ? remembered : endpoint.defaultModel().isBlank() ? null : endpoint.defaultModel());
+        showModelPrompt();
         loadModels(endpoint);
+    }
+
+    /**
+     * There is no default model, so ask the user to choose one until they
+     * have.
+     */
+    private void showModelPrompt() {
+        final String model = pane.getModelCombo().getValue();
+        if (pane.getEndpointCombo().getValue() != null && (model == null || model.isBlank())) {
+            pane.setBanner("Choose a model to use, or set one for this endpoint in Options.");
+        }
     }
 
     private void loadModels(final EndpointConfig endpoint) {
@@ -232,14 +252,12 @@ public final class AgentViewController implements AgentEnvironment {
                 }
                 final String current = pane.getModelCombo().getValue();
                 pane.getModelCombo().getItems().setAll(result.stream().map(ModelInfo::id).toList());
-                if ((current == null || current.isBlank()) && !result.isEmpty()) {
-                    // prefer a chat model over embedding models
-                    pane.getModelCombo().setValue(result.stream().map(ModelInfo::id)
-                            .filter(id -> !id.toLowerCase(Locale.ROOT).contains("embed")).findFirst().orElse(result.get(0).id()));
-                } else {
-                    pane.getModelCombo().setValue(current);
-                }
+                // never pick a model for the user: keep whatever they chose, even if it isn't listed
+                pane.getModelCombo().setValue(current);
                 pane.setBanner(failure != null && pane.isTranscriptEmpty() ? "Couldn't list models: " + failure : null);
+                if (failure == null) {
+                    showModelPrompt();
+                }
             });
         });
     }
@@ -257,6 +275,10 @@ public final class AgentViewController implements AgentEnvironment {
         final EndpointConfig endpoint = pane.getEndpointCombo().getValue();
         final String model = pane.getModelCombo().getEditor().getText() != null && !pane.getModelCombo().getEditor().getText().isBlank()
                 ? pane.getModelCombo().getEditor().getText().trim() : pane.getModelCombo().getValue();
+        if (!settings.isConfigured()) {
+            pane.addError("Configure a model in Options before using the assistant.");
+            return;
+        }
         if (endpoint == null) {
             pane.addError("Choose an endpoint first.");
             return;

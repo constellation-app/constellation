@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.aiagent.preferences;
 
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolPolicy;
-import au.gov.asd.tac.constellation.views.aiagent.llm.ApiMode;
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointConfig;
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointKind;
 import java.util.List;
@@ -52,8 +51,10 @@ public class AgentSettingsNGTest {
     @Test
     public void testDefaults() {
         final AgentSettings settings = AgentSettings.load(prefs);
-        assertEquals(settings.endpoints().size(), 2);
-        assertEquals(settings.defaultEndpoint().id(), "ollama-local");
+        // there are no built-in endpoints or models: the user has to configure one
+        assertTrue(settings.endpoints().isEmpty());
+        assertFalse(settings.isConfigured());
+        assertNull(settings.defaultEndpoint());
         assertEquals(settings.maxSteps(), AgentPreferenceKeys.MAX_STEPS_DEFAULT);
         assertNull(settings.temperature());
         assertTrue(settings.includeSelection());
@@ -63,18 +64,20 @@ public class AgentSettingsNGTest {
     @Test
     public void testRoundTrip() {
         final EndpointConfig vllm = new EndpointConfig("vllm", "vLLM", EndpointKind.OPENAI_COMPATIBLE, "http://gpu.lan:8000/v1",
-                ApiMode.CHAT_COMPLETIONS, "qwen", Map.of("X-Org", "abc"), true, true);
+                "qwen", Map.of("X-Org", "abc"));
         final AgentSettings settings = new AgentSettings(List.of(vllm), "vllm", 7, 5000, false, "custom prompt",
                 Map.of("run_plugin", ToolPolicy.AUTO, "add_note", ToolPolicy.NEVER), 0.3, "low", true);
         settings.save(prefs);
         final AgentSettings loaded = AgentSettings.load(prefs);
         assertEquals(loaded, settings);
         assertEquals(loaded.defaultEndpoint(), vllm);
+        assertTrue(loaded.isConfigured());
     }
 
     @Test
     public void testApiKeysAreNotStoredInPreferences() throws BackingStoreException {
-        new AgentSettings(List.of(EndpointConfig.openAiDefault()), "openai", 5, 5000, true, "", Map.of(), null, "", false).save(prefs);
+        new AgentSettings(List.of(new EndpointConfig("claude", "Claude", EndpointKind.ANTHROPIC,
+                "https://api.anthropic.com/v1", "", Map.of())), "claude", 5, 5000, true, "", Map.of(), null, "", false).save(prefs);
         for (final String key : prefs.keys()) {
             assertFalse(key.toLowerCase().contains("apikey"), key);
         }

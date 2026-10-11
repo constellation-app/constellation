@@ -15,58 +15,40 @@
  */
 package au.gov.asd.tac.constellation.views.aiagent.llm;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Map;
 import java.util.UUID;
 
 /**
  * The configuration of one LLM endpoint. API keys are not part of the
  * configuration; they are stored in the keyring under {@link #apiKeyRef()}.
+ * <p>
+ * There are no built-in endpoints: the user adds one before the assistant can
+ * be used. Connections always use the current Constellation security context
+ * (client certificate) when there is one, so no per-endpoint setting is
+ * needed for mTLS.
  *
  * @param id a unique, stable id.
- * @param name a display name, e.g. "Ollama".
+ * @param name a display name, e.g. "LiteLLM".
  * @param kind the kind of endpoint.
- * @param baseUrl the base URL, e.g. {@code http://localhost:11434/v1}.
- * @param apiMode the OpenAI API dialect to use.
+ * @param baseUrl the base URL, e.g. {@code http://localhost:4000/v1}.
  * @param defaultModel the model to select by default, may be empty.
  * @param extraHeaders extra HTTP headers, e.g. for gateways.
- * @param requireSecurityContext refuse to connect without a Constellation
- * security context (client certificate).
- * @param forceHttp11 use HTTP/1.1, for gateways that request client
- * certificates through TLS renegotiation.
  *
  * @author doubtsec
  */
-public record EndpointConfig(String id, String name, EndpointKind kind, String baseUrl, ApiMode apiMode,
-        String defaultModel, Map<String, String> extraHeaders, boolean requireSecurityContext, boolean forceHttp11) {
+// ignore settings saved by earlier versions, e.g. apiMode and requireSecurityContext
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record EndpointConfig(String id, String name, EndpointKind kind, String baseUrl, String defaultModel,
+        Map<String, String> extraHeaders) {
 
     public EndpointConfig {
         id = id == null || id.isBlank() ? UUID.randomUUID().toString() : id;
         name = name == null ? "" : name;
         kind = kind == null ? EndpointKind.OPENAI_COMPATIBLE : kind;
         baseUrl = baseUrl == null ? "" : baseUrl.trim();
-        apiMode = apiMode == null ? ApiMode.CHAT_COMPLETIONS : apiMode;
         defaultModel = defaultModel == null ? "" : defaultModel;
         extraHeaders = extraHeaders == null ? Map.of() : Map.copyOf(extraHeaders);
-    }
-
-    /**
-     * An Ollama endpoint on this machine.
-     *
-     * @return the configuration.
-     */
-    public static EndpointConfig ollamaDefault() {
-        return new EndpointConfig("ollama-local", "Ollama", EndpointKind.OPENAI_COMPATIBLE,
-                "http://localhost:11434/v1", ApiMode.CHAT_COMPLETIONS, "", Map.of(), false, false);
-    }
-
-    /**
-     * The OpenAI API.
-     *
-     * @return the configuration.
-     */
-    public static EndpointConfig openAiDefault() {
-        return new EndpointConfig("openai", "OpenAI", EndpointKind.OPENAI,
-                "https://api.openai.com/v1", ApiMode.RESPONSES, "", Map.of(), true, false);
     }
 
     /**
@@ -77,7 +59,7 @@ public record EndpointConfig(String id, String name, EndpointKind kind, String b
     }
 
     public EndpointConfig withDefaultModel(final String model) {
-        return new EndpointConfig(id, name, kind, baseUrl, apiMode, model, extraHeaders, requireSecurityContext, forceHttp11);
+        return new EndpointConfig(id, name, kind, baseUrl, model, extraHeaders);
     }
 
     @Override

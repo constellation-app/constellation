@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.aiagent.ui;
 
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointConfig;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,7 @@ import javafx.scene.text.TextFlow;
  */
 public final class AgentViewPane extends BorderPane {
 
+    private static final String INPUT_PROMPT = "Ask about the graph…  (Enter to send, Shift+Enter for a new line)";
     public static final List<String> REASONING_EFFORTS = List.of("default", "none", "low", "medium", "high");
     static final List<String> SUGGESTIONS = List.of(
             "Summarise this graph",
@@ -92,6 +94,11 @@ public final class AgentViewPane extends BorderPane {
     private final VBox transcript = new VBox();
     private final ScrollPane transcriptScroll = new ScrollPane(transcript);
     private final VBox emptyState = new VBox();
+    private final List<Node> welcomeContent = new ArrayList<>();
+    private final List<Node> setupContent = new ArrayList<>();
+    private final Button configureButton = new Button("Configure a model…");
+    private boolean configured = true;
+    private boolean running;
     private final Label contextLabel = new Label("No graph is open");
     private final Label usageLabel = new Label();
     private final TextArea input = new TextArea();
@@ -223,7 +230,18 @@ public final class AgentViewPane extends BorderPane {
             });
             suggestions.getChildren().add(button);
         }
-        emptyState.getChildren().addAll(title, text, suggestions);
+        welcomeContent.addAll(List.of(title, text, suggestions));
+
+        final Label setupTitle = new Label("Set up the Assistant");
+        setupTitle.getStyleClass().add("agent-empty-title");
+        final Label setupText = new Label("The Assistant doesn't come with a model. Before you can use it, add an endpoint "
+                + "that speaks the Anthropic API or an OpenAI-compatible API, and choose the model to use.");
+        setupText.getStyleClass().add("agent-empty-text");
+        setupText.setMaxWidth(420);
+        configureButton.getStyleClass().add("agent-primary");
+        setupContent.addAll(List.of(setupTitle, setupText, configureButton));
+
+        emptyState.getChildren().setAll(welcomeContent);
         emptyState.getStyleClass().add("agent-empty");
         emptyState.setMaxWidth(Double.MAX_VALUE);
         return transcriptScroll;
@@ -249,7 +267,7 @@ public final class AgentViewPane extends BorderPane {
         usageLabel.getStyleClass().add("agent-context");
         final HBox status = new HBox(6, contextLabel, usageLabel);
 
-        input.setPromptText("Ask about the graph…  (Enter to send, Shift+Enter for a new line)");
+        input.setPromptText(INPUT_PROMPT);
         input.setWrapText(true);
         input.setPrefRowCount(3);
         input.getStyleClass().add("agent-input");
@@ -303,6 +321,10 @@ public final class AgentViewPane extends BorderPane {
         return exportTranscriptItem;
     }
 
+    public Button getConfigureButton() {
+        return configureButton;
+    }
+
     public MenuItem getOptionsItem() {
         return optionsItem;
     }
@@ -350,9 +372,32 @@ public final class AgentViewPane extends BorderPane {
      * @param running true while the assistant is working.
      */
     public void setRunning(final boolean running) {
-        sendButton.setDisable(running);
+        this.running = running;
+        sendButton.setDisable(running || !configured);
         stopButton.setDisable(!running);
         newChatButton.setDisable(false);
+    }
+
+    /**
+     * Show whether a model endpoint has been configured. Until one has, the
+     * empty transcript asks the user to configure a model and messages can't
+     * be sent.
+     *
+     * @param configured true if at least one endpoint is configured.
+     */
+    public void setConfigured(final boolean configured) {
+        this.configured = configured;
+        emptyState.getChildren().setAll(configured ? welcomeContent : setupContent);
+        endpointCombo.setDisable(!configured);
+        modelCombo.setDisable(!configured);
+        refreshModelsButton.setDisable(!configured);
+        input.setDisable(!configured);
+        input.setPromptText(configured ? INPUT_PROMPT : "Configure a model to start chatting");
+        setRunning(running);
+    }
+
+    public boolean isConfigured() {
+        return configured;
     }
 
     /**

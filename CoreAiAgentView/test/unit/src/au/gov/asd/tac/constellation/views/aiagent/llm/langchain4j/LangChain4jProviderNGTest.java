@@ -159,7 +159,7 @@ public class LangChain4jProviderNGTest {
             assertTrue(rest.trim().startsWith(".httpClientBuilder(httpClientBuilder())"),
                     builders.group() + " is not built with httpClientBuilder(): " + rest);
         }
-        assertTrue(count >= 3, "expected at least three model builders, found " + count);
+        assertTrue(count >= 2, "expected at least two model builders, found " + count);
         // the only raw HttpClient comes from ConstellationHttpClients
         assertTrue(!text.contains("HttpClient.newBuilder(") && !text.contains("HttpClient.newHttpClient("));
         assertTrue(text.contains("ConstellationHttpClients.newBuilder("));

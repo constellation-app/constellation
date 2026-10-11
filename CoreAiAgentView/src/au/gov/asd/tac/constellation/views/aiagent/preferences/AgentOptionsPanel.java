@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.views.aiagent.agent.SystemPrompt;
 import au.gov.asd.tac.constellation.views.aiagent.agent.ToolRegistry;
 import au.gov.asd.tac.constellation.views.aiagent.api.AgentTool;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolPolicy;
-import au.gov.asd.tac.constellation.views.aiagent.llm.ApiMode;
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointConfig;
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointKind;
 import au.gov.asd.tac.constellation.views.aiagent.llm.LlmProviders;
@@ -56,6 +55,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingWorker;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  * The Assistant options panel: endpoints and API keys, behaviour, per-tool
@@ -67,6 +68,7 @@ public final class AgentOptionsPanel extends JPanel {
 
     private static final String DEFAULT_POLICY = "Default";
     private static final String KEY_HINT = "Leave blank to keep the saved key";
+    private static final String ANTHROPIC_BASE_URL = "https://api.anthropic.com/v1";
 
     // endpoints tab
     private final DefaultListModel<EndpointConfig> endpointModel = new DefaultListModel<>();
@@ -74,13 +76,13 @@ public final class AgentOptionsPanel extends JPanel {
     private final JTextField nameField = new JTextField(14);
     private final JComboBox<EndpointKind> kindCombo = new JComboBox<>(EndpointKind.values());
     private final JTextField baseUrlField = new JTextField(16);
-    private final JComboBox<ApiMode> apiModeCombo = new JComboBox<>(ApiMode.values());
     private final JTextField defaultModelField = new JTextField(14);
     private final JTextArea headersArea = new JTextArea(3, 16);
     private final JPasswordField apiKeyField = new JPasswordField(12);
     private final JButton clearKeyButton = new JButton("Clear");
-    private final JCheckBox requireContextCheck = new JCheckBox("Require client certificate (mTLS)");
-    private final JCheckBox forceHttp11Check = new JCheckBox("Force HTTP/1.1");
+    // a fixed width so the note wraps instead of widening the panel
+    private final JLabel certificateNote = new JLabel("<html><body style='width: 260px'>Connections use Constellation's "
+            + "client certificate (mTLS) and proxy settings when they are configured.</body></html>");
     private final JButton testButton = new JButton("Test connection");
     private final JTextArea testResult = new JTextArea(4, 16);
     private final Map<String, String> pendingKeys = new HashMap<>();
@@ -105,6 +107,8 @@ public final class AgentOptionsPanel extends JPanel {
     private final JTextArea promptArea = new JTextArea(18, 40);
 
     private AgentSettings loaded;
+    private Runnable onChange = () -> {
+    };
 
     public AgentOptionsPanel() {
         super(new BorderLayout());
@@ -114,6 +118,14 @@ public final class AgentOptionsPanel extends JPanel {
         tabs.addTab("Tools", buildToolsTab());
         tabs.addTab("System Prompt", buildPromptTab());
         add(tabs, BorderLayout.CENTER);
+    }
+
+    /**
+     * @param onChange called when an edit may change whether the settings are
+     * valid, so the Options dialog can enable or disable OK.
+     */
+    public void setOnChange(final Runnable onChange) {
+        this.onChange = onChange;
     }
 
     private JComponent buildEndpointsTab() {
@@ -128,19 +140,24 @@ public final class AgentOptionsPanel extends JPanel {
         add.addActionListener(event -> {
             commitForm();
             endpointModel.addElement(new EndpointConfig(UUID.randomUUID().toString(), "New endpoint", EndpointKind.OPENAI_COMPATIBLE,
-                    "http://localhost:11434/v1", ApiMode.CHAT_COMPLETIONS, "", Map.of(), false, false));
+                    "", "", Map.of()));
             endpointList.setSelectedIndex(endpointModel.size() - 1);
             refreshDefaultEndpoints();
+            onChange.run();
         });
         final JButton remove = new JButton("Remove");
         remove.addActionListener(event -> {
             final int index = endpointList.getSelectedIndex();
-            if (index >= 0 && endpointModel.size() > 1) {
+            if (index >= 0) {
                 editingIndex = -1;
                 clearedKeys.add(endpointModel.get(index).id());
                 endpointModel.remove(index);
-                endpointList.setSelectedIndex(Math.max(0, index - 1));
+                endpointList.setSelectedIndex(endpointModel.isEmpty() ? -1 : Math.max(0, index - 1));
+                if (endpointModel.isEmpty()) {
+                    loadForm(-1);
+                }
                 refreshDefaultEndpoints();
+                onChange.run();
             }
         });
         final JPanel listButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
@@ -150,18 +167,44 @@ public final class AgentOptionsPanel extends JPanel {
         final JScrollPane listScroll = new JScrollPane(endpointList);
         listScroll.setPreferredSize(new Dimension(140, 200));
         listPanel.add(listScroll, BorderLayout.CENTER);
-        listPanel.add(listButtons, BorderLayout.SOUTH);
+        // above the list so they stay visible when the options window is small
+        listPanel.add(listButtons, BorderLayout.NORTH);
 
         kindCombo.addActionListener(event -> {
-            if (!loadingForm && kindCombo.getSelectedItem() == EndpointKind.OPENAI) {
-                apiModeCombo.setSelectedItem(ApiMode.RESPONSES);
+            if (!loadingForm && kindCombo.getSelectedItem() == EndpointKind.ANTHROPIC && baseUrlField.getText().isBlank()) {
+                baseUrlField.setText(ANTHROPIC_BASE_URL);
+            }
+        });
+        baseUrlField.setToolTipText("<html>The URL that API paths are added to, for example<br>"
+                + ANTHROPIC_BASE_URL + " (Anthropic), https://api.openai.com/v1 (OpenAI),<br>"
+                + "http://localhost:11434/v1 (Ollama) or http://localhost:4000/v1 (LiteLLM)</html>");
+        defaultModelField.setToolTipText("The model to use. Test connection lists the models the endpoint offers.");
+        baseUrlField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(final DocumentEvent event) {
+                changed();
+            }
+
+            @Override
+            public void removeUpdate(final DocumentEvent event) {
+                changed();
+            }
+
+            @Override
+            public void changedUpdate(final DocumentEvent event) {
+                changed();
+            }
+
+            private void changed() {
+                if (!loadingForm) {
+                    onChange.run();
+                }
             }
         });
         headersArea.setLineWrap(false);
+        headersArea.setToolTipText("One \"Name: value\" per line, sent with every request");
         apiKeyField.setToolTipText(KEY_HINT + ". Keys are stored in the operating system keyring, never in preferences.");
-        requireContextCheck.setToolTipText("Only connect using the client certificate from Constellation's security context; "
-                + "refuse to connect if there isn't one");
-        forceHttp11Check.setToolTipText("For gateways that request client certificates through TLS renegotiation, which HTTP/2 doesn't allow");
+        certificateNote.setEnabled(false);
         clearKeyButton.addActionListener(event -> {
             if (editingIndex >= 0) {
                 final String id = endpointModel.get(editingIndex).id();
@@ -182,15 +225,13 @@ public final class AgentOptionsPanel extends JPanel {
         row = addRow(form, row, "Name:", nameField);
         row = addRow(form, row, "Kind:", kindCombo);
         row = addRow(form, row, "Base URL:", baseUrlField);
-        row = addRow(form, row, "API:", apiModeCombo);
-        row = addRow(form, row, "Default model:", defaultModelField);
+        row = addRow(form, row, "Model:", defaultModelField);
         row = addRow(form, row, "Extra headers:", new JScrollPane(headersArea));
         final JPanel keyRow = new JPanel(new BorderLayout(4, 0));
         keyRow.add(apiKeyField, BorderLayout.CENTER);
         keyRow.add(clearKeyButton, BorderLayout.EAST);
-        row = addRow(form, row, "API key:", keyRow);
-        row = addRow(form, row, "", requireContextCheck);
-        row = addRow(form, row, "", forceHttp11Check);
+        row = addRow(form, row, "Key:", keyRow);
+        row = addRow(form, row, "", certificateNote);
         final JPanel testRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         testRow.add(testButton);
         row = addRow(form, row, "", testRow);
@@ -428,26 +469,29 @@ public final class AgentOptionsPanel extends JPanel {
         try {
             editingIndex = index;
             final boolean enabled = index >= 0;
-            for (final JComponent component : new JComponent[]{nameField, kindCombo, baseUrlField, apiModeCombo, defaultModelField,
-                headersArea, apiKeyField, clearKeyButton, requireContextCheck, forceHttp11Check, testButton}) {
+            for (final JComponent component : new JComponent[]{nameField, kindCombo, baseUrlField, defaultModelField,
+                headersArea, apiKeyField, clearKeyButton, testButton}) {
                 component.setEnabled(enabled);
             }
             testResult.setText("");
             apiKeyField.setText("");
             if (!enabled) {
+                kindCombo.setSelectedIndex(-1);
+                nameField.setText("");
+                baseUrlField.setText("");
+                defaultModelField.setText("");
+                headersArea.setText("");
+                testResult.setText(endpointModel.isEmpty() ? "No endpoints are configured. Click Add to set up the model the assistant uses." : "");
                 return;
             }
             final EndpointConfig endpoint = endpointModel.get(index);
             nameField.setText(endpoint.name());
             kindCombo.setSelectedItem(endpoint.kind());
             baseUrlField.setText(endpoint.baseUrl());
-            apiModeCombo.setSelectedItem(endpoint.apiMode());
             defaultModelField.setText(endpoint.defaultModel());
             final StringBuilder headers = new StringBuilder();
             endpoint.extraHeaders().forEach((name, value) -> headers.append(name).append(": ").append(value).append('\n'));
             headersArea.setText(headers.toString());
-            requireContextCheck.setSelected(endpoint.requireSecurityContext());
-            forceHttp11Check.setSelected(endpoint.forceHttp11());
             final String pending = pendingKeys.get(endpoint.id());
             apiKeyField.setText(pending == null ? "" : pending);
         } finally {
@@ -468,8 +512,7 @@ public final class AgentOptionsPanel extends JPanel {
             }
         }
         final EndpointConfig updated = new EndpointConfig(old.id(), nameField.getText().trim(), (EndpointKind) kindCombo.getSelectedItem(),
-                baseUrlField.getText().trim(), (ApiMode) apiModeCombo.getSelectedItem(), defaultModelField.getText().trim(), headers,
-                requireContextCheck.isSelected(), forceHttp11Check.isSelected());
+                baseUrlField.getText().trim(), defaultModelField.getText().trim(), headers);
         final String key = new String(apiKeyField.getPassword());
         if (!key.isBlank()) {
             pendingKeys.put(old.id(), key.trim());

@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.aiagent.llm.langchain4j;
 
 import au.gov.asd.tac.constellation.utilities.https.ConstellationHttpClients;
 import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
-import au.gov.asd.tac.constellation.views.aiagent.llm.ApiMode;
 import au.gov.asd.tac.constellation.views.aiagent.llm.ChatTurn;
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointConfig;
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointKind;
@@ -49,7 +48,6 @@ import dev.langchain4j.model.chat.response.PartialToolCall;
 import dev.langchain4j.model.chat.response.PartialToolCallContext;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.chat.response.StreamingHandle;
-import dev.langchain4j.model.openai.OpenAiResponsesStreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.model.output.TokenUsage;
 import java.io.IOException;
@@ -75,7 +73,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * Every HTTP client is built from
  * {@link ConstellationHttpClients#newBuilder(boolean)} so that requests use the
  * current Constellation security context (client certificate) and proxy
- * settings.
+ * settings whenever there is one, so endpoints that require a client
+ * certificate work without any per-endpoint setting.
  *
  * @author doubtsec
  */
@@ -85,7 +84,8 @@ public final class LangChain4jProvider implements LlmProvider {
     // reasoning models can be silent for a long time before the first token
     static final Duration READ_TIMEOUT = Duration.ofMinutes(10);
     private static final String ANTHROPIC_VERSION = "2023-06-01";
-    // OpenAI-compatible servers such as Ollama don't need a key, but the client requires one
+    // local servers such as Ollama, and gateways that authenticate with a client certificate,
+    // don't need a key, but the clients require one
     private static final String PLACEHOLDER_API_KEY = "not-needed";
 
     private final EndpointConfig endpoint;
@@ -101,10 +101,6 @@ public final class LangChain4jProvider implements LlmProvider {
     @Override
     public String id() {
         return switch (endpoint.kind()) {
-            case OPENAI ->
-                "openai";
-            case AZURE_OPENAI ->
-                "azure:" + endpoint.id();
             case ANTHROPIC ->
                 "anthropic:" + endpoint.id();
             case OPENAI_COMPATIBLE ->
@@ -125,31 +121,30 @@ public final class LangChain4jProvider implements LlmProvider {
                 .readTimeout(READ_TIMEOUT);
     }
 
+    /**
+     * The client certificate is used whenever Constellation has one, and the
+     * request goes ahead without one otherwise. HTTP/1.1 is always used:
+     * gateways may ask for the client certificate after the handshake (TLS
+     * renegotiation or post-handshake authentication), which HTTP/2 doesn't
+     * allow, and streaming gains nothing from HTTP/2.
+     */
     private HttpClient.Builder jdkClientBuilder() {
-        final HttpClient.Builder builder = ConstellationHttpClients.newBuilder(endpoint.requireSecurityContext());
-        if (endpoint.forceHttp11()) {
-            builder.version(HttpClient.Version.HTTP_1_1);
-        }
-        return builder;
+        return ConstellationHttpClients.newBuilder(false).version(HttpClient.Version.HTTP_1_1);
     }
 
     private String effectiveApiKey() {
-        if (apiKey != null && !apiKey.isBlank()) {
-            return apiKey;
-        }
-        if (endpoint.kind() == EndpointKind.OPENAI_COMPATIBLE) {
-            return PLACEHOLDER_API_KEY;
-        }
-        throw new IllegalStateException("No API key is configured for " + endpoint.name()
-                + ". Set one in Tools > Options > Constellation > Assistant.");
+        return apiKey != null && !apiKey.isBlank() ? apiKey : PLACEHOLDER_API_KEY;
     }
 
     private Map<String, String> headers() {
-        final Map<String, String> headers = new HashMap<>(endpoint.extraHeaders());
-        if (endpoint.kind() == EndpointKind.AZURE_OPENAI && apiKey != null && !apiKey.isBlank()) {
-            headers.putIfAbsent("api-key", apiKey);
+        return new HashMap<>(endpoint.extraHeaders());
+    }
+
+    private void requireBaseUrl() {
+        if (endpoint.baseUrl().isBlank()) {
+            throw new IllegalStateException("No base URL is configured for " + endpoint
+                    + ". Set one in Tools > Options > Constellation > Assistant.");
         }
-        return headers;
     }
 
     private StreamingChatModel model(final LlmRequest request) {
@@ -159,31 +154,19 @@ public final class LangChain4jProvider implements LlmProvider {
     }
 
     private StreamingChatModel buildModel(final LlmRequest request) {
+        requireBaseUrl();
         final String effort = request.reasoningEffort() == null || request.reasoningEffort().isBlank() ? null : request.reasoningEffort();
         if (endpoint.kind() == EndpointKind.ANTHROPIC) {
             return AnthropicStreamingChatModel.builder()
                     .httpClientBuilder(httpClientBuilder())
                     .baseUrl(endpoint.baseUrl())
                     .apiKey(effectiveApiKey())
+                    .customHeaders(headers())
                     .version(ANTHROPIC_VERSION)
                     .modelName(request.model())
                     .temperature(request.temperature())
                     .maxTokens(request.maxOutputTokens() == null ? 8192 : request.maxOutputTokens())
                     .timeout(READ_TIMEOUT)
-                    .build();
-        }
-        if (endpoint.apiMode() == ApiMode.RESPONSES) {
-            return OpenAiResponsesStreamingChatModel.builder()
-                    .httpClientBuilder(httpClientBuilder())
-                    .baseUrl(endpoint.baseUrl())
-                    .apiKey(effectiveApiKey())
-                    .customHeaders(headers())
-                    .modelName(request.model())
-                    .temperature(request.temperature())
-                    .maxOutputTokens(request.maxOutputTokens())
-                    .reasoningEffort(effort)
-                    .store(false)
-                    .parallelToolCalls(false)
                     .build();
         }
         return OpenAiStreamingChatModel.builder()
@@ -255,6 +238,7 @@ public final class LangChain4jProvider implements LlmProvider {
 
     @Override
     public List<ModelInfo> listModels() throws IOException {
+        requireBaseUrl();
         final String base = endpoint.baseUrl().endsWith("/") ? endpoint.baseUrl() : endpoint.baseUrl() + "/";
         final HttpRequest.Builder request = HttpRequest.newBuilder(URI.create(base + "models"))
                 .timeout(Duration.ofSeconds(30))
@@ -264,7 +248,7 @@ public final class LangChain4jProvider implements LlmProvider {
         if (endpoint.kind() == EndpointKind.ANTHROPIC) {
             request.header("x-api-key", effectiveApiKey());
             request.header("anthropic-version", ANTHROPIC_VERSION);
-        } else if (endpoint.kind() != EndpointKind.AZURE_OPENAI) {
+        } else {
             request.header("Authorization", "Bearer " + effectiveApiKey());
         }
 

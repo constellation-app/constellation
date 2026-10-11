@@ -21,10 +21,17 @@ import au.gov.asd.tac.constellation.views.aiagent.api.AgentTool;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolContext;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolResult;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolRisk;
+import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointConfig;
+import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointKind;
+import au.gov.asd.tac.constellation.views.aiagent.preferences.AgentPreferenceKeys;
+import au.gov.asd.tac.constellation.views.aiagent.preferences.AgentSettings;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.prefs.Preferences;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -41,6 +48,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -51,6 +59,9 @@ public class AgentViewPaneNGTest {
 
     private AgentViewController controller;
     private Stage stage;
+    private String savedEndpoints;
+    private String savedDefaultEndpoint;
+    private String endpointId;
 
     @BeforeClass
     public void setUpClass() throws Exception {
@@ -59,14 +70,74 @@ public class AgentViewPaneNGTest {
         }
     }
 
+    @BeforeMethod
+    public void setUp() {
+        final Preferences prefs = AgentSettings.preferences();
+        savedEndpoints = prefs.get(AgentPreferenceKeys.ENDPOINTS, null);
+        savedDefaultEndpoint = prefs.get(AgentPreferenceKeys.DEFAULT_ENDPOINT, null);
+        endpointId = "test-" + UUID.randomUUID();
+    }
+
     @AfterMethod
     public void tearDown() throws Exception {
         if (controller != null) {
             controller.shutdown();
+            controller = null;
         }
         if (stage != null) {
             FxToolkit.cleanupStages();
+            stage = null;
         }
+        final Preferences prefs = AgentSettings.preferences();
+        restore(prefs, AgentPreferenceKeys.ENDPOINTS, savedEndpoints);
+        restore(prefs, AgentPreferenceKeys.DEFAULT_ENDPOINT, savedDefaultEndpoint);
+        prefs.remove("aiagent.lastModel." + endpointId);
+    }
+
+    private static void restore(final Preferences prefs, final String key, final String value) {
+        if (value == null) {
+            prefs.remove(key);
+        } else {
+            prefs.put(key, value);
+        }
+    }
+
+    /**
+     * Configure one endpoint whose model is the fake provider's.
+     */
+    private void configureEndpoint() {
+        final AgentSettings settings = AgentSettings.load();
+        new AgentSettings(List.of(new EndpointConfig(endpointId, "Test", EndpointKind.OPENAI_COMPATIBLE, "http://localhost:1/v1",
+                "fake-model", Map.of())), endpointId, settings.maxSteps(), settings.maxToolResultChars(), settings.includeSelection(),
+                settings.systemPromptOverride(), settings.toolPolicies(), settings.temperature(), settings.reasoningEffort(),
+                settings.debugLogging()).save();
+    }
+
+    @Test
+    public void testAsksToConfigureAModel() throws Exception {
+        AgentSettings.preferences().remove(AgentPreferenceKeys.ENDPOINTS);
+        final FakeLlmProvider provider = new FakeLlmProvider().thenText("should not be asked");
+        final AgentViewPane pane = WaitForAsyncUtils.asyncFx(AgentViewPane::new).get();
+        controller = new AgentViewController(pane, new ToolRegistry(List.of()), (endpoint, key) -> provider, endpoint -> null);
+        stage = FxToolkit.setupStage(s -> {
+            s.setScene(new Scene(pane, 500, 700));
+            s.show();
+        });
+        waitFor("the set up prompt", () -> !pane.isConfigured());
+        assertTrue(pane.getSendButton().isDisabled());
+        assertTrue(pane.getInput().isDisabled());
+        assertTrue(pane.getEndpointCombo().getItems().isEmpty());
+        assertTrue(pane.getConfigureButton().getScene() != null, "the configure button isn't shown");
+        WaitForAsyncUtils.asyncFx(() -> controller.send("hello")).get();
+        WaitForAsyncUtils.waitForFxEvents();
+        assertTrue(provider.getRequests().isEmpty());
+
+        // configuring an endpoint enables the view without reopening it
+        configureEndpoint();
+        waitFor("the configured view", () -> pane.isConfigured() && "fake-model".equals(pane.getModelCombo().getValue()));
+        assertFalse(pane.getSendButton().isDisabled());
+        assertFalse(pane.getInput().isDisabled());
+        assertTrue(pane.getConfigureButton().getScene() == null, "the configure button is still shown");
     }
 
     private static void waitFor(final String what, final Callable<Boolean> condition) throws TimeoutException {
@@ -114,6 +185,7 @@ public class AgentViewPaneNGTest {
                 .thenCall("c1", "write", "{}")
                 .thenText("Done, **all good**.");
 
+        configureEndpoint();
         final AgentViewPane pane = WaitForAsyncUtils.asyncFx(AgentViewPane::new).get();
         controller = new AgentViewController(pane, new ToolRegistry(List.of(write)), (endpoint, key) -> provider, endpoint -> null);
         stage = FxToolkit.setupStage(s -> {
@@ -122,8 +194,8 @@ public class AgentViewPaneNGTest {
         });
         WaitForAsyncUtils.waitForFxEvents();
 
-        // the model list comes from the provider
-        waitFor("the model list", () -> "fake-model".equals(pane.getModelCombo().getValue()));
+        // the model configured for the endpoint is selected
+        waitFor("the model", () -> "fake-model".equals(pane.getModelCombo().getValue()));
         assertTrue(pane.isTranscriptEmpty());
 
         WaitForAsyncUtils.asyncFx(() -> {
@@ -196,6 +268,7 @@ public class AgentViewPaneNGTest {
                 throw new AssertionError("should not run");
             }
         };
+        configureEndpoint();
         final AgentViewPane pane = WaitForAsyncUtils.asyncFx(AgentViewPane::new).get();
         controller = new AgentViewController(pane, new ToolRegistry(List.of(write)), (endpoint, key) -> provider, endpoint -> null);
         stage = FxToolkit.setupStage(s -> {

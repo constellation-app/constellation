@@ -247,6 +247,41 @@ public class GraphToolsNGTest {
     }
 
     @Test
+    public void testStrayParametersAreMovedIntoParameters() throws Exception {
+        final JsonNode args = JsonFactoryUtilities.getObjectMapper().readTree(
+                "{\"plugin\":\"Extract Types from Text\",\"query_name\":\"q\",\"text\":\"a@b.com\"}");
+        final JsonNode normalised = new RunDataAccessPluginTool().normaliseArguments(args);
+        assertEquals(normalised.get("parameters").get("text").asText(), "a@b.com");
+        assertFalse(normalised.has("text"));
+        assertEquals(normalised.get("query_name").asText(), "q");
+        // a value already in parameters wins
+        final JsonNode both = JsonFactoryUtilities.getObjectMapper().readTree(
+                "{\"plugin\":\"x\",\"parameters\":{\"text\":\"kept\"},\"text\":\"dropped\"}");
+        assertEquals(new RunPluginTool().normaliseArguments(both).get("parameters").get("text").asText(), "kept");
+    }
+
+    @Test
+    public void testGraphDiffReportsMovedVertices() throws Exception {
+        WritableGraph wg = graph.getWritableGraph("positions", true);
+        try {
+            VisualConcept.VertexAttribute.X.ensure(wg);
+            VisualConcept.VertexAttribute.Y.ensure(wg);
+        } finally {
+            wg.commit();
+        }
+        final GraphDiff.Snapshot before = GraphDiff.capture(graph);
+        wg = graph.getWritableGraph("move", true);
+        try {
+            wg.setFloatValue(VisualConcept.VertexAttribute.X.get(wg), wg.getVertex(0), 42F);
+        } finally {
+            wg.commit();
+        }
+        final GraphDiff.Snapshot after = GraphDiff.capture(graph);
+        assertEquals(GraphDiff.diff(before, after).get("vertices_moved").asInt(), 1);
+        assertEquals(GraphDiff.summary(before, after), "moved 1 of 5 vertices");
+    }
+
+    @Test
     public void testNoGraph() {
         graph = null;
         final IllegalStateException ex = expectThrows(IllegalStateException.class, () -> new GraphSummaryTool().execute(args("{}"), context));

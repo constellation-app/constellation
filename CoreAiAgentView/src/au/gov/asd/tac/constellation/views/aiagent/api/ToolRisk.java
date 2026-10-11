@@ -34,7 +34,7 @@ public enum ToolRisk {
      * Queries an external system (may consume quota or reveal the query).
      * Asks by default.
      */
-    EXTERNAL_QUERY("external query", ToolPolicy.ASK),
+    EXTERNAL_QUERY("data access", ToolPolicy.ASK),
     /**
      * Writes files or makes other changes that can't be undone. Asks by
      * default.

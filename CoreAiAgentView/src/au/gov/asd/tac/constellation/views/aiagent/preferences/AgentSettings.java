@@ -93,11 +93,8 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
                 endpoints = mapper.readValue(endpointsJson, new TypeReference<List<EndpointConfig>>() {
                 });
             } catch (final JsonProcessingException ex) {
-                LOGGER.log(Level.WARNING, "Couldn't read the assistant endpoints; using defaults", ex);
+                LOGGER.log(Level.WARNING, "Couldn't read the assistant endpoints", ex);
             }
-        }
-        if (endpoints.isEmpty()) {
-            endpoints = List.of(EndpointConfig.ollamaDefault(), EndpointConfig.openAiDefault());
         }
 
         final Map<String, ToolPolicy> policies = new LinkedHashMap<>();
@@ -123,7 +120,7 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
         }
 
         return new AgentSettings(endpoints,
-                prefs.get(AgentPreferenceKeys.DEFAULT_ENDPOINT, endpoints.get(0).id()),
+                prefs.get(AgentPreferenceKeys.DEFAULT_ENDPOINT, ""),
                 Math.max(1, prefs.getInt(AgentPreferenceKeys.MAX_STEPS, AgentPreferenceKeys.MAX_STEPS_DEFAULT)),
                 Math.max(1000, prefs.getInt(AgentPreferenceKeys.MAX_TOOL_RESULT_CHARS, AgentPreferenceKeys.MAX_TOOL_RESULT_CHARS_DEFAULT)),
                 prefs.getBoolean(AgentPreferenceKeys.INCLUDE_SELECTION, AgentPreferenceKeys.INCLUDE_SELECTION_DEFAULT),
@@ -167,8 +164,16 @@ public record AgentSettings(List<EndpointConfig> endpoints, String defaultEndpoi
     }
 
     /**
-     * @return the default endpoint, or the first endpoint if the default id is
-     * unknown.
+     * @return true if at least one endpoint has been configured. There are no
+     * built-in endpoints, so the assistant can't be used until this is true.
+     */
+    public boolean isConfigured() {
+        return !endpoints.isEmpty();
+    }
+
+    /**
+     * @return the default endpoint, the first endpoint if the default id is
+     * unknown, or null if no endpoints are configured.
      */
     public EndpointConfig defaultEndpoint() {
         return endpoints.stream().filter(e -> e.id().equals(defaultEndpointId)).findFirst().orElse(endpoints.isEmpty() ? null : endpoints.get(0));

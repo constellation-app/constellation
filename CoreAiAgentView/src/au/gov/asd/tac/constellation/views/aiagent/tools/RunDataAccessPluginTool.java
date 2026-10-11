@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import javax.swing.SwingUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -71,7 +72,7 @@ public class RunDataAccessPluginTool extends AbstractAgentTool {
     public JsonNode normaliseArguments(final JsonNode args) {
         JsonNode normalised = alias(args, "plugin", "plugin_name", "name", "plugin_id", "id", "plugin_class", "class_name");
         normalised = alias(normalised, "parameters", "params", "args", "arguments", "plugin_parameters");
-        return normalised;
+        return RunPluginTool.nestStrayParameters(normalised, Set.of("plugin", "parameters", "query_name", "datetime_range"));
     }
 
     @Override

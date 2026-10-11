@@ -15,21 +15,41 @@
  */
 package au.gov.asd.tac.constellation.views.aiagent.llm;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * The kind of LLM endpoint.
  *
  * @author doubtsec
  */
 public enum EndpointKind {
-    OPENAI("OpenAI"),
-    AZURE_OPENAI("Azure OpenAI"),
-    OPENAI_COMPATIBLE("OpenAI-compatible (Ollama, vLLM, LM Studio, ...)"),
-    ANTHROPIC("Anthropic");
+    /**
+     * The Anthropic Messages API.
+     */
+    ANTHROPIC("Anthropic"),
+    /**
+     * The OpenAI Chat Completions API, as served by OpenAI, Azure OpenAI,
+     * Ollama, vLLM, LM Studio, LiteLLM and others.
+     */
+    OPENAI_COMPATIBLE("OpenAI-compatible");
 
     private final String label;
 
     EndpointKind(final String label) {
         this.label = label;
+    }
+
+    /**
+     * Read a kind from saved settings. Kinds that are no longer supported
+     * (OpenAI and Azure OpenAI, which are now configured as OpenAI-compatible)
+     * map to {@link #OPENAI_COMPATIBLE}.
+     *
+     * @param name the saved name.
+     * @return the kind.
+     */
+    @JsonCreator
+    public static EndpointKind fromJson(final String name) {
+        return ANTHROPIC.name().equals(name) ? ANTHROPIC : OPENAI_COMPATIBLE;
     }
 
     @Override

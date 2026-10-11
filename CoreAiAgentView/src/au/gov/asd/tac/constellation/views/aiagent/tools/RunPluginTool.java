@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.aiagent.tools;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -28,10 +29,13 @@ import au.gov.asd.tac.constellation.views.aiagent.api.ToolContext;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolResult;
 import au.gov.asd.tac.constellation.views.aiagent.api.ToolRisk;
 import au.gov.asd.tac.constellation.views.aiagent.tools.schema.PluginParametersJson;
+import au.gov.asd.tac.constellation.views.aiagent.tools.schema.PluginParametersSchema;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -69,7 +73,41 @@ public class RunPluginTool extends AbstractAgentTool {
     public JsonNode normaliseArguments(final JsonNode args) {
         JsonNode normalised = alias(args, "plugin", "plugin_name", "name", "plugin_id", "id", "plugin_class", "class_name");
         normalised = alias(normalised, "parameters", "params", "args", "arguments", "plugin_parameters");
-        return normalised;
+        return nestStrayParameters(normalised, Set.of("plugin", "parameters", "graph_id"));
+    }
+
+    /**
+     * Models often put plugin parameters next to {@code plugin} instead of
+     * inside {@code parameters}. Move any key that isn't one of the tool's own
+     * arguments into {@code parameters}, where it is checked against the
+     * plugin's parameters like any other, instead of being silently ignored.
+     *
+     * @param args the arguments.
+     * @param toolArguments the tool's own top level argument names.
+     * @return the arguments with stray keys moved into {@code parameters}.
+     */
+    static JsonNode nestStrayParameters(final JsonNode args, final Set<String> toolArguments) {
+        if (!(args instanceof ObjectNode object)) {
+            return args;
+        }
+        final List<String> strays = new ArrayList<>();
+        object.fieldNames().forEachRemaining(name -> {
+            if (!toolArguments.contains(name)) {
+                strays.add(name);
+            }
+        });
+        if (strays.isEmpty()) {
+            return args;
+        }
+        final ObjectNode result = object.deepCopy();
+        final ObjectNode parameters = result.get("parameters") instanceof ObjectNode existing ? existing : result.putObject("parameters");
+        for (final String name : strays) {
+            final JsonNode value = result.remove(name);
+            if (!parameters.has(name)) {
+                parameters.set(name, value);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -117,8 +155,20 @@ public class RunPluginTool extends AbstractAgentTool {
             // no graph manager: check against the plugin's defaults
         }
         try {
-            PluginParametersJson.apply(parameterJson, DescribePluginTool.createParameters(plugin, graph));
-            return null;
+            final PluginParameters parameters = DescribePluginTool.createParameters(plugin, graph);
+            PluginParametersJson.apply(parameterJson, parameters);
+            // required parameters that still have no value would only fail when the plugin runs, after approval
+            final List<String> missing = new ArrayList<>();
+            if (parameters != null) {
+                parameters.getParameters().forEach((id, parameter) -> {
+                    if (parameter.isRequired() && parameter.isVisible() && parameter.isEnabled()
+                            && (parameter.getStringValue() == null || parameter.getStringValue().isBlank())) {
+                        missing.add(PluginParametersSchema.propertyName(id, parameters));
+                    }
+                });
+            }
+            return missing.isEmpty() ? null : "Missing required parameters: " + String.join(", ", missing)
+                    + ". Call describe_plugin to see the parameters.";
         } catch (final IllegalArgumentException ex) {
             return ex.getMessage() + " Call describe_plugin to see the parameters.";
         }
@@ -161,6 +211,11 @@ public class RunPluginTool extends AbstractAgentTool {
         final GraphDiff.Snapshot before = GraphDiff.capture(graph);
         PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeNow(graph);
         final GraphDiff.Snapshot after = GraphDiff.capture(graph);
+        if (GraphDiff.moved(before, after) > 0 || after.vertices() > before.vertices()) {
+            // as the Arrange menu does, so a new layout or new vertices are in view
+            // (not a significant edit, so Undo still undoes the plugin)
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+        }
 
         final ObjectNode result = NODES.objectNode();
         result.put("plugin", entry.name());

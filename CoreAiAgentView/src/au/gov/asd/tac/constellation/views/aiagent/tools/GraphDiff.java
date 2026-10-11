@@ -18,10 +18,14 @@ package au.gov.asd.tac.constellation.views.aiagent.tools;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -38,9 +42,14 @@ public final class GraphDiff {
 
     /**
      * A snapshot of the parts of a graph we report on.
+     *
+     * @param positions a hash of each vertex's x, y and z, by vertex id, so we
+     * can report how many vertices a plugin moved (arrangements only move the
+     * selected vertices when there is a selection).
      */
     public record Snapshot(int vertices, int transactions, int selectedVertices, int selectedTransactions,
-            Set<String> vertexAttributes, Set<String> transactionAttributes, Set<String> graphAttributes, long modificationCounter) {
+            Set<String> vertexAttributes, Set<String> transactionAttributes, Set<String> graphAttributes, long modificationCounter,
+            Map<Integer, Integer> positions) {
     }
 
     public static Snapshot capture(final Graph graph) {
@@ -50,8 +59,38 @@ public final class GraphDiff {
                     new LinkedHashSet<>(GraphSupport.attributeNames(rg, GraphElementType.VERTEX)),
                     new LinkedHashSet<>(GraphSupport.attributeNames(rg, GraphElementType.TRANSACTION)),
                     new LinkedHashSet<>(GraphSupport.attributeNames(rg, GraphElementType.GRAPH)),
-                    rg.getGlobalModificationCounter());
+                    rg.getGlobalModificationCounter(), positions(rg));
         }
+    }
+
+    private static Map<Integer, Integer> positions(final ReadableGraph rg) {
+        final int x = VisualConcept.VertexAttribute.X.get(rg);
+        final int y = VisualConcept.VertexAttribute.Y.get(rg);
+        final int z = VisualConcept.VertexAttribute.Z.get(rg);
+        final Map<Integer, Integer> positions = new HashMap<>();
+        if (x == Graph.NOT_FOUND || y == Graph.NOT_FOUND) {
+            return positions;
+        }
+        for (int position = 0; position < rg.getVertexCount(); position++) {
+            final int vertex = rg.getVertex(position);
+            positions.put(vertex, Objects.hash(rg.getFloatValue(x, vertex), rg.getFloatValue(y, vertex),
+                    z == Graph.NOT_FOUND ? 0F : rg.getFloatValue(z, vertex)));
+        }
+        return positions;
+    }
+
+    /**
+     * @return the number of vertices in both snapshots whose position changed.
+     */
+    static int moved(final Snapshot before, final Snapshot after) {
+        int moved = 0;
+        for (final Map.Entry<Integer, Integer> entry : after.positions().entrySet()) {
+            final Integer old = before.positions().get(entry.getKey());
+            if (old != null && !old.equals(entry.getValue())) {
+                moved++;
+            }
+        }
+        return moved;
     }
 
     /**
@@ -68,6 +107,7 @@ public final class GraphDiff {
         result.put("transactions", change(before.transactions(), after.transactions()));
         result.put("selected_vertices", change(before.selectedVertices(), after.selectedVertices()));
         result.put("selected_transactions", change(before.selectedTransactions(), after.selectedTransactions()));
+        result.put("vertices_moved", moved(before, after));
         added(result, "new_vertex_attributes", before.vertexAttributes(), after.vertexAttributes());
         added(result, "new_transaction_attributes", before.transactionAttributes(), after.transactionAttributes());
         added(result, "new_graph_attributes", before.graphAttributes(), after.graphAttributes());
@@ -89,6 +129,10 @@ public final class GraphDiff {
         }
         if (before.selectedVertices() != after.selectedVertices()) {
             summary.append(String.format("selected vertices %d→%d; ", before.selectedVertices(), after.selectedVertices()));
+        }
+        final int moved = moved(before, after);
+        if (moved > 0) {
+            summary.append(String.format("moved %d of %d vertices; ", moved, after.vertices()));
         }
         final Set<String> newAttributes = new LinkedHashSet<>(after.vertexAttributes());
         newAttributes.removeAll(before.vertexAttributes());

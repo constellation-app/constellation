@@ -1,8 +1,17 @@
 # Assistant View
 
-The Assistant is a chat panel that can inspect and act on the active graph. It talks to a large language model through the OpenAI API, an OpenAI-compatible server such as Ollama, vLLM or LM Studio, Azure OpenAI, or Anthropic. The assistant works in steps: it can call *tools* that read the graph, run plugins and Data Access View plugins, select elements and write notes, and then use the results to answer you.
+The Assistant is a chat panel that can inspect and act on the active graph. It talks to a large language model through the Anthropic API or an OpenAI-compatible API (OpenAI, Azure OpenAI, Ollama, vLLM, LM Studio, LiteLLM and others). The assistant works in steps: it can call *tools* that read the graph, run plugins and Data Access View plugins, select elements and write notes, and then use the results to answer you.
 
 Open it from *Views > Assistant* or press <kbd>Ctrl+Shift+K</kbd>.
+
+## Setting up a model
+
+The Assistant doesn't come with a model. Until you configure one, the view shows **Configure a model…** and messages can't be sent. To set one up:
+
+1. Press **Configure a model…** (or open *Tools > Options > Constellation > Assistant*).
+2. On the **Endpoints** tab press **Add**, and choose the **Kind**: *Anthropic* or *OpenAI-compatible*.
+3. Enter the **Base URL**, for example `https://api.anthropic.com/v1`, `https://api.openai.com/v1`, `http://localhost:11434/v1` (Ollama) or `http://localhost:4000/v1` (LiteLLM), and the **Key** (API key) if the endpoint needs one.
+4. Press **Test connection** to check the connection and list the endpoint's models, enter one of them as the **Model**, and press **OK**.
 
 ## Choosing a model
 
@@ -49,7 +58,7 @@ Change these policies under *Tools > Options > Constellation > Assistant > Tools
 
 ## Using Ollama
 
-The default *Ollama* endpoint talks to [Ollama](https://ollama.com) at `http://localhost:11434/v1`. Choose a model that supports tool calling.
+[Ollama](https://ollama.com) is an OpenAI-compatible server: add an *OpenAI-compatible* endpoint with the base URL `http://localhost:11434/v1`, and choose a model that supports tool calling.
 
 Ollama gives models a small context window by default (often 4,096 tokens), and the assistant's instructions and tool descriptions alone use several thousand. When the window is full Ollama silently drops the start of the conversation and the assistant starts behaving erratically; the view warns you when this happens. Start Ollama with a larger window, for example:
 
@@ -63,9 +72,9 @@ Small models are less reliable at multi-step tool use than large hosted models. 
 
 *Tools > Options > Constellation > Assistant* (or *⋯ > Options…* in the view):
 
-- **Endpoints** – add, edit and remove endpoints. For each endpoint set the base URL (for example `http://localhost:11434/v1` for Ollama or `https://api.openai.com/v1`), the API dialect (*Responses* for OpenAI, *Chat Completions* for compatible servers), an optional default model and extra HTTP headers. **Test connection** lists the endpoint's models and shows which client certificate is in use.
-- **API keys** are stored in your operating system's keyring (macOS Keychain, Windows Credential Store or the Linux Secret Service), never in Constellation's preferences. If no key is saved, the `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` environment variable is used.
-- **Require a Constellation client certificate** – the endpoint is only contacted using the client certificate (mTLS) Constellation is configured with, and is refused if there isn't one. Requests always use Constellation's proxy settings.
+- **Endpoints** – add, edit and remove endpoints. For each endpoint set the kind (*Anthropic* or *OpenAI-compatible*), the base URL, the model and any extra HTTP headers (one `Name: value` per line, sent with every request, e.g. for gateways). **Test connection** lists the endpoint's models and shows which client certificate is in use.
+- **API keys** are stored in your operating system's keyring (macOS Keychain, Windows Credential Store or the Linux Secret Service), never in Constellation's preferences. If no key is saved for an Anthropic endpoint, the `ANTHROPIC_API_KEY` environment variable is used.
+- **Client certificates and proxies** – there is nothing to set up. If Constellation is configured with a client certificate, it is presented to any endpoint that asks for one (mTLS); if not, endpoints are contacted without one. Requests always use Constellation's proxy settings.
 - **System Prompt** – the instructions sent to the model at the start of each chat.
 
 ## Privacy and safety
