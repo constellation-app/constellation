@@ -70,7 +70,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * models. This package is the only place that imports {@code dev.langchain4j}.
  * <p>
  * Every HTTP client is built from
- * {@link ConstellationHttpClients#newBuilder(boolean)} so that requests use the
+ * {@link ConstellationHttpClients#newBuilder()} so that requests use the
  * current Constellation security context (client certificate) and proxy
  * settings whenever there is one, so endpoints that require a client
  * certificate work without any per-endpoint setting.
@@ -127,7 +127,7 @@ public final class LangChain4jProvider implements LlmProvider {
      * allow, and streaming gains nothing from HTTP/2.
      */
     private HttpClient.Builder jdkClientBuilder() {
-        return ConstellationHttpClients.newBuilder(false).version(HttpClient.Version.HTTP_1_1);
+        return ConstellationHttpClients.newBuilder().version(HttpClient.Version.HTTP_1_1);
     }
 
     private String effectiveApiKey() {

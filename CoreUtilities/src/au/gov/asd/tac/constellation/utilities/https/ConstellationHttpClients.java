@@ -51,22 +51,17 @@ public final class ConstellationHttpClients {
 
     /**
      * Create a new HttpClient builder configured with the current Constellation
-     * security context and proxy settings.
+     * security context and proxy settings. The context's client certificate is
+     * used when there is one; without one, the JVM's default SSL context is
+     * used.
      *
-     * @param requireSecurityContext if true, fail if there is no Constellation
-     * security context (the same fail-closed rule as {@link HttpsConnection}).
      * @return a configured builder.
-     * @throws IllegalStateException if a security context is required but none
-     * is available.
      */
-    public static HttpClient.Builder newBuilder(final boolean requireSecurityContext) {
+    public static HttpClient.Builder newBuilder() {
         // synchronous and idempotent, so we never race the asynchronous startup
         ConstellationSecurityManager.startSecurity();
         final ConstellationSecurityContext context = ConstellationSecurityManager.getCurrentSecurityContext();
         final SSLContext sslContext = context != null ? context.getSSLContext() : null;
-        if (sslContext == null && requireSecurityContext) {
-            throw new IllegalStateException(HttpsConnection.NO_CERTIFICATE_ERROR);
-        }
 
         final HttpClient.Builder builder = HttpClient.newBuilder()
                 .proxy(new LiveDefaultProxySelector())
@@ -78,7 +73,7 @@ public final class ConstellationHttpClients {
     }
 
     /**
-     * Describe the security context that {@link #newBuilder(boolean)} would
+     * Describe the security context that {@link #newBuilder()} would
      * use, for display in user interfaces.
      *
      * @return a human readable description of the current security context.

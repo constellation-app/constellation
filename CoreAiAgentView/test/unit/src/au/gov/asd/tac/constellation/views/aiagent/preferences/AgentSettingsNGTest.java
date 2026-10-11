@@ -75,11 +75,20 @@ public class AgentSettingsNGTest {
     }
 
     @Test
-    public void testApiKeysAreNotStoredInPreferences() throws BackingStoreException {
-        new AgentSettings(List.of(new EndpointConfig("claude", "Claude", EndpointKind.ANTHROPIC,
-                "https://api.anthropic.com/v1", "", Map.of())), "claude", 5, 5000, true, "", Map.of(), null, "", false).save(prefs);
-        for (final String key : prefs.keys()) {
-            assertFalse(key.toLowerCase().contains("apikey"), key);
-        }
+    public void testApiKeysAreSavedInPreferencesAndSurviveSettingsSave() {
+        final EndpointConfig claude = new EndpointConfig("claude", "Claude", EndpointKind.ANTHROPIC,
+                "https://api.anthropic.com/v1", "", Map.of());
+        final EndpointConfig local = new EndpointConfig("local", "Local", EndpointKind.OPENAI_COMPATIBLE,
+                "http://localhost:4000/v1", "", Map.of());
+        ApiKeyStore.save(prefs, claude, " secret-key ");
+        assertEquals(prefs.get(AgentPreferenceKeys.API_KEY_PREFIX + "claude", null), "secret-key");
+        // saving the other settings keeps the key
+        new AgentSettings(List.of(claude, local), "claude", 5, 5000, true, "", Map.of(), null, "", false).save(prefs);
+        assertEquals(ApiKeyStore.read(prefs, claude), "secret-key");
+        // an OpenAI-compatible endpoint never takes a key from the environment
+        assertNull(ApiKeyStore.read(prefs, local));
+        // a blank key deletes the saved one
+        ApiKeyStore.save(prefs, claude, "");
+        assertNull(prefs.get(AgentPreferenceKeys.API_KEY_PREFIX + "claude", null));
     }
 }

@@ -19,12 +19,18 @@ package au.gov.asd.tac.constellation.views.aiagent.preferences;
  * Preference keys for the AI agent, stored with
  * {@code NbPreferences.forModule(AgentPreferenceKeys.class)}.
  * <p>
- * API keys are never stored in preferences; see {@link ApiKeyStore}.
+ * API keys are stored under {@link #API_KEY_PREFIX} followed by the endpoint
+ * id; see {@link ApiKeyStore}.
  *
  * @author doubtsec
  */
 public final class AgentPreferenceKeys {
 
+    /**
+     * Prefix of the keys holding each endpoint's API key, followed by the
+     * endpoint id.
+     */
+    public static final String API_KEY_PREFIX = "aiagent.apiKey.";
     /**
      * JSON array of endpoint configurations.
      */

@@ -17,14 +17,12 @@ package au.gov.asd.tac.constellation.views.aiagent.preferences;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.List;
 import javax.swing.JComponent;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
-import org.openide.util.RequestProcessor;
 
 /**
  * Registers the Assistant options under Tools &gt; Options &gt;
@@ -45,8 +43,6 @@ import org.openide.util.RequestProcessor;
 })
 public final class AgentOptionsPanelController extends OptionsPanelController implements HelpCtx.Provider {
 
-    private static final RequestProcessor KEYRING = new RequestProcessor("Assistant keyring", 1);
-
     private AgentOptionsPanel panel;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -66,12 +62,12 @@ public final class AgentOptionsPanelController extends OptionsPanelController im
         pcs.firePropertyChange(OptionsPanelController.PROP_VALID, null, null);
         final AgentOptionsPanel optionsPanel = getPanel();
         final AgentSettings settings = optionsPanel.toSettings();
+        // checked before saving the keys, which clears the pending key changes
+        final boolean changed = isChanged();
         if (optionsPanel.hasKeyChanges()) {
-            final List<au.gov.asd.tac.constellation.views.aiagent.llm.EndpointConfig> endpoints = settings.endpoints();
-            // the keyring can block (e.g. while it is unlocked), so keep it off the Swing thread
-            KEYRING.post(() -> optionsPanel.saveKeys(endpoints));
+            optionsPanel.saveKeys(settings.endpoints());
         }
-        if (isChanged()) {
+        if (changed) {
             pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
             settings.save();
         }

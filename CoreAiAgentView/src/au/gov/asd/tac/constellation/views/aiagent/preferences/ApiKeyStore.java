@@ -17,72 +17,66 @@ package au.gov.asd.tac.constellation.views.aiagent.preferences;
 
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointConfig;
 import au.gov.asd.tac.constellation.views.aiagent.llm.EndpointKind;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.netbeans.api.keyring.Keyring;
+import java.util.prefs.Preferences;
 
 /**
- * Stores endpoint API keys. Keys are looked up in this order: keys entered
- * this session, the NetBeans keyring (macOS Keychain, Windows DPAPI or
- * libsecret), then, for Anthropic endpoints, the {@code ANTHROPIC_API_KEY}
- * environment variable. Keys are never written to preferences or logs.
+ * Stores endpoint API keys in the Assistant's preferences, with its other
+ * settings, so they are kept between sessions. If no key is saved for an
+ * Anthropic endpoint, the {@code ANTHROPIC_API_KEY} environment variable is
+ * used.
  *
  * @author doubtsec
  */
 public final class ApiKeyStore {
-
-    private static final Logger LOGGER = Logger.getLogger(ApiKeyStore.class.getName());
-    private static final Map<String, String> SESSION_KEYS = new ConcurrentHashMap<>();
 
     private ApiKeyStore() {
         throw new IllegalStateException("Utility class");
     }
 
     /**
-     * Get the API key for an endpoint. May block while the keyring is unlocked,
-     * so don't call this on the Swing or JavaFX thread.
+     * Get the API key for an endpoint.
      *
      * @param endpoint the endpoint.
      * @return the key, or null if none is available.
      */
     public static String read(final EndpointConfig endpoint) {
-        final String sessionKey = SESSION_KEYS.get(endpoint.apiKeyRef());
-        if (sessionKey != null) {
-            return sessionKey;
-        }
-        try {
-            final char[] key = Keyring.read(endpoint.apiKeyRef());
-            if (key != null && key.length > 0) {
-                return new String(key);
-            }
-        } catch (final RuntimeException | LinkageError ex) {
-            LOGGER.log(Level.WARNING, "Couldn't read the API key from the keyring: {0}", ex.getMessage());
-        }
-        return environmentKey(endpoint.kind());
+        return read(AgentSettings.preferences(), endpoint);
     }
 
     /**
-     * Save an API key in the keyring, and for this session.
+     * Get the API key for an endpoint from a preferences node.
+     *
+     * @param prefs the preferences.
+     * @param endpoint the endpoint.
+     * @return the key, or null if none is available.
+     */
+    static String read(final Preferences prefs, final EndpointConfig endpoint) {
+        final String key = prefs.get(endpoint.apiKeyRef(), "");
+        return key.isBlank() ? environmentKey(endpoint.kind()) : key;
+    }
+
+    /**
+     * Save an API key.
      *
      * @param endpoint the endpoint.
      * @param key the key; null or empty deletes the key.
-     * @return true if the key was saved in the keyring, false if it is only
-     * held for this session.
      */
-    public static boolean save(final EndpointConfig endpoint, final String key) {
+    public static void save(final EndpointConfig endpoint, final String key) {
+        save(AgentSettings.preferences(), endpoint, key);
+    }
+
+    /**
+     * Save an API key in a preferences node.
+     *
+     * @param prefs the preferences.
+     * @param endpoint the endpoint.
+     * @param key the key; null or empty deletes the key.
+     */
+    static void save(final Preferences prefs, final EndpointConfig endpoint, final String key) {
         if (key == null || key.isBlank()) {
-            delete(endpoint);
-            return true;
-        }
-        SESSION_KEYS.put(endpoint.apiKeyRef(), key);
-        try {
-            Keyring.save(endpoint.apiKeyRef(), key.toCharArray(), "Constellation Assistant API key for " + endpoint.name());
-            return true;
-        } catch (final RuntimeException | LinkageError ex) {
-            LOGGER.log(Level.WARNING, "Couldn't save the API key in the keyring; it will be kept for this session only: {0}", ex.getMessage());
-            return false;
+            delete(prefs, endpoint);
+        } else {
+            prefs.put(endpoint.apiKeyRef(), key.trim());
         }
     }
 
@@ -92,12 +86,17 @@ public final class ApiKeyStore {
      * @param endpoint the endpoint.
      */
     public static void delete(final EndpointConfig endpoint) {
-        SESSION_KEYS.remove(endpoint.apiKeyRef());
-        try {
-            Keyring.delete(endpoint.apiKeyRef());
-        } catch (final RuntimeException | LinkageError ex) {
-            LOGGER.log(Level.WARNING, "Couldn't delete the API key from the keyring: {0}", ex.getMessage());
-        }
+        delete(AgentSettings.preferences(), endpoint);
+    }
+
+    /**
+     * Delete an endpoint's API key from a preferences node.
+     *
+     * @param prefs the preferences.
+     * @param endpoint the endpoint.
+     */
+    static void delete(final Preferences prefs, final EndpointConfig endpoint) {
+        prefs.remove(endpoint.apiKeyRef());
     }
 
     /**

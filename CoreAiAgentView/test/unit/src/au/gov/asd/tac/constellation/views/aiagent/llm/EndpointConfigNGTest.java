@@ -37,7 +37,7 @@ public class EndpointConfigNGTest {
     @Test
     public void testApiKeyRef() {
         final EndpointConfig config = new EndpointConfig("litellm", "LiteLLM", EndpointKind.ANTHROPIC, "http://localhost:4000/v1", "", Map.of());
-        assertEquals(config.apiKeyRef(), "constellation.aiagent.litellm.apiKey");
+        assertEquals(config.apiKeyRef(), "aiagent.apiKey.litellm");
     }
 
     @Test

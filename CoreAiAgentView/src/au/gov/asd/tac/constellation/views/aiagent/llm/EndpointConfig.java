@@ -15,13 +15,15 @@
  */
 package au.gov.asd.tac.constellation.views.aiagent.llm;
 
+import au.gov.asd.tac.constellation.views.aiagent.preferences.AgentPreferenceKeys;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Map;
 import java.util.UUID;
 
 /**
  * The configuration of one LLM endpoint. API keys are not part of the
- * configuration; they are stored in the keyring under {@link #apiKeyRef()}.
+ * configuration; they are stored in the Assistant's preferences under
+ * {@link #apiKeyRef()}.
  * <p>
  * There are no built-in endpoints: the user adds one before the assistant can
  * be used. Connections always use the current Constellation security context
@@ -52,10 +54,10 @@ public record EndpointConfig(String id, String name, EndpointKind kind, String b
     }
 
     /**
-     * @return the keyring key that holds this endpoint's API key.
+     * @return the preference key that holds this endpoint's API key.
      */
     public String apiKeyRef() {
-        return "constellation.aiagent." + id + ".apiKey";
+        return AgentPreferenceKeys.API_KEY_PREFIX + id;
     }
 
     public EndpointConfig withDefaultModel(final String model) {

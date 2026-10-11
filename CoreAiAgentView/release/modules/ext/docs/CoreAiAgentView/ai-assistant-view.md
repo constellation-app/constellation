@@ -63,7 +63,7 @@ Change these policies under *Tools > Options > Constellation > Assistant > Tools
 *Tools > Options > Constellation > Assistant* (or *⋯ > Options…* in the view):
 
 - **Endpoints** – add, edit and remove endpoints. For each endpoint set the kind (*Anthropic* or *OpenAI-compatible*), the base URL, the model and any extra HTTP headers (one `Name: value` per line, sent with every request, e.g. for gateways). **Test connection** lists the endpoint's models and shows which client certificate is in use.
-- **API keys** are stored in your operating system's keyring (macOS Keychain, Windows Credential Store or the Linux Secret Service), never in Constellation's preferences. If no key is saved for an Anthropic endpoint, the `ANTHROPIC_API_KEY` environment variable is used.
+- **API keys** are saved with the other Assistant settings in Constellation's preferences, so you only enter each key once. If no key is saved for an Anthropic endpoint, the `ANTHROPIC_API_KEY` environment variable is used.
 - **Client certificates and proxies** – there is nothing to set up. If Constellation is configured with a client certificate, it is presented to any endpoint that asks for one (mTLS); if not, endpoints are contacted without one. Requests always use Constellation's proxy settings.
 - **System Prompt** – the instructions sent to the model at the start of each chat.
 

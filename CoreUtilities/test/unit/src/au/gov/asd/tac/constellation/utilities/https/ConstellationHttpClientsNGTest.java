@@ -49,26 +49,18 @@ public class ConstellationHttpClientsNGTest {
 
         try (final MockedStatic<ConstellationSecurityManager> manager = mockStatic(ConstellationSecurityManager.class)) {
             manager.when(ConstellationSecurityManager::getCurrentSecurityContext).thenReturn(context);
-            final HttpClient client = ConstellationHttpClients.newBuilder(true).build();
+            final HttpClient client = ConstellationHttpClients.newBuilder().build();
             assertSame(client.sslContext(), ssl);
             assertTrue(client.proxy().isPresent());
             assertTrue(client.connectTimeout().isPresent());
         }
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
-    public void testNewBuilderFailsClosedWithoutContext() {
-        try (final MockedStatic<ConstellationSecurityManager> manager = mockStatic(ConstellationSecurityManager.class)) {
-            manager.when(ConstellationSecurityManager::getCurrentSecurityContext).thenReturn(null);
-            ConstellationHttpClients.newBuilder(true);
-        }
-    }
-
     @Test
-    public void testNewBuilderWithoutContextWhenNotRequired() {
+    public void testNewBuilderWithoutContext() {
         try (final MockedStatic<ConstellationSecurityManager> manager = mockStatic(ConstellationSecurityManager.class)) {
             manager.when(ConstellationSecurityManager::getCurrentSecurityContext).thenReturn(null);
-            final HttpClient client = ConstellationHttpClients.newBuilder(false).build();
+            final HttpClient client = ConstellationHttpClients.newBuilder().build();
             assertTrue(client.proxy().isPresent());
         }
     }

@@ -203,7 +203,7 @@ public final class AgentOptionsPanel extends JPanel {
         });
         headersArea.setLineWrap(false);
         headersArea.setToolTipText("One \"Name: value\" per line, sent with every request");
-        apiKeyField.setToolTipText(KEY_HINT + ". Keys are stored in the operating system keyring, never in preferences.");
+        apiKeyField.setToolTipText(KEY_HINT + ". Keys are saved with the other Assistant settings.");
         certificateNote.setEnabled(false);
         clearKeyButton.addActionListener(event -> {
             if (editingIndex >= 0) {
@@ -427,8 +427,7 @@ public final class AgentOptionsPanel extends JPanel {
     }
 
     /**
-     * Save entered API keys to the keyring and delete cleared ones. May block
-     * while the keyring is unlocked.
+     * Save entered API keys and delete cleared ones.
      *
      * @param endpoints the endpoints being saved.
      */
