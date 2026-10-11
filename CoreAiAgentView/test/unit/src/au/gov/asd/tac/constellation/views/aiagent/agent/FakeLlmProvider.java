@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -65,18 +64,6 @@ public final class FakeLlmProvider implements LlmProvider {
     private final Deque<Step> script = new ArrayDeque<>();
     private final List<LlmRequest> requests = Collections.synchronizedList(new ArrayList<>());
     private final AtomicBoolean cancelled = new AtomicBoolean(false);
-
-    private OptionalInt contextWindow = OptionalInt.empty();
-
-    public FakeLlmProvider withContextWindow(final int tokens) {
-        contextWindow = OptionalInt.of(tokens);
-        return this;
-    }
-
-    @Override
-    public OptionalInt contextWindow(final String model) {
-        return contextWindow;
-    }
 
     public FakeLlmProvider then(final Step step) {
         script.add(step);

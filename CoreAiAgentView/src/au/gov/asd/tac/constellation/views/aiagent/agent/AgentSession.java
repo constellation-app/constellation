@@ -86,8 +86,6 @@ public final class AgentSession {
     private volatile LlmProvider provider;
     private volatile AgentConfig config;
     private volatile boolean debugLogging;
-    private volatile boolean contextWarningShown;
-    static final double CONTEXT_FULL_FRACTION = 0.95;
 
     private final List<ChatTurn> history = new ArrayList<>();
     private final Set<String> alwaysAllowed = ConcurrentHashMap.newKeySet();
@@ -221,7 +219,6 @@ public final class AgentSession {
             }
             alwaysAllowed.clear();
             seenCallIds.clear();
-            contextWarningShown = false;
         });
     }
 
@@ -338,7 +335,6 @@ public final class AgentSession {
             if (response.inputTokens() >= 0 || response.outputTokens() >= 0) {
                 emit(new AgentEvent.Usage(response.inputTokens(), response.outputTokens()));
             }
-            checkContextWindow(turnConfig, response);
             addHistory(new ChatTurn.Assistant(response.text(), response.toolCalls()));
 
             if (response.toolCalls().isEmpty()) {
@@ -400,24 +396,6 @@ public final class AgentSession {
         final int start = Math.max(0, trimmed.length() - 240);
         final String tail = trimmed.substring(start).toLowerCase(java.util.Locale.ROOT);
         return trimmed.endsWith(":") || ANNOUNCEMENT.matcher(tail).find();
-    }
-
-    /**
-     * Warn once if the prompt filled the server's context window: servers such
-     * as Ollama then silently drop the start of the conversation, including the
-     * system prompt, and the assistant stops behaving sensibly.
-     */
-    private void checkContextWindow(final AgentConfig turnConfig, final LlmResponse response) {
-        if (contextWarningShown || response.inputTokens() <= 0) {
-            return;
-        }
-        final java.util.OptionalInt window = provider.contextWindow(turnConfig.model());
-        if (window.isPresent() && response.inputTokens() >= window.getAsInt() * CONTEXT_FULL_FRACTION) {
-            contextWarningShown = true;
-            emit(new AgentEvent.Notice(String.format("The model's context window (%,d tokens) is full, so the server is dropping the start "
-                    + "of the conversation, including the assistant's instructions. Answers will be unreliable. Increase the context length "
-                    + "(for Ollama, start it with OLLAMA_CONTEXT_LENGTH=32768 or more), or start a new chat.", window.getAsInt())));
-        }
     }
 
     private LlmResponse normaliseCallIds(final LlmResponse response) {

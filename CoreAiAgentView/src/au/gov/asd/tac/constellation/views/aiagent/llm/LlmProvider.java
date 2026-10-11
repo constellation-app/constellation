@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.aiagent.llm;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.OptionalInt;
 
 /**
  * A source of model responses. All LLM client library types stay behind this
@@ -29,7 +28,7 @@ public interface LlmProvider {
 
     /**
      * @return an identifier for the provider, e.g. "openai" or
-     * "compatible:ollama-local".
+     * "compatible:my-endpoint".
      */
     String id();
 
@@ -40,18 +39,6 @@ public interface LlmProvider {
      * @throws IOException if the endpoint can't be reached.
      */
     List<ModelInfo> listModels() throws IOException;
-
-    /**
-     * The context window the server is actually using for a model, where the
-     * server reports it (e.g. Ollama, whose default can be much smaller than
-     * the model supports).
-     *
-     * @param model the model id.
-     * @return the context window in tokens, or empty if unknown.
-     */
-    default OptionalInt contextWindow(final String model) {
-        return OptionalInt.empty();
-    }
 
     /**
      * Start streaming a response.

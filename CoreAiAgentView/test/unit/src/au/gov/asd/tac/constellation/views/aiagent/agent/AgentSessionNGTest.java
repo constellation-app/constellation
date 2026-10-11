@@ -418,24 +418,6 @@ public class AgentSessionNGTest {
         assertFalse(AgentSession.announcesAction(""));
     }
 
-    @Test
-    public void testWarnsWhenContextWindowIsFull() throws InterruptedException {
-        // the fake reports 10 input tokens per call
-        session(new FakeLlmProvider().withContextWindow(10).thenText("one").thenText("two"), 5, Map.of());
-        runTurn("a");
-        runTurn("b");
-        final List<AgentEvent.Notice> notices = eventsOf(AgentEvent.Notice.class);
-        assertEquals(notices.size(), 1, notices.toString());
-        assertTrue(notices.get(0).message().contains("OLLAMA_CONTEXT_LENGTH"));
-    }
-
-    @Test
-    public void testNoContextWarningWithRoom() throws InterruptedException {
-        session(new FakeLlmProvider().withContextWindow(100_000).thenText("one"), 5, Map.of());
-        runTurn("a");
-        assertTrue(eventsOf(AgentEvent.Notice.class).isEmpty());
-    }
-
     // ----- test tools -----
     private static ObjectNode schema(final String required) {
         final ObjectNode schema = JsonNodeFactory.instance.objectNode();

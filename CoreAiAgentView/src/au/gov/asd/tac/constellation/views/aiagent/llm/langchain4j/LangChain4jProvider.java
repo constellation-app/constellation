@@ -61,7 +61,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.OptionalInt;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -84,14 +83,13 @@ public final class LangChain4jProvider implements LlmProvider {
     // reasoning models can be silent for a long time before the first token
     static final Duration READ_TIMEOUT = Duration.ofMinutes(10);
     private static final String ANTHROPIC_VERSION = "2023-06-01";
-    // local servers such as Ollama, and gateways that authenticate with a client certificate,
+    // local servers, and gateways that authenticate with a client certificate,
     // don't need a key, but the clients require one
     private static final String PLACEHOLDER_API_KEY = "not-needed";
 
     private final EndpointConfig endpoint;
     private final String apiKey;
     private final Map<String, StreamingChatModel> models = new ConcurrentHashMap<>();
-    private final Map<String, OptionalInt> contextWindows = new ConcurrentHashMap<>();
 
     public LangChain4jProvider(final EndpointConfig endpoint, final String apiKey) {
         this.endpoint = Objects.requireNonNull(endpoint);
@@ -265,47 +263,6 @@ public final class LangChain4jProvider implements LlmProvider {
                     abbreviate(response.body(), 300)));
         }
         return parseModels(response.body());
-    }
-
-    /**
-     * Ollama reports the context length of loaded models from its native
-     * {@code /api/ps} endpoint, next to the OpenAI-compatible {@code /v1}.
-     */
-    @Override
-    public OptionalInt contextWindow(final String model) {
-        if (endpoint.kind() != EndpointKind.OPENAI_COMPATIBLE || model == null) {
-            return OptionalInt.empty();
-        }
-        // providers are created per message, so caching here only saves repeated lookups within a turn
-        return contextWindows.computeIfAbsent(model, this::fetchContextWindow);
-    }
-
-    private OptionalInt fetchContextWindow(final String model) {
-        final String base = endpoint.baseUrl().replaceAll("/+$", "").replaceAll("/v1$", "");
-        try {
-            final HttpRequest.Builder request = HttpRequest.newBuilder(URI.create(base + "/api/ps"))
-                    .timeout(Duration.ofSeconds(5))
-                    .GET();
-            headers().forEach(request::header);
-            final HttpResponse<String> response = jdkClientBuilder().build().send(request.build(), HttpResponse.BodyHandlers.ofString());
-            return response.statusCode() / 100 == 2 ? parseContextWindow(response.body(), model) : OptionalInt.empty();
-        } catch (final IOException | IllegalArgumentException | IllegalStateException ex) {
-            return OptionalInt.empty();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            return OptionalInt.empty();
-        }
-    }
-
-    static OptionalInt parseContextWindow(final String body, final String model) throws IOException {
-        final JsonNode models = JsonFactoryUtilities.getObjectMapper().readTree(body).path("models");
-        for (final JsonNode node : models) {
-            if ((model.equals(node.path("name").asText()) || model.equals(node.path("model").asText())) && node.path("context_length").canConvertToInt()
-                    && node.path("context_length").asInt() > 0) {
-                return OptionalInt.of(node.path("context_length").asInt());
-            }
-        }
-        return OptionalInt.empty();
     }
 
     static List<ModelInfo> parseModels(final String body) throws IOException {

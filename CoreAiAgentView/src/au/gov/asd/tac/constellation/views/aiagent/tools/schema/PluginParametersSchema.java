@@ -127,7 +127,7 @@ public final class PluginParametersSchema {
      * The name a parameter is shown to the model under: the part of its id
      * after the plugin class name (e.g. {@code include_connections_in}) when
      * that is unique, otherwise the full id. Short names save tokens, and
-     * some tool call parsers (e.g. Ollama's for Gemma models) can't handle
+     * some servers' tool call parsers can't handle
      * keys containing dots. {@link PluginParametersJson} accepts both.
      *
      * @param id the parameter id.

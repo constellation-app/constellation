@@ -29,7 +29,7 @@ public enum EndpointKind {
     ANTHROPIC("Anthropic"),
     /**
      * The OpenAI Chat Completions API, as served by OpenAI, Azure OpenAI,
-     * Ollama, vLLM, LM Studio, LiteLLM and others.
+     * vLLM, LM Studio, LiteLLM and others.
      */
     OPENAI_COMPATIBLE("OpenAI-compatible");
 

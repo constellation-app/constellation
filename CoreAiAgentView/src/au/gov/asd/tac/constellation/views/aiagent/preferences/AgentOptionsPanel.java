@@ -176,8 +176,8 @@ public final class AgentOptionsPanel extends JPanel {
             }
         });
         baseUrlField.setToolTipText("<html>The URL that API paths are added to, for example<br>"
-                + ANTHROPIC_BASE_URL + " (Anthropic), https://api.openai.com/v1 (OpenAI),<br>"
-                + "http://localhost:11434/v1 (Ollama) or http://localhost:4000/v1 (LiteLLM)</html>");
+                + ANTHROPIC_BASE_URL + " (Anthropic), https://api.openai.com/v1 (OpenAI)<br>"
+                + "or http://localhost:4000/v1 (LiteLLM)</html>");
         defaultModelField.setToolTipText("The model to use. Test connection lists the models the endpoint offers.");
         baseUrlField.getDocument().addDocumentListener(new DocumentListener() {
             @Override

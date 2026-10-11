@@ -104,14 +104,6 @@ public class LangChain4jProviderNGTest {
     }
 
     @Test
-    public void testParseContextWindow() throws IOException {
-        final String body = "{\"models\":[{\"name\":\"gemma4:e4b\",\"model\":\"gemma4:e4b\",\"context_length\":4096}]}";
-        assertEquals(LangChain4jProvider.parseContextWindow(body, "gemma4:e4b").getAsInt(), 4096);
-        assertTrue(LangChain4jProvider.parseContextWindow(body, "other").isEmpty());
-        assertTrue(LangChain4jProvider.parseContextWindow("{}", "gemma4:e4b").isEmpty());
-    }
-
-    @Test
     public void testToolSpecAdapter() throws IOException {
         final ToolSpec spec = new ToolSpec("query", "Query things", JsonFactoryUtilities.getObjectMapper().readTree("""
                 {"type":"object","properties":{
