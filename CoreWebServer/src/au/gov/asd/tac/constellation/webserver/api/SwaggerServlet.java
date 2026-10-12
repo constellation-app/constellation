@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.webserver.api;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
@@ -88,7 +89,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
             if ("swagger/constellation.json".equals(fileName)) {
                 // The file constellation.json contains our swagger info.
                 // Dynamically add data and services.
-                final ObjectMapper mapper = new ObjectMapper();
+                final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
                 final ObjectNode root = (ObjectNode) mapper.readTree(in);
 
                 // Get the hostname:port right.

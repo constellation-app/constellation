@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.webserver.transport;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.WebServer;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
@@ -134,7 +135,7 @@ public class FileListener implements Runnable {
                         final Path p = restPath.resolve(f);
                         JsonNode json = null;
                         try (final InputStream in = new FileInputStream(p.toFile())) {
-                            final ObjectMapper mapper = new ObjectMapper();
+                            final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
                             json = mapper.readTree(in);
                         } catch (final IOException ex) {
                             response(ex.getMessage());
@@ -304,7 +305,7 @@ public class FileListener implements Runnable {
      * @param message A string describing the error.
      */
     private void response(final String message) {
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         if (message != null) {
             root.put("error", message);

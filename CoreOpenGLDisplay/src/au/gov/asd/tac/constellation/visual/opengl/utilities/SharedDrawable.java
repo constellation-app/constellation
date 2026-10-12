@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
 import com.jogamp.opengl.DebugGL3;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLBase;
@@ -100,7 +101,14 @@ public final class SharedDrawable {
         sharedDrawable.display();
         sharedDrawable.getContext().makeCurrent();
         try {
-            sharedDrawable.setGL(new DebugGL3(sharedDrawable.getGL().getGL3()));
+            final GL3 rawgl = sharedDrawable.getGL().getGL3();
+            int error = rawgl.glGetError();
+            while (error != GL.GL_NO_ERROR) {
+                LOGGER.log(Level.WARNING, "OpenGL Error: {0}", error);
+                error = rawgl.glGetError();
+            }
+            
+            sharedDrawable.setGL(new DebugGL3(rawgl));
 
             // Create a shared texture object for the icon texture array.
             gl = sharedDrawable.getGL().getGL3();

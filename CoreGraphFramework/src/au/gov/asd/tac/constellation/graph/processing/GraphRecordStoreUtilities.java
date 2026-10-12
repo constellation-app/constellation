@@ -23,11 +23,11 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.mergers.PrioritySurvivingGraphElementMerger;
-import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.utilities.CompositeTransactionId;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -1208,7 +1208,7 @@ public class GraphRecordStoreUtilities {
 
         final GraphRecordStore rs = new GraphRecordStore();
 
-        final ObjectMapper om = new ObjectMapper();
+        final ObjectMapper om = JsonFactoryUtilities.getObjectMapper();
 
         final Map<?, ?> read = om.readValue(json, Map.class);
         if (read.containsKey(VX)) {

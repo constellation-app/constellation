@@ -346,7 +346,7 @@ public class JsonUtilities {
      * @return The formatted JSON, or plain old text if it isn't JSON.
      */
     public static String prettyPrint(final String rawString) {
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
 
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(rawString));

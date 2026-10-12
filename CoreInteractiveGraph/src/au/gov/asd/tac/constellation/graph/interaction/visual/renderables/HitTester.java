@@ -164,23 +164,12 @@ public final class HitTester implements GLRenderable {
             final int x = hitTestRequest.getX();
             final int y = hitTestRequest.getY();
 
-            //  Windows-DPI-Scaling
-            //
-            // If JOGL is ever fixed or another solution is found, either change
-            // needsManualDPIScaling to return false (so there is effectively no
-            // DPI scaling here) or to remove dpiScaleY below.
-            float dpiScaleY = 1.0F;
-            if (GLTools.needsManualDPIScaling()) {
-                dpiScaleY = parent.getDPIScaleY();
-            }
-            final int surfaceHeight = (int) (drawable.getSurfaceHeight() * dpiScaleY);
-
             // Allocate 3 floats for RGB values.
             FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);
 
             gl.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
             gl.glReadBuffer(HIT_TEST_BUFFER_NAME);
-            gl.glReadPixels(x, surfaceHeight - y, 1, 1, GL.GL_RGB, GL.GL_FLOAT, fbuf);
+            gl.glReadPixels(x, drawable.getSurfaceHeight() - y, 1, 1, GL.GL_RGB, GL.GL_FLOAT, fbuf);
 
             // There are enough colors in the buffer that we only need worry about
             // r component for now. That gives us 2**22 distinct values.

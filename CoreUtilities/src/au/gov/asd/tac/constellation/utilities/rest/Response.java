@@ -16,9 +16,11 @@
 package au.gov.asd.tac.constellation.utilities.rest;
 
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -125,15 +127,14 @@ public abstract class Response {
             return null;
         }
 
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final JsonNode root = getRootNode(mapper, buf);
 
         if (getSaveResponseFilename() != null) {
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-            mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
+            final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter().with(SerializationFeature.CLOSE_CLOSEABLE);
 
             final File tmp = File.createTempFile(getSaveResponseFilename(), FileExtensionConstants.JSON);
-            mapper.writeValue(tmp, root);
+            writer.writeValue(tmp, root);
             LOGGER.log(Level.INFO, "Response saved to {0}", tmp);
         }
 
@@ -221,11 +222,10 @@ public abstract class Response {
     }
 
     public static String jsonToString(final JsonNode node) throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
+        final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter().with(SerializationFeature.CLOSE_CLOSEABLE);
         try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            mapper.writeValue(out, node);
+            writer.writeValue(out, node);
 
             return new String(out.toByteArray(), StandardCharsets.UTF_8.name());
         }
