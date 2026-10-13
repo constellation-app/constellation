@@ -45,6 +45,7 @@ import org.testng.annotations.Test;
 public class JsonUtilitiesNGTest {
 
     private static final JsonFactory FACTORY = JsonFactoryUtilities.getJsonFactory();
+    private static final ObjectMapper MAPPER = JsonFactoryUtilities.getObjectMapper();
     private final Map<String, String> map = new HashMap<>();
     private final String expectedResult = "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3\":\"value3\"}";
     private final String key1 = "key1";
@@ -104,9 +105,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetTextField_NoDefault() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
+    public void testGetTextField_NoDefault() throws JsonProcessingException {   
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getTextField(testJson, "1.Missing"), null, "L1 null returned if not found");
@@ -127,8 +127,7 @@ public class JsonUtilitiesNGTest {
      */
     @Test
     public void testGetTextField_Default() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\"}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getTextField("default", testJson, "1.Missing"), "default", "L1 default returned if not found");
@@ -149,11 +148,10 @@ public class JsonUtilitiesNGTest {
      */
     @Test
     public void testGetFieldIterator() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
         Iterator<JsonNode> iterator = JsonUtilities.getFieldIterator(testJson, "1.k3");
-        List<String> nodes = new ArrayList<>();
-        while(iterator.hasNext()) {
+        final List<String> nodes = new ArrayList<>();
+        while (iterator.hasNext()) {
             nodes.add(iterator.next().toString());  
         }
         assertEquals(nodes.toString(), "[\"2.v1\", \"2.v2\"]", "Populated node iterator matches");
@@ -181,11 +179,10 @@ public class JsonUtilitiesNGTest {
      */
     @Test
     public void testGetTextFieldIterator() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"1.v1\", \"1.k2\":\"1.v2\", \"1.k3\":{\"2.k1\": \"2.v1\", \"2.k2\": \"2.v2\"}}");  
         Iterator<String> iterator = JsonUtilities.getTextFieldIterator(testJson, "1.k3");
-        List<String> nodes = new ArrayList<>();
-        while(iterator.hasNext()) {
+        final List<String> nodes = new ArrayList<>();
+        while (iterator.hasNext()) {
             nodes.add(iterator.next());  
         }
         assertEquals(nodes.toString(), "[2.v1, 2.v2]", "Populated node iterator matches");
@@ -217,9 +214,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetIntegerField_NoDefault() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
+    public void testGetIntegerField_NoDefault() throws JsonProcessingException { 
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getIntegerField(testJson, "1.Missing"), 0, "0 returned if not found");
@@ -242,9 +238,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetIntegerField_Default() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
+    public void testGetIntegerField_Default() throws JsonProcessingException { 
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getIntegerField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
@@ -268,11 +263,10 @@ public class JsonUtilitiesNGTest {
      */
     @Test
     public void testGetIntegerFieldIterator() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21, \"2.k2\": 22}}"); 
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12, \"1.k3\":{\"2.k1\": 21, \"2.k2\": 22}}"); 
         Iterator<Integer> iterator = JsonUtilities.getIntegerFieldIterator(testJson, "1.k3");
-        List<Integer> nodes = new ArrayList<>();
-        while(iterator.hasNext()) {
+        final List<Integer> nodes = new ArrayList<>();
+        while (iterator.hasNext()) {
             nodes.add(iterator.next());  
         }
         assertEquals(nodes.toString(), "[21, 22]", "Populated node iterator matches");
@@ -304,9 +298,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetLongField_NoDefault() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+    public void testGetLongField_NoDefault() throws JsonProcessingException {  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getLongField(testJson, "1.Missing"), 0, "Null returned if not found");
@@ -329,9 +322,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetLongField_Default() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+    public void testGetLongField_Default() throws JsonProcessingException {   
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getLongField(99, testJson, "1.Missing"), 99, "L1 default returned if not found");
@@ -354,9 +346,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetDoubleField_NoDefault() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+    public void testGetDoubleField_NoDefault() throws JsonProcessingException {  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getDoubleField(testJson, "1.Missing"), 0.0, "Null returned if not found");
@@ -379,9 +370,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetDoubleField_Default() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
+    public void testGetDoubleField_Default() throws JsonProcessingException { 
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": 12.1, \"1.k3\":{\"2.k1\": 21.1}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getDoubleField(99.9, testJson, "1.Missing"), 99.9, "L1 default returned if not found");
@@ -405,8 +395,7 @@ public class JsonUtilitiesNGTest {
      */
     @Test
     public void testGetBooleanField_NoDefault() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true}}");  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getBooleanField(testJson, "1.Missing"), false, "L1 false returned if not found");
@@ -429,9 +418,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetBooleanField_Default() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":{\"2.k1\": false}}");  
+    public void testGetBooleanField_Default() throws JsonProcessingException { 
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":{\"2.k1\": false}}");  
 
         // Search for missing top level value
         assertEquals(JsonUtilities.getBooleanField(true, testJson, "1.Missing"), true, "L1 default returned if not found");
@@ -455,11 +443,10 @@ public class JsonUtilitiesNGTest {
      */
     @Test
     public void testGetBooleanFieldIterator() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true, \"2.k2\": false}}"); 
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": true, \"1.k3\":{\"2.k1\": true, \"2.k2\": false}}"); 
         Iterator<Boolean> iterator = JsonUtilities.getBooleanFieldIterator(testJson, "1.k3");
-        ArrayList<Boolean> nodes = new ArrayList<>();
-        while(iterator.hasNext()) {
+        final List<Boolean> nodes = new ArrayList<>();
+        while (iterator.hasNext()) {
             nodes.add(iterator.next());  
         }
         assertEquals(nodes.toString(), "[true, false]", "Populated node iterator matches");
@@ -491,12 +478,11 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetChildNode() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
+    public void testGetChildNode() throws JsonProcessingException {  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
 
         assertEquals(JsonUtilities.getChildNode(testJson, "missing"), null, "Missing node");
-        JsonNode childNode = JsonUtilities.getChildNode(testJson, "1.k4");
+        final JsonNode childNode = JsonUtilities.getChildNode(testJson, "1.k4");
         assertEquals(JsonUtilities.getTextValue("2.k1", childNode), "nest1", "Get text value of string");      
     }
     
@@ -506,8 +492,7 @@ public class JsonUtilitiesNGTest {
      */
     @Test
     public void testGetTextValue() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
         assertEquals(JsonUtilities.getTextValue("1.k1", testJson), "aaa", "Get text value of string");
         assertEquals(JsonUtilities.getTextValue("1.k2", testJson), "false", "Get text value of boolean");
         assertEquals(JsonUtilities.getTextValue("1.k3", testJson), "1.1", "Get text value of numerical");
@@ -519,9 +504,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetTextValues() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
+    public void testGetTextValues() throws JsonProcessingException {  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"l1\": \"list1\"},2,3,4]}");  
 
         assertEquals(JsonUtilities.getTextValues("1.k4", testJson, ":"), "nest1:nest2", "Print child dictionary");
         assertEquals(JsonUtilities.getTextValues("1.k5", testJson, ":"), "{\"l1\":\"list1\"}:2:3:4", "Print child list");
@@ -534,9 +518,8 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetTextValueOfFirstSubElement() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"1.sub\": \"subvalue\"}], \"1.k6\": [{\"1.sub\": 55}]}");  
+    public void testGetTextValueOfFirstSubElement() throws JsonProcessingException {  
+        final JsonNode testJson = MAPPER.readTree("{\"1.k1\":\"aaa\", \"1.k2\": false, \"1.k3\":1.1, \"1.k4\": {\"2.k1\": \"nest1\", \"2.k2\": \"nest2\"}, \"1.k5\": [{\"1.sub\": \"subvalue\"}], \"1.k6\": [{\"1.sub\": 55}]}");  
         assertEquals(JsonUtilities.getTextValueOfFirstSubElement("missing", "1.sub", testJson), null, "Attribute doesnt exist");
         assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k3", "1.sub", testJson), null, "Attribute exists but holds numbert");
         assertEquals(JsonUtilities.getTextValueOfFirstSubElement("1.k4", "1.sub", testJson), null, "Attribute exists but holds dictionary");
@@ -550,10 +533,9 @@ public class JsonUtilitiesNGTest {
      * @throws com.fasterxml.jackson.core.JsonProcessingException
      */
     @Test
-    public void testGetNodeTextWhenValueIsNull() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();   
-        JsonNode testJson = mapper.readTree("{\"key\":null}");
-        String text = JsonUtilities.getNodeText(testJson.get("key"));
+    public void testGetNodeTextWhenValueIsNull() throws JsonProcessingException { 
+        final JsonNode testJson = MAPPER.readTree("{\"key\":null}");
+        final String text = JsonUtilities.getNodeText(testJson.get("key"));
         assertEquals(text, null);
     }
     

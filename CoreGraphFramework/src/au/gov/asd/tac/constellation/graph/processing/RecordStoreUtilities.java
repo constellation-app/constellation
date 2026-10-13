@@ -160,8 +160,9 @@ public class RecordStoreUtilities {
      */
     public static String toJson(final RecordStore recordStore) throws IOException {
         final String json;
+        final JsonFactory jsonFactory = JsonFactoryUtilities.getJsonFactory();
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            try (final JsonGenerator jg = new JsonFactory().createGenerator(outputStream)) {
+            try (final JsonGenerator jg = jsonFactory.createGenerator(outputStream)) {
                 jg.writeStartArray();
 
                 if (recordStore != null && recordStore.size() > 0) {
