@@ -21,12 +21,6 @@
              usetimestamp="true">
             <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/unfolding-master-20171010.jar"/>
         </get>
-        
-        <echo level="info" message="installing processing..." if:set="third.party.depdendencies"/>
-        <get if:set="third.party.depdendencies"
-             src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/Processing%204.0/core.jar"
-             dest="${suite.dir}/CoreDependencies/release/modules/ext" 
-             usetimestamp="true"/>
         <!--- END OF DELETABLE SECTION WHEN THIS IS IN MAVEN -->    
         
         <!-- Update the project.xml file to include the downloaded jars -->
