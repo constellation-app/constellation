@@ -55,9 +55,18 @@
         <dependency org="org.apache.poi" name="poi-ooxml" rev="5.5.1" />
         
         <!-- Jackson -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.21" />
-        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.21.3" />
-        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.21.3" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.22" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.22.1" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.22.1" />
+
+        <!-- LLM client (LangChain4j low-level model layer, JDK HttpClient transport) -->
+        <dependency org="dev.langchain4j" name="langchain4j-core" rev="1.22.0" />
+        <dependency org="dev.langchain4j" name="langchain4j-open-ai" rev="1.22.0">
+            <exclude org="com.knuddels" module="jtokkit" />
+        </dependency>
+        <dependency org="dev.langchain4j" name="langchain4j-http-client" rev="1.22.0" />
+        <dependency org="dev.langchain4j" name="langchain4j-http-client-jdk" rev="1.22.0" />
+        <dependency org="dev.langchain4j" name="langchain4j-anthropic" rev="1.22.0" />
 
         <!-- Other -->
         <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.6.2" />

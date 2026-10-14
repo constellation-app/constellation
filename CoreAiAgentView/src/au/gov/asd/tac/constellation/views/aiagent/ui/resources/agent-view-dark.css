@@ -1,0 +1,356 @@
+.agent-view {
+    -agent-bg: #1f2227;
+    -agent-surface: #2a2e35;
+    -agent-border: #3d434d;
+    -agent-text: #e4e7ec;
+    -agent-muted: #9aa3b2;
+    -agent-accent: #5b9cf5;
+    -agent-user-bg: #2f5ea8;
+    -agent-user-text: #ffffff;
+    -agent-code-bg: #22262c;
+    -agent-code-text: #f0a6c0;
+    -agent-warn-bg: #4a3a1a;
+    -agent-warn-text: #f5cf86;
+    -agent-ok: #5cc27d;
+    -agent-err: #f07a70;
+    -agent-err-bg: #43282a;
+    -agent-badge-bg: #3a404a;
+    -agent-badge-text: #cfd5df;
+}
+/* Shared rules; the colour tokens are defined per theme above. */
+.agent-view {
+    -fx-background-color: -agent-bg;
+}
+.agent-view .agent-header {
+    -fx-background-color: -agent-surface;
+    -fx-border-color: transparent transparent -agent-border transparent;
+    -fx-padding: 6 8 6 8;
+    -fx-spacing: 6;
+}
+.agent-view .agent-toolbar {
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+.agent-view .agent-chat-settings {
+    -fx-spacing: 8;
+    -fx-alignment: center-left;
+    -fx-padding: 4 0 0 0;
+}
+.agent-view .label.agent-field-label {
+    -fx-text-fill: -agent-muted;
+    -fx-font-size: 0.9em;
+}
+.agent-view .agent-banner {
+    -fx-padding: 4 8 4 8;
+    -fx-background-radius: 4;
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+    -fx-background-color: -agent-warn-bg;
+}
+.agent-view .agent-banner .label {
+    -fx-text-fill: -agent-warn-text;
+}
+.agent-view .agent-transcript-scroll,
+.agent-view .agent-transcript-scroll > .viewport {
+    -fx-background-color: -agent-bg;
+    -fx-background: -agent-bg;
+    -fx-border-color: transparent;
+}
+.agent-view .agent-transcript {
+    -fx-padding: 10 12 10 12;
+    -fx-spacing: 10;
+    -fx-background-color: -agent-bg;
+}
+.agent-view .agent-empty {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-padding: 40 20 20 20;
+}
+.agent-view .label.agent-empty-title {
+    -fx-font-size: 1.3em;
+    -fx-font-weight: bold;
+    -fx-text-fill: -agent-text;
+}
+.agent-view .label.agent-empty-text {
+    -fx-text-fill: -agent-muted;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+.agent-view .button.agent-suggestion {
+    -fx-background-color: -agent-surface;
+    -fx-border-color: -agent-border;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-text-fill: -agent-text;
+    -fx-padding: 4 12 4 12;
+    -fx-cursor: hand;
+}
+.agent-view .button.agent-suggestion:hover {
+    -fx-border-color: -agent-accent;
+}
+.agent-view .agent-user-row {
+    -fx-alignment: top-right;
+}
+.agent-view .agent-user-bubble {
+    -fx-background-color: -agent-user-bg;
+    -fx-background-radius: 12 12 2 12;
+    -fx-padding: 8 12 8 12;
+}
+.agent-view .agent-user-bubble .text,
+.agent-view .agent-user-bubble Text {
+    -fx-fill: -agent-user-text;
+}
+.agent-view .agent-assistant {
+    -fx-spacing: 4;
+}
+.agent-view .label.agent-role {
+    -fx-font-size: 0.85em;
+    -fx-font-weight: bold;
+    -fx-text-fill: -agent-muted;
+}
+.agent-view .agent-assistant-body {
+    -fx-background-color: -agent-surface;
+    -fx-background-radius: 2 12 12 12;
+    -fx-border-color: -agent-border;
+    -fx-border-radius: 2 12 12 12;
+    -fx-padding: 8 12 8 12;
+    -fx-spacing: 6;
+}
+.agent-view .agent-assistant-body Text,
+.agent-view .agent-md Text {
+    -fx-fill: -agent-text;
+}
+.agent-view .agent-md Text.md-code {
+    -fx-font-family: "Menlo", "Consolas", "Monospaced";
+    -fx-fill: -agent-code-text;
+}
+.agent-view .agent-md Text.md-bold {
+    -fx-font-weight: bold;
+}
+.agent-view .agent-md Text.md-italic {
+    -fx-font-style: italic;
+}
+.agent-view .agent-md Text.md-h1 {
+    -fx-font-size: 1.35em;
+    -fx-font-weight: bold;
+}
+.agent-view .agent-md Text.md-h2 {
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+}
+.agent-view .agent-md Text.md-h3 {
+    -fx-font-size: 1.05em;
+    -fx-font-weight: bold;
+}
+.agent-view .agent-md .md-code-block {
+    -fx-background-color: -agent-code-bg;
+    -fx-background-radius: 4;
+    -fx-padding: 6 8 6 8;
+}
+.agent-view .agent-md .md-code-block Text {
+    -fx-font-family: "Menlo", "Consolas", "Monospaced";
+    -fx-fill: -agent-code-text;
+}
+.agent-view .agent-md .md-quote {
+    -fx-border-color: transparent transparent transparent -agent-border;
+    -fx-border-width: 0 0 0 3;
+    -fx-padding: 0 0 0 8;
+}
+.agent-view .agent-md .label.md-bullet {
+    -fx-text-fill: -agent-muted;
+    -fx-min-width: 16;
+}
+.agent-view .agent-md .md-table {
+    -fx-border-color: -agent-border;
+    -fx-background-color: -agent-surface;
+}
+.agent-view .agent-md .md-table .md-cell {
+    -fx-padding: 3 8 3 8;
+    -fx-border-color: -agent-border;
+    -fx-border-width: 0 1 1 0;
+}
+.agent-view .agent-md .md-table .md-header-cell {
+    -fx-background-color: -agent-code-bg;
+}
+.agent-view .agent-md .md-table .md-header-cell Text {
+    -fx-font-weight: bold;
+}
+.agent-view .agent-md .hyperlink {
+    -fx-text-fill: -agent-accent;
+    -fx-padding: 0;
+}
+.agent-view .agent-streaming Text {
+    -fx-fill: -agent-text;
+}
+.agent-view .titled-pane.agent-reasoning > .title {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 2 0;
+}
+.agent-view .titled-pane.agent-reasoning > .title > .text {
+    -fx-fill: -agent-muted;
+}
+.agent-view .titled-pane.agent-reasoning > .content {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent transparent -agent-border;
+    -fx-border-width: 0 0 0 2;
+    -fx-padding: 2 0 2 8;
+}
+.agent-view .agent-reasoning Text {
+    -fx-fill: -agent-muted;
+    -fx-font-style: italic;
+}
+.agent-view .label.agent-thinking {
+    -fx-text-fill: -agent-muted;
+    -fx-font-style: italic;
+}
+.agent-view .agent-tool-card {
+    -fx-background-color: -agent-surface;
+    -fx-border-color: -agent-border;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+    -fx-spacing: 6;
+}
+.agent-view .agent-tool-card.pending {
+    -fx-border-color: -agent-accent;
+    -fx-border-width: 1.5;
+}
+.agent-view .agent-tool-card:focused {
+    -fx-border-color: -agent-accent;
+    -fx-border-width: 2;
+}
+.agent-view .agent-tool-card.rejected {
+    -fx-opacity: 0.85;
+}
+.agent-view .agent-tool-header {
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+.agent-view .label.agent-tool-status {
+    -fx-font-weight: bold;
+    -fx-min-width: 16;
+}
+.agent-view .label.agent-tool-status.ok {
+    -fx-text-fill: -agent-ok;
+}
+.agent-view .label.agent-tool-status.error {
+    -fx-text-fill: -agent-err;
+}
+.agent-view .label.agent-tool-status.waiting {
+    -fx-text-fill: -agent-accent;
+}
+.agent-view .label.agent-tool-name {
+    -fx-font-family: "Menlo", "Consolas", "Monospaced";
+    -fx-font-weight: bold;
+    -fx-text-fill: -agent-text;
+}
+.agent-view .label.agent-tool-meta {
+    -fx-text-fill: -agent-muted;
+    -fx-font-size: 0.85em;
+}
+.agent-view .label.agent-tool-description {
+    -fx-text-fill: -agent-text;
+    -fx-wrap-text: true;
+}
+.agent-view .label.agent-badge {
+    -fx-padding: 1 6 1 6;
+    -fx-background-radius: 8;
+    -fx-font-size: 0.8em;
+    -fx-text-fill: -agent-badge-text;
+    -fx-background-color: -agent-badge-bg;
+}
+.agent-view .label.agent-badge.risk-modifies_graph,
+.agent-view .label.agent-badge.risk-external_query {
+    -fx-background-color: -agent-warn-bg;
+    -fx-text-fill: -agent-warn-text;
+}
+.agent-view .label.agent-badge.risk-destructive {
+    -fx-background-color: -agent-err;
+    -fx-text-fill: white;
+}
+.agent-view .text-area.agent-tool-args {
+    -fx-font-family: "Menlo", "Consolas", "Monospaced";
+    -fx-font-size: 0.9em;
+}
+.agent-view .text-area.agent-tool-args .content {
+    -fx-background-color: -agent-code-bg;
+}
+.agent-view .label.agent-tool-result {
+    -fx-text-fill: -agent-muted;
+    -fx-wrap-text: true;
+}
+.agent-view .label.agent-tool-warning {
+    -fx-text-fill: -agent-warn-text;
+    -fx-background-color: -agent-warn-bg;
+    -fx-padding: 2 6 2 6;
+    -fx-background-radius: 4;
+    -fx-wrap-text: true;
+}
+.agent-view .agent-approval-buttons {
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+.agent-view .button.agent-primary {
+    -fx-background-color: -agent-accent;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+}
+.agent-view .button.agent-primary:hover {
+    -fx-background-color: derive(-agent-accent, -12%);
+}
+.agent-view .button.agent-danger {
+    -fx-background-color: transparent;
+    -fx-border-color: -agent-err;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-text-fill: -agent-err;
+}
+.agent-view .button.agent-danger:hover {
+    -fx-background-color: -agent-err-bg;
+}
+.agent-view .hyperlink.agent-link {
+    -fx-text-fill: -agent-accent;
+    -fx-padding: 0;
+    -fx-font-size: 0.9em;
+}
+.agent-view .agent-notice {
+    -fx-alignment: center;
+}
+.agent-view .label.agent-notice-text {
+    -fx-text-fill: -agent-muted;
+    -fx-font-size: 0.9em;
+    -fx-wrap-text: true;
+}
+.agent-view .agent-error {
+    -fx-background-color: -agent-err-bg;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10 6 10;
+}
+.agent-view .label.agent-error-text {
+    -fx-text-fill: -agent-err;
+    -fx-wrap-text: true;
+}
+.agent-view .agent-footer {
+    -fx-background-color: -agent-surface;
+    -fx-border-color: -agent-border transparent transparent transparent;
+    -fx-padding: 6 8 8 8;
+    -fx-spacing: 6;
+}
+.agent-view .label.agent-context {
+    -fx-text-fill: -agent-muted;
+    -fx-font-size: 0.85em;
+}
+.agent-view .text-area.agent-input {
+    -fx-background-radius: 6;
+}
+.agent-view .agent-input-row {
+    -fx-spacing: 6;
+    -fx-alignment: bottom-left;
+}
+.agent-view .agent-send-buttons {
+    -fx-spacing: 6;
+}
+.agent-view .agent-md Text.md-link {
+    -fx-fill: -agent-accent;
+    -fx-underline: true;
+}

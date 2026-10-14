@@ -1,5 +1,11 @@
 # Constellation Changes
 
+## Changes in October 2026
+-   Added `ConstellationHttpClients` to `CoreUtilities`, which creates `java.net.http.HttpClient` builders that use the current Constellation security context (client certificates) and proxy settings.
+-   Added `CoreAiAgentView`, the Assistant view: a chat with a large language model (Anthropic or OpenAI-compatible API) that can inspect the graph and run plugins with the analyst's approval. Other modules can add tools by implementing `AgentTool` (`au.gov.asd.tac.constellation.views.aiagent.api`) as a `@ServiceProvider`.
+-   Added `NotesViewApi` (`au.gov.asd.tac.constellation.views.notes.api`) so other modules can add user notes to a graph.
+-   Updated Jackson to 2.22 and added LangChain4j 1.22 to `CoreDependencies`.
+
 ## Changes in September 2026
 -   Updated methods in `JsonIODialog`, and `JsonIO` to pass  the `type` as a string, which depicts whether a Preference or Template is being processed. 
     It is used in dialog titles and messages.

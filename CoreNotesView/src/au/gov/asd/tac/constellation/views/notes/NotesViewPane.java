@@ -746,6 +746,22 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
+     * Add a note created outside the Notes View (for example by the
+     * {@link au.gov.asd.tac.constellation.views.notes.api.NotesViewApi}),
+     * refresh the UI and write the notes back to the graph.
+     *
+     * @param note The note to add.
+     * @param graph The graph the note belongs to.
+     */
+    protected void addExternalNote(final NotesViewEntry note, final Graph graph) {
+        synchronized (LOCK) {
+            addNote(note);
+        }
+        updateNotesAndFiltersUI();
+        notesViewController.writeState(graph);
+    }
+
+    /**
      * A convenient method to add a note to the various lists that are used to track them.
      *
      * @param note A new NoteViewEntry to be added.
