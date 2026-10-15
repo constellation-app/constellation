@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.plugins.SelectionToGraphPlugin;
@@ -46,6 +47,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -81,6 +83,7 @@ import org.openide.windows.WindowManager;
     "CTL_TableViewTopComponent=Table View",
     "HINT_TableViewTopComponent=Table View"
 })
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     public static final Object TABLE_LOCK = new Object();
@@ -91,7 +94,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
 
     private TableViewState currentState;
-    
+
     private boolean showingFlag;
 
     public TableViewTopComponent() {
@@ -167,10 +170,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Copy's the existing table view state and sets the new state's element
-     * type to the passed value. Also ensures the new state is in "Selected
-     * Only" mode. The graph table view state attribute is updated with the new
-     * state and then the table's selection is updated.
+     * Copy's the existing table view state and sets the new state's element type to the passed value. Also ensures the
+     * new state is in "Selected Only" mode. The graph table view state attribute is updated with the new state and then
+     * the table's selection is updated.
      *
      * @param elementType the element type to set to the new state
      * @param elementId can be anything, not used
@@ -257,46 +259,40 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Get column attributes that were present in the old state but not in the
-     * new one.
+     * Get column attributes that were present in the old state but not in the new one.
      *
      * @param oldState the old table state
      * @param newState the new table state
-     * @return a set of column attributes that are present in the old state but
-     * not the new one
+     * @return a set of column attributes that are present in the old state but not the new one
      */
     protected Set<Tuple<String, Attribute>> getRemovedAttributes(final TableViewState oldState, final TableViewState newState) {
         return new HashSet<>(CollectionUtils.subtract(
-                        oldState != null && oldState.getColumnAttributes() != null 
-                                ? oldState.getColumnAttributes() : new HashSet<>(),
-                        newState != null && newState.getColumnAttributes() != null 
-                                ? newState.getColumnAttributes() : new HashSet<>())
+                oldState != null && oldState.getColumnAttributes() != null
+                ? oldState.getColumnAttributes() : new HashSet<>(),
+                newState != null && newState.getColumnAttributes() != null
+                ? newState.getColumnAttributes() : new HashSet<>())
         );
     }
 
     /**
-     * Get column attributes that were not present in the old state but are
-     * present in the new state.
+     * Get column attributes that were not present in the old state but are present in the new state.
      *
      * @param oldState the old table state
      * @param newState the new table state
-     * @return a set of column attributes that were not present in the old state
-     * but are present in the new state
+     * @return a set of column attributes that were not present in the old state but are present in the new state
      */
     protected Set<Tuple<String, Attribute>> getAddedAttributes(final TableViewState oldState, final TableViewState newState) {
         return new HashSet<>(CollectionUtils.subtract(
-                        newState != null && newState.getColumnAttributes() != null 
-                                ? newState.getColumnAttributes() : new HashSet<>(),
-                        oldState != null && oldState.getColumnAttributes() != null 
-                                ? oldState.getColumnAttributes() : new HashSet<>())
+                newState != null && newState.getColumnAttributes() != null
+                ? newState.getColumnAttributes() : new HashSet<>(),
+                oldState != null && oldState.getColumnAttributes() != null
+                ? oldState.getColumnAttributes() : new HashSet<>())
         );
     }
 
     /**
-     * Update the current table state with the table state stored in the passed
-     * graph attributes. If a table state does not exist in the graph attribute
-     * then it will crate and new state and set it to the current state in the
-     * table.
+     * Update the current table state with the table state stored in the passed graph attributes. If a table state does
+     * not exist in the graph attribute then it will crate and new state and set it to the current state in the table.
      *
      * @param graph the graph that the new state will be extracted from
      */
@@ -339,9 +335,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     @Override
     protected String createStyle() {
-        return JavafxStyleManager.isDarkTheme() 
-            ? "resources/table-view-dark.css" 
-            : "resources/table-view-light.css";
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/table-view-dark.css"
+                : "resources/table-view-light.css";
     }
 
     @Override
@@ -352,10 +348,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * Update the current state with the new state pulled from the passed
-     * graph's attributes and update the attribute handlers so that the table is
-     * only notified for attribute changes that it cares about. Then trigger a
-     * table refresh using the new graph as its source of truth.
+     * Update the current state with the new state pulled from the passed graph's attributes and update the attribute
+     * handlers so that the table is only notified for attribute changes that it cares about. Then trigger a table
+     * refresh using the new graph as its source of truth.
      *
      * @param graph the new graph
      */
@@ -409,8 +404,8 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
     }
 
     /**
-     * When the graph is closed change the graphs pagination to a pagination
-     * over nothing and update the table. This will essentially clear the table.
+     * When the graph is closed change the graphs pagination to a pagination over nothing and update the table. This
+     * will essentially clear the table.
      *
      * @param graph the graph being closed
      */
@@ -419,31 +414,31 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
         getTablePane().getActiveTableReference().updatePagination(
                 getTablePane().getActiveTableReference().getUserTablePreferences().getMaxRowsPerPage(), null, getTablePane());
     }
-    
+
     @Override
     protected void componentActivated() {
         setComponentVisible(true);
         if (!isShowingFlag()) {
             if (WindowManager.getDefault().isTopComponentFloating(this)) {
                 ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
-            } 
-            if (WindowManager.getDefault().isTopComponentMinimized(this)) {
-                ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");            
             }
-            if (!WindowManager.getDefault().isTopComponentMinimized(this) &&
-                !WindowManager.getDefault().isTopComponentFloating(this)) {
+            if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+                ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");
+            }
+            if (!WindowManager.getDefault().isTopComponentMinimized(this)
+                    && !WindowManager.getDefault().isTopComponentFloating(this)) {
                 ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
             }
-            setShowingFlag(true);        
+            setShowingFlag(true);
         }
     }
-    
+
     @Override
     protected void componentHidden() {
         setComponentVisible(false);
         setShowingFlag(false);
     }
-    
+
     /**
      * @return the showingFlag
      */
@@ -456,6 +451,16 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
      */
     protected void setShowingFlag(final boolean showingFlag) {
         this.showingFlag = showingFlag;
+    }
+
+    @Override
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_TableViewTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "output";
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
