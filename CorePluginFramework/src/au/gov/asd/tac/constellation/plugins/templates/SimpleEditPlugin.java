@@ -77,7 +77,8 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
         final Graph graph = graphs.getGraph();
         final int totalSteps = -1;
-
+        boolean cancelled = false;
+                
         //graph no longer exists
         if (graph == null) {
             LOGGER.log(Level.WARNING, "Null graph not allowed in a {0}", SimpleEditPlugin.class.getSimpleName());
@@ -91,7 +92,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
             interaction.setExecutionStage(0, totalSteps, PluginExecutionStageConstants.WAITING, WAITING_INTERACTION, true);
 
             try {
-                boolean cancelled = false;
                 Object description = null;
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
 
@@ -108,6 +108,8 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                         cancelled = true;
                         throw ex;
                     }
+                } catch(final InterruptedException ex) {
+                    throw ex;
                 } finally {
                     if (cancelled) {
                         writableGraph.rollBack();
@@ -115,10 +117,13 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                         writableGraph.commit(description);
                     }
                 }
+            } catch (final InterruptedException ex) {
+                throw ex;
             } finally {
                 interaction.setExecutionStage(2, 1, PluginExecutionStageConstants.COMPLETE, FINISHED, true);
             }
-
+        } catch (final InterruptedException ex) {
+            throw ex;
         } finally {
             interaction.setBusy(graph.getId(), false);
         }
