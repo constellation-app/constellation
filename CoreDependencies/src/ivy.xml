@@ -74,6 +74,11 @@
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.7" />
         <dependency org="org.locationtech.jts" name="jts-core" rev="1.20.0" />
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.7" />
+        <dependency org="org.processing" name="core" rev="4.5.7">
+            <exclude org="org.jogamp.gluegen" module="gluegen-rt-main" />
+            <exclude org="org.jogamp.jogl" module="jogl-all-main" />
+            <exclude org="org.jetbrains.kotlin" module="kotlin-stdlib" />
+        </dependency>
         <dependency org="org.python" name="jython-standalone" rev="2.7.4" />
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1" />
         
