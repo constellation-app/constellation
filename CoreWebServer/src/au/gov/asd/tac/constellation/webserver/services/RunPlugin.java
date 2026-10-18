@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
@@ -102,7 +103,7 @@ public class RunPlugin extends RestService {
         final Graph graph = (graphId == null || "null".equals(graphId)) ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         if (graph != null) {
             try {
-                final ObjectMapper mapper = new ObjectMapper();
+                final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
                 final JsonNode json = mapper.readTree(in);
                 if (json.size() > 0) {
                     final Plugin plugin = PluginRegistry.get(pluginName);

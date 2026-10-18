@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -76,7 +77,7 @@ public class ListIcons extends RestService {
         final List<String> names = new ArrayList<>(IconManager.getIconNames(editable));
         names.sort(String::compareToIgnoreCase);
 
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final ArrayNode root = mapper.createArrayNode();
         names.forEach(root::add);
 

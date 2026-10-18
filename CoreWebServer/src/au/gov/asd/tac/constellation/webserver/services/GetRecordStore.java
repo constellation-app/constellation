@@ -28,12 +28,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -185,10 +185,7 @@ public class GetRecordStore extends RestService {
             attrs.addAll(attrToTypedAttr.keySet());
         }
 
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, false);
-        mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, false);
-
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
 
         // We want to build a JSON document that looks like:

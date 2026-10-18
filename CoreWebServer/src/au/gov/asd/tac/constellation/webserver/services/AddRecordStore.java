@@ -38,6 +38,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
@@ -138,7 +139,7 @@ public class AddRecordStore extends RestService {
         final boolean resetView = parameters.getBooleanValue(RESET_PARAMETER_ID);
 
         final RecordStore rs = new GraphRecordStore();
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = JsonFactoryUtilities.getObjectMapper();
         final JsonNode json = mapper.readTree(in);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);

@@ -16,6 +16,8 @@
 
 package au.gov.asd.tac.constellation.utilities.keyboardshortcut;
 
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import static au.gov.asd.tac.constellation.utilities.icon.IconManager.createBlueDialogIcon;
 import javafx.application.Platform;
 import javafx.beans.NamedArg;
 import javafx.geometry.Pos;
@@ -63,8 +65,8 @@ public class KeyPressLabelDialog extends Dialog<String> {
         this.grid.setAlignment(Pos.CENTER_LEFT);
 
         dialogPane.contentTextProperty().addListener(o -> updateGrid());
-        
-        
+        dialogPane.setGraphic(createBlueDialogIcon(AnalyticIconProvider.KEYBOARD.buildImage(), 30));
+
         dialogPane.getStyleClass().add("text-input-dialog");
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
