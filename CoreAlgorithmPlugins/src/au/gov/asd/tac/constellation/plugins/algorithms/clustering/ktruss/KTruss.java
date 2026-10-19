@@ -129,10 +129,9 @@ public class KTruss {
             // Set the information about the connected components of the k-trusses in the KTrussState
             // to facilitate nested k-truss visulisation.
             state.setComponentInformation(nodeToComponent, linkToComponent, componentTree, componentSizes, currentComponentNum, graph.getVertexCount(), totalVertsInTrusses);
-            state.strucModificationCount = graph.getStructureModificationCounter();
+            state.setStrucModificationCount(graph.getStructureModificationCounter());
             state.setInteractive(interactive);
             graph.setObjectValue(kTrussStateAttr, 0, state);
-
         }
         
         /**

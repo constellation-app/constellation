@@ -160,8 +160,8 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeNumberField(VERSION, 2);
 
                 jsonGenerator.writeObjectFieldStart(attr.getName());
-                jsonGenerator.writeNumberField(MODCOUNT, state.modificationCounter);
-                jsonGenerator.writeNumberField(STRUCMODCOUNT, state.strucModificationCount);
+                jsonGenerator.writeNumberField(MODCOUNT, state.getModificationCounter());
+                jsonGenerator.writeNumberField(STRUCMODCOUNT, state.getStrucModificationCount());
                 jsonGenerator.writeNumberField(CURRENTK, state.getCurrentK());
                 jsonGenerator.writeNumberField(HIGHESTK, state.getHighestK());
                 jsonGenerator.writeBooleanField(DIMMED, state.isExcludedElementsDimmed());

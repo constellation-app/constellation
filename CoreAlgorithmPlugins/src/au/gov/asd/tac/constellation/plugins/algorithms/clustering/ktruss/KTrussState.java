@@ -31,8 +31,8 @@ import java.util.Map;
  */
 public class KTrussState {
 
-    public long modificationCounter;
-    public long strucModificationCount;
+    private long modificationCounter;
+    private long strucModificationCount;
     // The value of k indidcating which k-trusses are being visualised.
     private int currentK;
     // The highest value of k available to be visualised (is set to one more than the heighest k-truss in the graph)
@@ -159,6 +159,22 @@ public class KTrussState {
         this.totalVertsInTrusses = totalVertsInTrusses;
     }
 
+    public long getModificationCounter() {
+        return modificationCounter;
+    }
+
+    public void setModificationCounter(final long modificationCounter) {
+        this.modificationCounter = modificationCounter;
+    }
+
+    public long getStrucModificationCount() {
+        return strucModificationCount;
+    }
+
+    public void setStrucModificationCount(final long strucModificationCount) {
+        this.strucModificationCount = strucModificationCount;
+    }
+    
     public boolean isNestedTrussesColored() {
         return nestedTrussesColored;
     }

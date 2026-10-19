@@ -606,7 +606,7 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
             mc = stateAttr != Graph.NOT_FOUND ? rg.getValueModificationCounter(stateAttr) : Graph.NOT_FOUND;
 
             // If the k-truss state on the controller is null, or has a different modcount to the state on the graph, update this controller's state.
-            if (state == null || mc != state.modificationCounter) {
+            if (state == null || mc != state.getModificationCounter()) {
                 state = stateAttr != Graph.NOT_FOUND ? (KTrussState) rg.getObjectValue(stateAttr, 0) : null;
                 setGroups(true);
             }
@@ -615,8 +615,8 @@ public final class KTrussControllerTopComponent extends SwingTopComponent<Nested
 
         // Update the controller state's modcount, and make the recluster button active if the srtuctual mod count does not match the graph.
         if (state != null) {
-            state.modificationCounter = mc;
-            reclusterButton.setEnabled(smc != state.strucModificationCount);
+            state.setModificationCounter(mc);
+            reclusterButton.setEnabled(smc != state.getStrucModificationCount());
         }
 
         // Interactive button should only be available if state is available
