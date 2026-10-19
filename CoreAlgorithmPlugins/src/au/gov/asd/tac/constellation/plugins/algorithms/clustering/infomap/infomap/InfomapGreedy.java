@@ -314,7 +314,6 @@ public abstract class InfomapGreedy extends InfomapBase {
 
         final int numNodes = activeNetwork.size();
         
-        int numMoved = 0;
         for (int k = 0; k < numNodes; k++) {
             final Node current = getNode(activeNetwork.get(k));
             final int oldM = current.getIndex(); // == k
@@ -369,7 +368,6 @@ public abstract class InfomapGreedy extends InfomapBase {
                 moduleMembers[newM] += 1;
 
                 current.setIndex(newM);
-                numMoved++;
             }
         }
     }

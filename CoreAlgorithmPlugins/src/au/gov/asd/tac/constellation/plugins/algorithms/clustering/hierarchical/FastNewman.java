@@ -54,7 +54,7 @@ public class FastNewman {
     @Deprecated(since = "3.5", forRemoval = true)
     public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, final String weightAttribute) throws InterruptedException {
         final MutableIntSet initLinkIds = new IntHashSet();
-        initialLinkIds.forEach(linkId -> initLinkIds.add(linkId));
+        initialLinkIds.forEach(initLinkIds::add);
         
         run(graph, interaction, interactive, initLinkIds, weightAttribute);
     } 

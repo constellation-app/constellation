@@ -83,9 +83,9 @@ public class TreeData {
         final StringBuilder buf = new StringBuilder();
 
         buf.append("[\n");
-        buf.append(String.format("%s\n", root));
+        buf.append(String.format("%s%n", root));
         for (final NodeBase node : getLeaves()) {
-            buf.append(String.format("  %s\n", node));
+            buf.append(String.format("  %s%n", node));
         }
 
         buf.append("]\n");

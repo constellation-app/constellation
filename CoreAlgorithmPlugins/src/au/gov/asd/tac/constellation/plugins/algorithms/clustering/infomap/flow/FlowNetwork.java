@@ -214,10 +214,8 @@ public class FlowNetwork {
             numIterations++;
         } while ((numIterations < 200) && (sqdiff > 1.0e-15 || numIterations < 50));
 
-        double sumNodeRank = 1.0;
-
-        //Take one last power iteration excluding the teleportation (and normalize node flow to sum 1.0).
-        sumNodeRank = 1.0 - danglingRank;
+        // Take one last power iteration excluding the teleportation (and normalize node flow to sum 1.0).
+        final double sumNodeRank = 1.0 - danglingRank;
         Arrays.fill(nodeFlow, 0);
         for (final Connection conn : flowConns) {
             nodeFlow[conn.getTarget()] += conn.getFlow() * nodeFlowTmp[conn.getSource()] / sumNodeRank;
