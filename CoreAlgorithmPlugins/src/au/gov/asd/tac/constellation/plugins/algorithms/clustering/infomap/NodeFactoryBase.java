@@ -23,8 +23,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits
  */
 public interface NodeFactoryBase {
 
-    public NodeBase createNode();
-
     public NodeBase createNode(final String name, final double flow, final double teleWeight);
 
     public NodeBase createNode(final NodeBase node);

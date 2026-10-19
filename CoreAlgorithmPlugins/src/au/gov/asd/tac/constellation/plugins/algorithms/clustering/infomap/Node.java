@@ -25,18 +25,14 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits
 public class Node extends NodeBase {
 
     private FlowBase data;
-
-    public Node() {
-        super();
+    
+    public Node(final FlowBase data) {
+        this("", data);
     }
-
+    
     public Node(final String name, final FlowBase data) {
         super(name);
         this.data = data.copy();
-    }
-
-    public Node(final FlowBase data) {
-        this("", data);
     }
 
     public FlowBase getData() {
@@ -45,10 +41,5 @@ public class Node extends NodeBase {
 
     public void setData(final FlowBase data) {
         this.data = data.copy();
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
     }
 }

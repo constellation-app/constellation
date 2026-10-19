@@ -21,18 +21,15 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.openide.nodes.Node;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.openide.windows.TopComponent;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -87,33 +84,26 @@ public class HierarchicalControllerTopComponentNGTest {
     public void testGraphChanged() throws InterruptedException {
         System.out.println("testGraphChanged");
         
-        final TopComponent.Registry mockReg = mock(TopComponent.Registry.class);
         final GraphNode mockGraphNode = mock(GraphNode.class);
-        final Node[] nodes = {mockGraphNode};
         final Graph mockGraph = mock(Graph.class);
         final ReadableGraph mockReadableGraph = mock(ReadableGraph.class);
         final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(mockReadableGraph);
         final HierarchicalState state = new HierarchicalState();
         final FastNewman.Group[] groups = {};
 
-        when(mockReg.getActivatedNodes()).thenReturn(nodes);
         when(mockGraphNode.getGraph()).thenReturn(mockGraph);
         when(mockGraph.getReadableGraph()).thenReturn(mockReadableGraph);
         when(mockReadableGraph.getObjectValue(stateAttr, 0)).thenReturn(state);
         state.setGroups(groups);
 
-        try (MockedStatic<TopComponent> mockTopComponent = Mockito.mockStatic(TopComponent.class)) {
-            mockTopComponent.when(TopComponent::getRegistry).thenReturn(mockReg);
-            assertThat(TopComponent.getRegistry()).isEqualTo(mockReg);
+        try (MockedStatic<GraphNode> mockedStaticGraphNode = Mockito.mockStatic(GraphNode.class)) {
+            mockedStaticGraphNode.when(() -> GraphNode.getGraphNode(mockGraph)).thenReturn(mockGraphNode);
 
             final HierarchicalControllerTopComponent instance = new HierarchicalControllerTopComponent();
-            assertEquals(instance.getClass(), HierarchicalControllerTopComponent.class);
 
-            instance.resultChanged(null);
-            mockTopComponent.verify(TopComponent::getRegistry, times(2));
-            verify(mockReg).getActivatedNodes();
+            instance.newActiveGraph(mockGraph);
             verify(mockGraphNode).getGraph();
-            verify(mockGraph).getReadableGraph();
+            verify(mockGraph, times(3)).getReadableGraph(); // 1 call in top component, 2 more in parent class
             verify(mockReadableGraph).getObjectValue(stateAttr, 0);
         }
 
