@@ -29,48 +29,48 @@
         </dependency> 
 
         <!-- Geotools -->
-        <dependency org="org.geotools" name="gt-main" rev="32.4">
+        <dependency org="org.geotools" name="gt-main" rev="34.6">
             <exclude org="org.geotools" module="gt-http" />
             <exclude org="com.google.re2j" module="re2j" />
         </dependency>
-        <dependency org="org.geotools" name="gt-api" rev="32.4" /> 
-        <dependency org="org.geotools" name="gt-referencing" rev="32.4" />
-        <dependency org="org.geotools" name="gt-epsg-hsql" rev="32.4" />
-        <dependency org="org.geotools" name="gt-geopkg" rev="32.4">
+        <dependency org="org.geotools" name="gt-api" rev="34.6" /> 
+        <dependency org="org.geotools" name="gt-referencing" rev="34.6" />
+        <dependency org="org.geotools" name="gt-epsg-hsql" rev="34.6" />
+        <dependency org="org.geotools" name="gt-geopkg" rev="34.6">
             <exclude org="org.geotools" module="gt-coverage" />
             <exclude org="org.geotools.xsd" module="gt-xsd-fes" />
         </dependency>
-        <dependency org="org.geotools" name="gt-shapefile" rev="32.4" />
-        <dependency org="org.geotools" name="gt-geojson" rev="32.4" />
-        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="32.4" />
-        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="32.4" />
+        <dependency org="org.geotools" name="gt-shapefile" rev="34.6" />
+        <dependency org="org.geotools" name="gt-geojson" rev="34.6" />
+        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="34.6" />
+        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="34.6" />
 
         <!-- Apache -->
-        <dependency org="org.apache.commons" name="commons-collections4" rev="4.5.0" />
+        <dependency org="org.apache.commons" name="commons-collections4" rev="4.6.0" />
         <dependency org="org.apache.commons" name="commons-csv" rev="1.14.1" />
-        <dependency org="org.apache.commons" name="commons-lang3" rev="3.20.0" />
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.21.0" />
         <dependency org="org.apache.commons" name="commons-math3" rev="3.6.1" />
         <dependency org="org.apache.commons" name="commons-text" rev="1.15.0" />
-        <dependency org="org.apache.poi" name="poi" rev="5.5.1" />
-        <dependency org="org.apache.poi" name="poi-ooxml" rev="5.5.1" />
+        <dependency org="org.apache.poi" name="poi" rev="6.0.0" />
+        <dependency org="org.apache.poi" name="poi-ooxml" rev="6.0.0" />
         
         <!-- Jackson -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.21" />
-        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.21.3" />
-        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.21.3" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.22" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.22.4" />
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.22.4" />
 
         <!-- Other -->
-        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.6.2" />
-        <dependency org="com.google.guava" name="guava" rev="33.6.0-jre" />
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="4.0.1" />
+        <dependency org="com.google.guava" name="guava" rev="33.7.2-jre" />
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986" />
         <dependency org="javax.help" name="javahelp" rev="2.0.05" />
         <dependency org="log4j" name="log4j" rev="1.2.17" />
-        <dependency org="org.commonmark" name="commonmark" rev="0.28.0" />
-        <dependency org="org.controlsfx" name="controlsfx" rev="11.2.3" />
+        <dependency org="org.commonmark" name="commonmark" rev="0.31.0" />
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.2.6" />
         <dependency org="org.eclipse.collections" name="eclipse-collections" rev="13.0.0" />
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="12.1.9" />
-        <dependency org="org.eclipse.jetty.ee10" name="jetty-ee10-servlet" rev="12.1.9" />
-        <dependency org="org.ejml" name="ejml-simple" rev="0.45.0" />
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="12.1.14" />
+        <dependency org="org.eclipse.jetty.ee10" name="jetty-ee10-servlet" rev="12.1.14" />
+        <dependency org="org.ejml" name="ejml-simple" rev="0.46.1" />
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.11.7" />
         <dependency org="org.locationtech.jts" name="jts-core" rev="1.20.0" />
         <dependency org="org.openjdk.nashorn" name="nashorn-core" rev="15.7" />
@@ -112,7 +112,7 @@
         <!-- Testing -->
         <dependency org="org.assertj" name="assertj-core" rev="3.27.7" />
         <dependency org="org.mockito" name="mockito-core" rev="5.21.0" />
-        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="4.5" />
+        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="4.5.2" />
         <dependency org="org.testfx" name="openjfx-monocle" rev="21.0.2" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.18" />
         
