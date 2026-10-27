@@ -96,7 +96,7 @@ public class HierarchicalControllerTopComponentNGTest {
         when(mockReadableGraph.getObjectValue(stateAttr, 0)).thenReturn(state);
         state.setGroups(groups);
 
-        try (MockedStatic<GraphNode> mockedStaticGraphNode = Mockito.mockStatic(GraphNode.class)) {
+        try (final MockedStatic<GraphNode> mockedStaticGraphNode = Mockito.mockStatic(GraphNode.class)) {
             mockedStaticGraphNode.when(() -> GraphNode.getGraphNode(mockGraph)).thenReturn(mockGraphNode);
 
             final HierarchicalControllerTopComponent instance = new HierarchicalControllerTopComponent();

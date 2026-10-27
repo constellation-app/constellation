@@ -64,7 +64,7 @@ public class TreeDataNGTest {
         assertEquals(root.getChildDegree(), 0);
         assertEquals(instance.getNumLeafNodes(), 0);
         
-        int result = instance.addNewNode(2, "newNode", 0.5F, 0.8F);
+        final int result = instance.addNewNode(2, "newNode", 0.5F, 0.8F);
         
         assertEquals(result, 2);
         assertEquals(root.getChildDegree(), 1);
