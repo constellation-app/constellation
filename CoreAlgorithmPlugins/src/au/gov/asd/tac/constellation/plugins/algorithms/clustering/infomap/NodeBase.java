@@ -21,9 +21,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * NodeBase
@@ -31,8 +28,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author algol
  */
 public class NodeBase {
-
-    private static final Logger LOGGER = Logger.getLogger(NodeBase.class.getName());
 
     private static int uid = 0;
 
@@ -48,26 +43,18 @@ public class NodeBase {
     private NodeBase lastChild;
     private double codelength;
 
-    protected SubStructure subStructure;
+    protected InfomapBase subInfomap;
     protected int childDegree;
-    protected boolean childrenChanged;
-    protected int numLeafMembers;
-    protected ArrayList<Edge<NodeBase>> inEdges;
-    protected ArrayList<Edge<NodeBase>> outEdges;
-
-    public NodeBase() {
-        this(StringUtils.EMPTY);
-    }
+    protected List<Edge<NodeBase>> inEdges;
+    protected List<Edge<NodeBase>> outEdges;
 
     public NodeBase(final String name) {
         this.id = uid++;
         this.name = name;
         index = 0;
         codelength = 0;
-        subStructure = new SubStructure();
+        subInfomap = null;
         childDegree = 0;
-        childrenChanged = false;
-        numLeafMembers = 1;
         inEdges = new ArrayList<>();
         outEdges = new ArrayList<>();
 
@@ -105,17 +92,9 @@ public class NodeBase {
     public NodeBase getParent() {
         return parent;
     }
-
-    public void setParent(final NodeBase parent) {
-        this.parent = parent;
-    }
-
+    
     public NodeBase getFirstChild() {
         return firstChild;
-    }
-
-    public void setFirstChild(final NodeBase firstChild) {
-        this.firstChild = firstChild;
     }
 
     public double getCodelength() {
@@ -212,45 +191,20 @@ public class NodeBase {
         return firstChild == null;
     }
 
-    public boolean isDangling() {
-        return outEdges.isEmpty();
-    }
-
-    public int getOutDegree() {
-        return outEdges.size();
-    }
-
-    public int getInDegree() {
-        return inEdges.size();
-    }
-
-    public int getDegree() {
-        return getOutDegree() + getInDegree();
-    }
-
     public int getChildDegree() {
         return childDegree;
     }
 
     public void setChildDegree(final int value) {
         childDegree = value;
-        childrenChanged = false;
     }
 
     public InfomapBase getSubInfomap() {
-        return subStructure.getSubInfomap();
+        return subInfomap;
     }
 
-    public SubStructure getSubStructure() {
-        return subStructure;
-    }
-
-    public int getNumLeafNodes() {
-        return numLeafMembers;
-    }
-
-    public void setNumLeafNodes(final int value) {
-        numLeafMembers = value;
+    public void setSubInfomap(final InfomapBase subInfomap) {
+        this.subInfomap = subInfomap;
     }
 
     public List<Edge<NodeBase>> getOutEdges() {
@@ -272,46 +226,29 @@ public class NodeBase {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final NodeBase other = (NodeBase) obj;
 
         return this.id == other.id;
     }
-
-    public void dumpEdges() {
-        final String formattedString = String.format("id %d; index %d; out> %d; in< %d\n", id, index, outEdges.size(), inEdges.size());
-        LOGGER.log(Level.INFO, formattedString);
+    
+    @Override
+    public String toString() {
+        return String.format("[NodeBase %d:%s index=%d original=%d] %s", id, name, index, originalIndex, getNeighbourhood());
     }
 
-    /**
-     * Debug.
-     *
-     * @return
-     */
-    private static int getNodeBaseid(final NodeBase n) {
-        return n == null ? -1 : n.id;
-    }
-
-    protected String getNeighbourhood() {
+    private String getNeighbourhood() {
         return String.format("parent: %d, prev: %d, next: %d, firstChild: %d, lastChild: %d, childDegree: %d",
                 getNodeBaseid(parent), getNodeBaseid(previous), getNodeBaseid(next), getNodeBaseid(firstChild), getNodeBaseid(lastChild), childDegree);
     }
-
-    @Override
-    public String toString() {
-        if (true) {
-            return String.format("[NodeBase %d index=%d original=%d] %s", id, index, originalIndex, getNeighbourhood());
-        }
-
-        return String.format("[NodeBase %d:%s index=%d] %s", id, name, index, getNeighbourhood());
+    
+    private static int getNodeBaseid(final NodeBase n) {
+        return n == null ? -1 : n.id;
     }
-
-    public static class ChildrenIterator implements Iterator<NodeBase> {
+    
+    protected static class ChildrenIterator implements Iterator<NodeBase> {
 
         private NodeBase current;
 

@@ -109,7 +109,7 @@ public class ClusterUtilities {
     }
 
     /**
-     * Make the graph all explodey based on cluster membership.
+     * Make the graph all explode based on cluster membership.
      * <p>
      * A cluster is identified by the integer attribute "cluster"; all vertices
      * will the same cluster value are in the same cluster.

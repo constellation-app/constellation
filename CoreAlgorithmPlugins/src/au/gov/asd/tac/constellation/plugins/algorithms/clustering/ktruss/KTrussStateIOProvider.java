@@ -70,7 +70,6 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
-
             final int version = jnode.has(VERSION) ? jnode.get(VERSION).asInt() : 0;
 
             final long modificationCounter = jnode.get(MODCOUNT).asLong();
@@ -161,8 +160,8 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeNumberField(VERSION, 2);
 
                 jsonGenerator.writeObjectFieldStart(attr.getName());
-                jsonGenerator.writeNumberField(MODCOUNT, state.modificationCounter);
-                jsonGenerator.writeNumberField(STRUCMODCOUNT, state.strucModificationCount);
+                jsonGenerator.writeNumberField(MODCOUNT, state.getModificationCounter());
+                jsonGenerator.writeNumberField(STRUCMODCOUNT, state.getStrucModificationCount());
                 jsonGenerator.writeNumberField(CURRENTK, state.getCurrentK());
                 jsonGenerator.writeNumberField(HIGHESTK, state.getHighestK());
                 jsonGenerator.writeBooleanField(DIMMED, state.isExcludedElementsDimmed());

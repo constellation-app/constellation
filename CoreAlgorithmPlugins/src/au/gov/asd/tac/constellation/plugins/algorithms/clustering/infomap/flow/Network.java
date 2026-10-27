@@ -19,13 +19,14 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.collections.api.tuple.primitive.IntIntPair;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 
 /**
  * Parse graph connections into a map ordered by (end1, end2).
@@ -40,12 +41,11 @@ public class Network {
     private final GraphReadMethods rg;
     private final Iterable<Connection> graphConnections;
 
-    private final TreeMap<NodePair, Double> connectionMap;
+    private final Map<IntIntPair, Double> connectionMap;
 
     private final int vxNameId;
 
     private final double[] nodeWeights;
-    private final double sumNodeWeights;
     private double totalWeight;
 
     public Network(final Config config, final GraphReadMethods rg) {
@@ -59,24 +59,25 @@ public class Network {
         // We assume that all vertices have weight 1.
         nodeWeights = new double[rg.getVertexCount()];
         Arrays.fill(nodeWeights, 1);
-        sumNodeWeights = rg.getVertexCount();
 
         graphConnections = () -> {
-            if (config.getConnectionType() == ConnectionType.LINKS) {
-                return new LinkIterator(rg);
-            } else if (config.getConnectionType() == ConnectionType.EDGES) {
-                return new EdgeIterator(rg);
-            } else if (config.getConnectionType() == ConnectionType.TRANSACTIONS) {
-                return new TransactionIterator(rg);
-            } else {
-                throw new IllegalStateException(String.format("Unexpected connection type %s", config.getConnectionType()));
+            switch (config.getConnectionType()) {
+                case LINKS -> {
+                    return new LinkIterator(rg);
+                }
+                case EDGES -> {
+                    return new EdgeIterator(rg);
+                }
+                case TRANSACTIONS -> {
+                    return new TransactionIterator(rg);
+                }
+                case null, default -> throw new IllegalStateException(String.format("Unexpected connection type %s", config.getConnectionType()));
             }
         };
     }
 
     public void read() {
         connectionMap.clear();
-        int numSelfLinks = 0;
 
         int numDoubleLinks = 0;
         totalWeight = 0;
@@ -86,13 +87,6 @@ public class Network {
         // This gives us a nice 0..n-1 numbering which the algorithm pretty much relies on.
         // Don't forget to convert back when looking at the results.
         for (final Connection conn : graphConnections) {
-            if (conn.getTarget() == conn.getSource()) {
-                numSelfLinks++;
-                if (!config.isIncludeSelfLinks()) {
-                    continue;
-                }
-            }
-
             // If undirected links, aggregate weight rather than adding an opposite link.
             if (config.isUndirected() && conn.getTarget() < conn.getSource()) {
                 final int tmp = conn.getSource();
@@ -106,16 +100,13 @@ public class Network {
             }
 
             // Aggregate link weights if they are defined more than once.
-            final NodePair nodePair = new NodePair(conn.getSource(), conn.getTarget());
+            final IntIntPair nodePair = PrimitiveTuples.pair(conn.getSource(), conn.getTarget());
             final Double d = connectionMap.get(nodePair);
             if (d == null) {
                 connectionMap.put(nodePair, conn.getWeight());
             } else {
                 connectionMap.put(nodePair, d + conn.getWeight());
                 numDoubleLinks++;
-                if (conn.getTarget() == conn.getSource()) {
-                    numSelfLinks--;
-                }
             }
         }
 
@@ -123,9 +114,6 @@ public class Network {
         LOGGER.log(Level.INFO, formattedString);
         if (numDoubleLinks > 0) {
             LOGGER.log(Level.INFO, "{0} connections was aggregated to existing connections.", numDoubleLinks);
-        }
-        if (numSelfLinks > 0 && !config.isIncludeSelfLinks()) {
-            LOGGER.log(Level.INFO, "self-connections was ignored.");
         }
     }
 
@@ -137,18 +125,10 @@ public class Network {
         return totalWeight;
     }
 
-    public Map<NodePair, Double> getMap() {
+    public Map<IntIntPair, Double> getMap() {
         return Collections.unmodifiableMap(connectionMap);
     }
-
-    public double[] getNodeTeleportRates() {
-        return nodeWeights.clone();
-    }
-
-    public double getSumNodeWeights() {
-        return sumNodeWeights;
-    }
-
+    
     public String getNodeName(final int position) {
         return vxNameId == Graph.NOT_FOUND ? "" 
                 : String.format("[Node position=%d, vxId=%d]", position, rg.getVertex(position));

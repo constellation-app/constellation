@@ -25,16 +25,14 @@ public class Edge<T extends NodeBase> {
 
     private final T source;
     private final T target;
-    private final EdgeData data;
+    private final double weight;
+    private final double flow;
 
     public Edge(final T source, final T target, final double weight, final double flow) {
         this.source = source;
         this.target = target;
-        this.data = new EdgeData(weight, flow);
-    }
-
-    public T other(final T node) {
-        return node == source ? target : source;
+        this.weight = weight;
+        this.flow = flow;
     }
 
     public boolean isSelfPointing() {
@@ -49,12 +47,16 @@ public class Edge<T extends NodeBase> {
         return target;
     }
 
-    public EdgeData getData() {
-        return data;
+    public double getWeight() {
+        return weight;
     }
 
+    public double getFlow() {
+        return flow;
+    }
+    
     @Override
     public String toString() {
-        return String.format("[Edge: %s -> %s, flow=%f]", source, target, data.flow);
+        return String.format("[Edge: %s -> %s, flow=%f]", source, target, flow);
     }
 }
