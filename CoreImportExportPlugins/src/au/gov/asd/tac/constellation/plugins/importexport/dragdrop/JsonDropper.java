@@ -107,7 +107,7 @@ public class JsonDropper implements GraphDropper {
         @Override
         public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             try {
-                final RecordStore rs = GraphRecordStoreUtilities.fromJson(data);
+                final RecordStore rs = GraphRecordStoreUtilities.fromJsonAlternative(data);
                 final List<Integer> newVertices = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, rs, true, true, null);
                 if (!newVertices.isEmpty()) {
                     final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(wg, AbstractInclusionGraph.Connections.NONE, newVertices);

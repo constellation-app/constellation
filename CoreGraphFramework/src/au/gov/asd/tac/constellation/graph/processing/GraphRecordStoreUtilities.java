@@ -28,6 +28,8 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtili
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.utilities.CompositeTransactionId;
 import au.gov.asd.tac.constellation.utilities.json.JsonFactoryUtilities;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -1251,5 +1253,61 @@ public class GraphRecordStoreUtilities {
         }
 
         return rs;
+    }
+    
+    /**
+     *
+     * An alternative json representation of a {@link RecordStore} that does not
+     * require id's to be passed. The required representation is more aligned to
+     * how {@link RecordStore}'s are defined within plugins and will be
+     * something like:
+     *
+     * <pre>
+     * [
+     *  {
+     *      "source. Identifier": "Thing 1",
+     *      "source. Type": "Person"
+     *  },
+     *  {
+     *      "source. Identifier": "Thing 2",
+     *      "source. Type": "Person"
+     *  },
+     *  {
+     *      "source. Identifier": "Thing 1",
+     *      "source. Type": "Person",
+     *      "destination. Identifier": "Thing 2",
+     *      "destination. Type": "Person"
+     *      "transaction. Identifier": "Unique ID 1",
+     *      "transaction. Type": "Communication"
+     *  },
+     *  {
+     *      "source. Identifier": "Thing 2",
+     *      "source. Type": "Person",
+     *      "destination. Identifier": "Thing 1",
+     *      "destination. Type": "Person"
+     *      "transaction. Identifier": "Unique ID 2",
+     *      "transaction. Type": "Communication"
+     *  }
+     * ]
+     * </pre>
+     * @param json A JSON string representing a RecordStore
+     * @return A GraphRecordStore created using the JSON representation
+     * @throws JsonProcessingException 
+     */
+    public static GraphRecordStore fromJsonAlternative(final String json) throws JsonProcessingException {
+        final GraphRecordStore recordStore = new GraphRecordStore();
+        final ObjectMapper mapper = new ObjectMapper();
+
+        final List<Map<String, Object>> records = mapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
+        for (final Map<String, Object> record : records) {
+            final Set<Entry<String, Object>> values = record.entrySet();
+            recordStore.add();
+
+            for (final Entry<String, Object> entry : values) {
+                recordStore.set(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return recordStore;
     }
 }
