@@ -1263,7 +1263,7 @@ public class GraphRecordStoreUtilities {
      * something like:
      *
      * <pre>
-     * [
+     * JSON=[
      *  {
      *      "source. Identifier": "Thing 1",
      *      "source. Type": "Person"
@@ -1276,7 +1276,7 @@ public class GraphRecordStoreUtilities {
      *      "source. Identifier": "Thing 1",
      *      "source. Type": "Person",
      *      "destination. Identifier": "Thing 2",
-     *      "destination. Type": "Person"
+     *      "destination. Type": "Person",
      *      "transaction. Identifier": "Unique ID 1",
      *      "transaction. Type": "Communication"
      *  },
@@ -1284,7 +1284,7 @@ public class GraphRecordStoreUtilities {
      *      "source. Identifier": "Thing 2",
      *      "source. Type": "Person",
      *      "destination. Identifier": "Thing 1",
-     *      "destination. Type": "Person"
+     *      "destination. Type": "Person",
      *      "transaction. Identifier": "Unique ID 2",
      *      "transaction. Type": "Communication"
      *  }
