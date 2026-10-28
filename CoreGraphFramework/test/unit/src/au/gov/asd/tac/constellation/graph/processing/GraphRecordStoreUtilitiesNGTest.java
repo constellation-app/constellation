@@ -286,14 +286,14 @@ public class GraphRecordStoreUtilitiesNGTest {
     }
 
     @Test
-    public void processAlternativeJsonString() throws JsonProcessingException {
+    public void processRecordStoreJsonFromString() throws JsonProcessingException {
         
         final String testString = "Some random test string";
         final String jsonString = "[{\"source.Identifier\": \"Thing 1\",\"source.Type\": \"Person\"},{\"source.Identifier\": \"Thing 2\",\"source.Type\": \"Person\"},{\"source.Identifier\": \"Thing 1\",\"source.Type\": \"Person\",\"destination.Identifier\": \"Thing 2\",\"destination.Type\": \"Person\",\"transaction.Identifier\": \"Unique ID 1\",\"transaction.Type\": \"Communication\"},{\"source.Identifier\": \"Thing 2\",\"source.Type\": \"Person\",\"destination.Identifier\": \"Thing 1\",\"destination.Type\": \"Person\",\"transaction.Identifier\": \"Unique ID 2\",\"transaction.Type\": \"Communication\"}]";
                 
-        assertThrows(JsonProcessingException.class, () -> GraphRecordStoreUtilities.fromJsonAlternative(testString));
+        assertThrows(JsonProcessingException.class, () -> GraphRecordStoreUtilities.fromRecordStoreJson(testString));
         
-        GraphRecordStore fromJsonAlternativeGraph = GraphRecordStoreUtilities.fromJsonAlternative(jsonString);
+        GraphRecordStore fromJsonAlternativeGraph = GraphRecordStoreUtilities.fromRecordStoreJson(jsonString);
         assertTrue(fromJsonAlternativeGraph.records.size() == 6);
         assertTrue(fromJsonAlternativeGraph.records.containsKey("source.Identifier"));
         assertTrue(fromJsonAlternativeGraph.records.containsKey("source.Type"));

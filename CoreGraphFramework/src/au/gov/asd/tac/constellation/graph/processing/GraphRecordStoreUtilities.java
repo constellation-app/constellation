@@ -1265,28 +1265,28 @@ public class GraphRecordStoreUtilities {
      * <pre>
      * JSON=[
      *  {
-     *      "source. Identifier": "Thing 1",
-     *      "source. Type": "Person"
+     *      "source.Identifier": "Thing 1",
+     *      "source.Type": "Person"
      *  },
      *  {
-     *      "source. Identifier": "Thing 2",
-     *      "source. Type": "Person"
+     *      "source.Identifier": "Thing 2",
+     *      "source.Type": "Person"
      *  },
      *  {
-     *      "source. Identifier": "Thing 1",
-     *      "source. Type": "Person",
-     *      "destination. Identifier": "Thing 2",
-     *      "destination. Type": "Person",
-     *      "transaction. Identifier": "Unique ID 1",
-     *      "transaction. Type": "Communication"
+     *      "source.Identifier": "Thing 1",
+     *      "source.Type": "Person",
+     *      "destination.Identifier": "Thing 2",
+     *      "destination.Type": "Person",
+     *      "transaction.Identifier": "Unique ID 1",
+     *      "transaction.Type": "Communication"
      *  },
      *  {
-     *      "source. Identifier": "Thing 2",
-     *      "source. Type": "Person",
-     *      "destination. Identifier": "Thing 1",
-     *      "destination. Type": "Person",
-     *      "transaction. Identifier": "Unique ID 2",
-     *      "transaction. Type": "Communication"
+     *      "source.Identifier": "Thing 2",
+     *      "source.Type": "Person",
+     *      "destination.Identifier": "Thing 1",
+     *      "destination.Type": "Person",
+     *      "transaction.Identifier": "Unique ID 2",
+     *      "transaction.Type": "Communication"
      *  }
      * ]
      * </pre>
@@ -1294,13 +1294,13 @@ public class GraphRecordStoreUtilities {
      * @return A GraphRecordStore created using the JSON representation
      * @throws JsonProcessingException 
      */
-    public static GraphRecordStore fromJsonAlternative(final String json) throws JsonProcessingException {
+    public static GraphRecordStore fromRecordStoreJson(final String json) throws JsonProcessingException {
         final GraphRecordStore recordStore = new GraphRecordStore();
         final ObjectMapper mapper = new ObjectMapper();
 
-        final List<Map<String, Object>> records = mapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
-        for (final Map<String, Object> record : records) {
-            final Set<Entry<String, Object>> values = record.entrySet();
+        final List<Map<String, Object>> records = mapper.readValue(json, new TypeReference<>() {});
+        for (final Map<String, Object> item : records) {
+            final Set<Entry<String, Object>> values = item.entrySet();
             recordStore.add();
 
             for (final Entry<String, Object> entry : values) {
