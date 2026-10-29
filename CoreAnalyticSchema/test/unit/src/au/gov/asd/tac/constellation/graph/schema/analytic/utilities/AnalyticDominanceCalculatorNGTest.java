@@ -69,7 +69,7 @@ public class AnalyticDominanceCalculatorNGTest {
         assertTrue(typePriority.indexOf(AnalyticConcept.VertexType.MGRS) < typePriority.indexOf(AnalyticConcept.VertexType.LOCATION));
         assertTrue(typePriority.indexOf(AnalyticConcept.VertexType.EMAIL_ADDRESS) < typePriority.indexOf(AnalyticConcept.VertexType.ONLINE_IDENTIFIER));
         assertTrue(typePriority.indexOf(AnalyticConcept.VertexType.USER_NAME) < typePriority.indexOf(AnalyticConcept.VertexType.ONLINE_IDENTIFIER));
-        assertTrue(typePriority.indexOf(AnalyticConcept.VertexType.HOST_NAME) < typePriority.indexOf(AnalyticConcept.VertexType.ONLINE_LOCATION));
+        assertTrue(typePriority.indexOf(AnalyticConcept.VertexType.HOST_NAME) < typePriority.indexOf(AnalyticConcept.VertexType.GEOHASH));
         assertTrue(typePriority.indexOf(AnalyticConcept.VertexType.URL) < typePriority.indexOf(AnalyticConcept.VertexType.ONLINE_LOCATION));
     }
 }
