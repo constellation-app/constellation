@@ -191,6 +191,9 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
         // Allow the plugin to be interrupted
         if (cancellable && Thread.interrupted()) {
+            if (progress != null) {
+                interruptAndCloseProgress();
+            }
             throw new InterruptedException();
         }
         // If the plugin is indeterminate...
@@ -211,9 +214,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         } else if (currentStep > totalSteps) {
 
             if (progress != null) {
-                timer.interrupt();
-                progress.finish();
-                progress = null;
+                interruptAndCloseProgress();
             }
             
         // If the plugin is determinate...
@@ -232,6 +233,15 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             }
 
         }
+    }
+
+    /**
+     * Interrupt timer and finish progress.
+     */
+    protected void interruptAndCloseProgress() {
+        timer.interrupt();
+        progress.finish();
+        progress = null;
     }
     
     

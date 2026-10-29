@@ -200,7 +200,7 @@ public class AnalyticViewStateNGTest {
      * Test of updateResults method, of class AnalyticViewState.
      */
     @Test
-    public void testUpdateResults() {
+    public void testUpdateResults() throws InterruptedException {
         try {
             System.out.println("updateResults");
             AnalyticResult<?> newResults = null;
