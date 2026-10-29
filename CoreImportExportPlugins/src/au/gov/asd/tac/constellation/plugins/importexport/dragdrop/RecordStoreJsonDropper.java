@@ -75,10 +75,10 @@ public class RecordStoreJsonDropper implements GraphDropper {
                 final String t = (String) transferable.getTransferData(DataFlavor.stringFlavor);
 
                 // Do we have the correct indicator and json format with pattern similar to "source.Identifier"?
-                String regex = "\"[a-zA-Z]+\\.[a-zA-Z]+\"";
+                final String regex = "\"[a-zA-Z]+\\.[a-zA-Z]+\"";
 
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(t);
+                final Pattern pattern = Pattern.compile(regex);
+                final Matcher matcher = pattern.matcher(t);
                 if (t != null && t.startsWith(INDICATOR) && matcher.find()) {
                     return (graph, dropInfo) -> {
 
