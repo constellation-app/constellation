@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.utilities.ColorblindUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -212,7 +213,7 @@ public class VisualSchemaFactory extends SchemaFactory {
             graph.setBooleanValue(vertexDimAttribute, vertexId, false);
 
             final Object colorDefaultValue = graph.getAttributeDefaultValue(vertexColorAttribute);
-            if (colorDefaultValue == null) {
+            if (colorDefaultValue == null || colorDefaultValue == ColorAttributeDescription.DEFAULT_VALUE) {
                 graph.setObjectValue(vertexColorAttribute, vertexId, randomColor());
             } else {
                 graph.setObjectValue(vertexColorAttribute, vertexId, colorDefaultValue);
@@ -220,16 +221,16 @@ public class VisualSchemaFactory extends SchemaFactory {
 
             final Object backgroundIconDefaultValue = graph.getAttributeDefaultValue(vertexBackgroundIconAttribute);
             if ((backgroundIconDefaultValue == null) || (backgroundIconDefaultValue.toString().isEmpty())) {
-                graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, DefaultIconProvider.FLAT_SQUARE);
+                graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, DefaultIconProvider.DEFAULT);
             } else {
                 graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, backgroundIconDefaultValue);
             }
 
             final Object foregroundIconDefaultValue = graph.getAttributeDefaultValue(vertexForegroundIconAttribute);
             if ((foregroundIconDefaultValue == null) || (foregroundIconDefaultValue.toString().isEmpty())) {
-                graph.setStringValue(vertexForegroundIconAttribute, vertexId, "");
+                graph.setObjectValue(vertexForegroundIconAttribute, vertexId, DefaultIconProvider.UNKNOWN);
             } else {
-                graph.setStringValue(vertexForegroundIconAttribute, vertexId, foregroundIconDefaultValue.toString());
+                graph.setObjectValue(vertexForegroundIconAttribute, vertexId, foregroundIconDefaultValue);
             }
 
             graph.validateKey(GraphElementType.VERTEX, vertexId, false);

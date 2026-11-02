@@ -61,11 +61,11 @@ public class IconAttributeDescriptionNGTest {
 
         final ConstellationIcon nullResult = instance.convertFromString(null);
         // should be the default here
-        assertEquals(nullResult, DefaultIconProvider.EMPTY);
+        assertEquals(nullResult, DefaultIconProvider.DEFAULT);
 
         final ConstellationIcon blankResult = instance.convertFromString("   ");
         // should be the default here as well
-        assertEquals(blankResult, DefaultIconProvider.EMPTY);
+        assertEquals(blankResult, DefaultIconProvider.DEFAULT);
 
         final ConstellationIcon validResult = instance.convertFromString("Github");
         assertEquals(validResult.getName(), "Github");

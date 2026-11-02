@@ -402,7 +402,6 @@ public class GraphRecordStoreUtilities {
             Map<String, Integer> vertexMap, Map<String, Integer> transactionMap) {
         final List<Integer> newVertices = new ArrayList<>();
         final Set<Integer> ghostVertices = new HashSet<>();
-        boolean transactionsAdded = false;
 
         recordStore.reset();
         final List<String> keys = recordStore instanceof GraphRecordStore graphRecordStore
@@ -455,7 +454,6 @@ public class GraphRecordStoreUtilities {
                 final int source = addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 final int destination = addVertex(graph, destinationValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
                 addTransaction(graph, source, destination, transactionValues, transactionMap, initializeWithSchema, completeWithSchema);
-                transactionsAdded = true;
             } else if (!sourceValues.isEmpty()) {
                 addVertex(graph, sourceValues, vertexMap, initializeWithSchema, completeWithSchema, newVertices, ghostVertices, vertexIdAttributes);
             } else if (!destinationValues.isEmpty()) {
@@ -474,8 +472,6 @@ public class GraphRecordStoreUtilities {
             }
         }
 
-        //mergerAfterTransactions prevents dummy vertices overwriting the attributes of the existing vertices, if any.
-        graph.setGraphElementMerger(transactionsAdded ? mergerAfterTransactions : graph.getSchema().getFactory().getGraphElementMerger());
         return newVertices;
     }
 
