@@ -21,6 +21,9 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirectedUnrecordedTeleportation;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirdir;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirected;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
@@ -60,11 +63,17 @@ public class InfoMapMainNGTest {
     }
 
     private static void runInfoMap(final Config config, final GraphReadMethods rg) throws FileNotFoundException {
-        final InfoMapContext context = new InfoMapContext(config, rg);
-        context.getInfoMap().run();
-
-        final InfomapBase infomap = context.getInfoMap();
-        final TreeData treeData = infomap.getTreeData();
+        final InfomapBase infoMap;
+        if (config.isUndirected()) {
+            infoMap = new InfomapUndirected(config, rg);
+        } else if (config.isUndirdir() || config.isOutdirdir() || config.isRawdir()) {
+            infoMap = new InfomapUndirdir(config, rg);
+        } else {
+            infoMap = new InfomapDirectedUnrecordedTeleportation(config, rg);
+        }
+        infoMap.run();
+        
+        final TreeData treeData = infoMap.getTreeData();
         System.out.printf("*Vertices %d\n", treeData.getNumLeafNodes());
         for (final NodeBase node : treeData.getLeaves()) {
             final int index = node.getParent().getIndex();
@@ -87,19 +96,10 @@ public class InfoMapMainNGTest {
             graph = new GraphJsonReader().readGraphZip(fnam, inStream, new TextIoProgress(true));
         }
         final Config conf = new Config();
-        conf.setNoFileOutput(false);
-        conf.setVerbosity(1);
-
-        conf.setNetworkFile(fnam);
-        conf.setOutDirectory(System.getProperty("java.io.tmpdir"));
-        conf.setPrintClu(true);
-        conf.setPrintNodeRanks(true);
-        conf.setPrintFlowNetwork(true);
-        conf.setVerbosity(1);
         conf.setNumTrials(5);
 
         System.out.printf("fastHierarchicalSolution %d\n", conf.getFastHierarchicalSolution());
-        System.out.printf("Parsing %s network from file '%s'... ", conf.isUndirected() ? "undirected" : "directed", conf.getNetworkFile());
+        System.out.printf("Parsing %s network from file... ", conf.isUndirected() ? "undirected" : "directed");
 
         conf.setConnectionType(Config.ConnectionType.TRANSACTIONS);
 

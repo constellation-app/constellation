@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## Changes in October 2026
+-   Fixed a ConcurrentModificationException in `PluginReport.addChildReport` when a listener was added or removed on another thread.
+
 ## Changes in September 2026
 -   Updated methods in `JsonIODialog`, and `JsonIO` to pass  the `type` as a string, which depicts whether a Preference or Template is being processed. 
     It is used in dialog titles and messages.

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms;
 
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapCleanupPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.labelpropagation.LabelPropagationClusteringPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapPlugin;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.DirectedShortestPathsPlugin;
@@ -65,8 +66,9 @@ public final class AlgorithmPluginRegistry {
     public static final String PAGERANK_CENTRALITY = PagerankCentralityPlugin.class.getName();
 
     // clustering
-    public static final String CLUSTER_LABEL_PROPAGATION = LabelPropagationClusteringPlugin.class.getName();
     public static final String CLUSTER_INFO_MAP = InfoMapPlugin.class.getName();
+    public static final String CLUSTER_INFO_MAP_CLEANUP = InfoMapCleanupPlugin.class.getName();
+    public static final String CLUSTER_LABEL_PROPAGATION = LabelPropagationClusteringPlugin.class.getName();
 
     // global
     public static final String AVERAGE_DEGREE = AverageDegreePlugin.class.getName();

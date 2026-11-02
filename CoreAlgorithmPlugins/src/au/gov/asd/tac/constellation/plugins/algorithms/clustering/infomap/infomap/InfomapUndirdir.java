@@ -34,11 +34,6 @@ public class InfomapUndirdir extends InfomapGreedy {
     }
 
     @Override
-    protected boolean isDirected() {
-        return true;
-    }
-
-    @Override
     protected boolean hasDetailedBalance() {
         return false;
     }
@@ -51,13 +46,8 @@ public class InfomapUndirdir extends InfomapGreedy {
     public static class NodeFactoryUndirdir implements NodeFactoryBase {
 
         @Override
-        public NodeBase createNode() {
-            return createNode("", 0, 0);
-        }
-
-        @Override
         public NodeBase createNode(final String name, final double flow, final double teleportWeight) {
-            final FlowDirectedNonDetailedBalance data = new FlowDirectedNonDetailedBalance(flow, teleportWeight);
+            final FlowDirectedNonDetailedBalance data = new FlowDirectedNonDetailedBalance(flow);
             return new Node(name, data);
         }
 

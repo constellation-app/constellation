@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.tuple.primitive.IntIntPair;
 import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 
 /**
@@ -31,6 +32,8 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 public class FlowNetwork {
 
     private static final Logger LOGGER = Logger.getLogger(FlowNetwork.class.getName());
+    
+    private static final double TELEPORTATION_PROBABILITY = 0.15;
 
     private double[] nodeFlow;
     private double[] nodeTeleportRates;
@@ -45,26 +48,26 @@ public class FlowNetwork {
         nodeFlow = new double[numNodes];
         nodeTeleportRates = new double[numNodes];
         final int[] nodeOutDegree = new int[numNodes];
-        final Map<NodePair, Double> connMap = network.getMap();
+        final Map<IntIntPair, Double> connMap = network.getMap();
         final int numConns = connMap.size();
         flowConns = new Connection[numConns];
         final double totalConnWeight = network.getTotalWeight();
         final double sumUndirConnWeight = (config.isUndirected() ? 1 : 2) * totalConnWeight;
 
         int connIndex = 0;
-        for (final Map.Entry<NodePair, Double> entry : connMap.entrySet()) {
-            final NodePair ends = entry.getKey();
-            nodeOutDegree[ends.end1]++;
+        for (final Map.Entry<IntIntPair, Double> entry : connMap.entrySet()) {
+            final IntIntPair ends = entry.getKey();
+            nodeOutDegree[ends.getOne()]++;
             final double weight = entry.getValue();
-            sumLinkOutWeight[ends.end1] += weight;
+            sumLinkOutWeight[ends.getOne()] += weight;
             if (config.isUndirected()) {
-                sumLinkOutWeight[ends.end2] += weight;
+                sumLinkOutWeight[ends.getTwo()] += weight;
             }
-            nodeFlow[ends.end1] += weight / sumUndirConnWeight;
+            nodeFlow[ends.getOne()] += weight / sumUndirConnWeight;
             if (!config.isOutdirdir()) {
-                nodeFlow[ends.end2] += weight / sumUndirConnWeight;
+                nodeFlow[ends.getTwo()] += weight / sumUndirConnWeight;
             }
-            flowConns[connIndex] = new Connection(ends.end1, ends.end2, weight);
+            flowConns[connIndex] = new Connection(ends.getOne(), ends.getTwo(), weight);
 
             connIndex++;
         }
@@ -138,21 +141,10 @@ public class FlowNetwork {
             return;
         }
 
-        LOGGER.log(Level.INFO, String.format("using %s teleportation to %s... ", config.isRecordedTeleportation() ? "recorded" : "unrecorded",
-                config.isTeleportToNodes() ? "nodes" : "links"));
-
         // Calculate the teleport rate distribution.
-        if (config.isTeleportToNodes()) {
-            final double[] nodeWeights = network.getNodeTeleportRates();
-            for (int i = 0; i < numNodes; ++i) {
-                nodeTeleportRates[i] = nodeWeights[i] / network.getSumNodeWeights();
-            }
-        } else {
-            // Teleport proportionally to out-degree, or in-degree if recorded teleportation.
-            for (final Connection conn : flowConns) {
-                final int toNode = config.isRecordedTeleportation() ? conn.getTarget() : conn.getSource();
-                nodeTeleportRates[toNode] += conn.getFlow() / totalConnWeight;
-            }
+        // Teleport proportionally to out-degree, or in-degree if recorded teleportation.
+        for (final Connection conn : flowConns) {
+            nodeTeleportRates[conn.getSource()] += conn.getFlow() / totalConnWeight;
         }
 
         // Normalize link weights with respect to its source nodes total out-link weight.
@@ -172,7 +164,7 @@ public class FlowNetwork {
         final double[] nodeFlowTmp = new double[numNodes];
         Arrays.fill(nodeFlowTmp, 0);
         int numIterations = 0;
-        double alpha = config.getTeleportationProbability();
+        double alpha = TELEPORTATION_PROBABILITY;
         double beta = 1.0 - alpha;
         double sqdiff = 1;
         double danglingRank = 0;
@@ -222,18 +214,14 @@ public class FlowNetwork {
             numIterations++;
         } while ((numIterations < 200) && (sqdiff > 1.0e-15 || numIterations < 50));
 
-        double sumNodeRank = 1.0;
-
-        if (!config.isRecordedTeleportation()) {
-            //Take one last power iteration excluding the teleportation (and normalize node flow to sum 1.0).
-            sumNodeRank = 1.0 - danglingRank;
-            Arrays.fill(nodeFlow, 0);
-            for (final Connection conn : flowConns) {
-                nodeFlow[conn.getTarget()] += conn.getFlow() * nodeFlowTmp[conn.getSource()] / sumNodeRank;
-            }
-
-            beta = 1.0;
+        // Take one last power iteration excluding the teleportation (and normalize node flow to sum 1.0).
+        final double sumNodeRank = 1.0 - danglingRank;
+        Arrays.fill(nodeFlow, 0);
+        for (final Connection conn : flowConns) {
+            nodeFlow[conn.getTarget()] += conn.getFlow() * nodeFlowTmp[conn.getSource()] / sumNodeRank;
         }
+
+        beta = 1.0;
 
         // Update the links with their global flow from the PageRank values. (Note: beta is set to 1 if unrec).
         for (final Connection conn : flowConns) {

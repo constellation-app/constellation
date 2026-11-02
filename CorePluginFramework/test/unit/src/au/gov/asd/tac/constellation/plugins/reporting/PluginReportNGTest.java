@@ -182,6 +182,45 @@ public class PluginReportNGTest {
         assertEquals(report.getUChildReports().getFirst(), addedChildReport);
     }
 
+    /**
+     * Adding a listener from another thread while addChildReport is notifying
+     * listeners must wait for the notification loop to finish rather than
+     * modify the listener list mid-loop (ConcurrentModificationException).
+     *
+     * @throws InterruptedException if interrupted while joining the thread.
+     */
+    @Test(timeOut = 10000)
+    public void testAddListenerDuringAddChildReport() throws InterruptedException {
+        final PluginReportListener lateListener = Mockito.mock(PluginReportListener.class);
+        final Thread adder = new Thread(() -> report.addPluginReportListener(lateListener));
+        final PluginReportListener blockingListener = new PluginReportListener() {
+            @Override
+            public void pluginReportChanged(final PluginReport pluginReport) {
+                // Do nothing
+            }
+
+            @Override
+            public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
+                adder.start();
+                // Wait until the other thread has either added its listener or is blocked waiting to
+                Thread.State state;
+                do {
+                    Thread.onSpinWait();
+                    state = adder.getState();
+                } while (state != Thread.State.BLOCKED && state != Thread.State.TERMINATED);
+            }
+        };
+        report.addPluginReportListener(blockingListener);
+
+        final SimplePlugin childPlugin = Mockito.mock(SimplePlugin.class);
+        when(childPlugin.getTags()).thenReturn(new String[]{PluginTags.ANALYTIC});
+        report.addChildReport(childPlugin);
+        adder.join();
+
+        report.firePluginReportChangedEvent();
+        Mockito.verify(lateListener, Mockito.times(1)).pluginReportChanged(report);
+    }
+
     private class TestPlugin extends SimplePlugin {
 
         public TestPlugin() {

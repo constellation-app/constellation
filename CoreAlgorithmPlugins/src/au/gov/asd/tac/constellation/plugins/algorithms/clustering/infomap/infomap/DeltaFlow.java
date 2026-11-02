@@ -25,22 +25,10 @@ public class DeltaFlow {
     private double deltaExit;
     private double deltaEnter;
 
-    public DeltaFlow() {
-        module = 0;
-        deltaExit = 0;
-        deltaEnter = 0;
-    }
-
     public DeltaFlow(final int module, final double deltaExit, final double deltaEnter) {
         this.module = module;
         this.deltaExit = deltaExit;
         this.deltaEnter = deltaEnter;
-    }
-
-    public DeltaFlow(final DeltaFlow other) {
-        module = other.module;
-        deltaExit = other.deltaExit;
-        deltaEnter = other.deltaEnter;
     }
 
     public int getModule() {
