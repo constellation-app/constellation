@@ -112,7 +112,7 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
         this.result = result;
     }
 
-    public AnalyticQuestion<R> answer(final Graph graph) {
+    public AnalyticQuestion<R> answer(final Graph graph) throws InterruptedException {
 
         // run plugins
         final List<R> analyticResults = new ArrayList<>();
@@ -132,12 +132,13 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, "Analytic answering was interrupted");
                 pluginFutures.keySet().forEach(redundantFuture -> redundantFuture.cancel(true));
+                exceptions.add(ex);                
             } catch (final CancellationException | ExecutionException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 exceptions.add(ex);
             }
         });
-
+        
         // aggregate and sort plugin results
         try {
             result = aggregator.aggregate(analyticResults);

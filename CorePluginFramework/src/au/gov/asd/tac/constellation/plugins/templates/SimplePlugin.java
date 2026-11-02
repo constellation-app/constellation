@@ -65,12 +65,20 @@ public abstract class SimplePlugin extends AbstractPlugin {
         try {
             // Make the progress bar appear nondeterminent
             interaction.setExecutionStage(0, -1, PluginExecutionStageConstants.WAITING, WAITING_INTERACTION, true);
+            System.out.println("In SimplePlugin, setExecution stage!");
 
             try {
                 execute(graphs, interaction, parameters);
+                System.out.println("In SimplePlugin, after execute!");
+            } catch (Exception ex) {
+                System.out.println("In SimplePlugin with plugin =" + this.getName());
+                throw ex;
             } finally {
                 interaction.setExecutionStage(1, 0, PluginExecutionStageConstants.COMPLETE, FINISHED_INTERACTION, true);
             }
+        } catch (Exception ex) {
+            System.out.println("In SimplePlugin with plugin =" + this.getName());
+            throw ex;
         } finally {
             if (graph != null) {
                 interaction.setBusy(graph.getId(), false);
@@ -87,11 +95,13 @@ public abstract class SimplePlugin extends AbstractPlugin {
         try {
             // Make the progress bar appear nondeterminent
             interaction.setExecutionStage(0, -1, PluginExecutionStageConstants.WAITING, WAITING_INTERACTION, true);
-
+            System.out.println("In SimplePlugin graph read methods, after setExecution waiting stage!");
             try {
                 read(graph, interaction, parameters);
+                System.out.println("In SimplePlugin, read stage!");
             } finally {
                 interaction.setExecutionStage(1, 0, PluginExecutionStageConstants.COMPLETE, FINISHED_INTERACTION, true);
+                System.out.println("In SimplePlugin graph read methods, after setExecution complete stage!");
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
@@ -107,11 +117,12 @@ public abstract class SimplePlugin extends AbstractPlugin {
         try {
             // Make the progress bar appear nondeterminent
             interaction.setExecutionStage(0, -1, PluginExecutionStageConstants.WAITING, WAITING_INTERACTION, true);
-
+            System.out.println("In SimplePlugin graph write methods, after setExecution waiting stage!");
             try {
                 edit(graph, interaction, parameters);
             } finally {
                 interaction.setExecutionStage(1, 0, PluginExecutionStageConstants.COMPLETE, FINISHED_INTERACTION, true);
+                System.out.println("In SimplePlugin graph write methods, after setExecution complete stage!");
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
