@@ -22,8 +22,6 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -65,14 +63,19 @@ public final class NewArrangeInTreesAction extends AbstractAction {
         final Graph graph = context.getGraph();
         plugin.updateParameters(graph, params);
 
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_NewArrangeInTreesAction(), params);
-        dialog.setSize(size);
-        dialog.showAndWait();
-        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-            PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
-                    .set(params)
-                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                    .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
-        }
+//        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_NewArrangeInTreesAction(), params);
+//        dialog.setSize(size);
+//        dialog.showAndWait();
+//        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+//            PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
+//                    .set(params)
+//                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+//                    .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
+//        }
+
+        PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
+                .set(params)
+                .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
+                .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
     }
 }
