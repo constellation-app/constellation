@@ -41,7 +41,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
             .build();
     public static final ConstellationIcon UNKNOWN = new ConstellationIcon.Builder("Unknown", new FileIconData("modules/ext/icons/003f.png", CODE_NAME_BASE))
             .build();
-    public static final ConstellationIcon EMPTY = new ConstellationIcon.Builder("", TRANSPARENT.getIconData())
+    public static final ConstellationIcon DEFAULT = new ConstellationIcon.Builder("Default", new FileIconData("modules/ext/icons/flat_square.png", CODE_NAME_BASE))
             .build();
     public static final ConstellationIcon LOOP_DIRECTED = new ConstellationIcon.Builder("Directed Loop", new FileIconData("modules/ext/icons/loop_directed.png", CODE_NAME_BASE))
             .build();
@@ -77,7 +77,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
         defaultIcons.add(NOISE);
         defaultIcons.add(TRANSPARENT);
         defaultIcons.add(UNKNOWN);
-        defaultIcons.add(EMPTY);
+        defaultIcons.add(DEFAULT);
         defaultIcons.add(LOOP_DIRECTED);
         defaultIcons.add(LOOP_UNDIRECTED);
         defaultIcons.add(FLAT_CIRCLE);
@@ -150,7 +150,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
      * @param icon
      * @return 
      */
-    public static boolean isVisable(final ConstellationIcon icon){
-        return icon != null && !EMPTY.getName().equals(icon.getName()) && !TRANSPARENT.getName().equals(icon.getName());
+    public static boolean isVisible(final ConstellationIcon icon){
+        return icon != null && !TRANSPARENT.getName().equals(icon.getName());
     }
 }

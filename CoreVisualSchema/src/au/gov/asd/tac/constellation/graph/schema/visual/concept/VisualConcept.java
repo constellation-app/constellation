@@ -199,7 +199,7 @@ public class VisualConcept extends SchemaConcept {
 
         public static final SchemaAttribute BACKGROUND_ICON = new SchemaAttribute.Builder(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "background_icon")
                 .setDescription("The background icon of the vertex")
-                .setDefaultValue(DefaultIconProvider.FLAT_SQUARE.getExtendedName())
+                .setDefaultValue(DefaultIconProvider.DEFAULT)
                 .create()
                 .build();
         public static final SchemaAttribute BLAZE = new SchemaAttribute.Builder(GraphElementType.VERTEX, BlazeAttributeDescription.ATTRIBUTE_NAME, "blaze")
@@ -207,6 +207,7 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "color")
                 .setDescription("The color of the vertex")
+                .setDefaultValue(ConstellationColor.GREY)
                 .create()
                 .build();
         public static final SchemaAttribute COLORBLIND_LAYER = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "colorblind_layer")
@@ -221,6 +222,7 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute FOREGROUND_ICON = new SchemaAttribute.Builder(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "icon")
                 .setDescription("The icon of the vertex")
+                .setDefaultValue(DefaultIconProvider.UNKNOWN)
                 .create()
                 .build();
         public static final SchemaAttribute IDENTIFIER = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Identifier")

@@ -39,7 +39,7 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
             "A node representing a type which is not currently part of the analytic schema",
             ConstellationColor.GREY,
             DefaultIconProvider.UNKNOWN,
-            DefaultIconProvider.FLAT_SQUARE,
+            DefaultIconProvider.DEFAULT,
             null, null, null, null, null, false
     );
 
