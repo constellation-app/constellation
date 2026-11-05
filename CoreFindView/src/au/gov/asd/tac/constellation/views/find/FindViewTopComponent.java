@@ -18,16 +18,20 @@ package au.gov.asd.tac.constellation.views.find;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.views.find.components.advanced.AdvancedCriteriaBorderPane;
 import java.awt.Dimension;
-import java.awt.Window;
+import java.awt.Frame;
+import java.awt.Point;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -42,7 +46,7 @@ import org.openide.windows.WindowManager;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
-        mode = "properties",
+        mode = "output",
         openAtStartup = false
 )
 @ActionID(
@@ -62,7 +66,7 @@ import org.openide.windows.WindowManager;
     "CTL_FindViewTopComponent=Find and Replace",
     "HINT_FindViewTopComponent=Find and Replace"
 })
-
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
 
     private final FindViewPane pane;
@@ -80,10 +84,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         this.pane = new FindViewPane(this);
         initContent();
 
-        // Set the findView window to float
-        WindowManager.getDefault().setTopComponentFloating(this, true);
-
-        // View will be disable if no graphs are opened, enabled if otherwise
+        // View will be disabled if no graphs are opened, enabled if otherwise.
         disableFindView();
 
         /**
@@ -142,20 +143,6 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         UpdateUI();
         disableFindView();
         focusFindTextField();
-        WindowManager.getDefault().setTopComponentFloating(this, true);
-
-        this.setRequestFocusEnabled(true);
-
-        /**
-         * This loops through all the current windows and compares this top components top level ancestor with the
-         * windows parent. If they match the window is the find view so we set the size of the window.
-         */
-        for (final Window window : Window.getWindows()) {
-            if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
-                window.setMinimumSize(new Dimension(600, 350));
-                window.setSize(new Dimension(600, 350));
-            }
-        }
     }
 
     /**
@@ -245,7 +232,27 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
             // functionality for the change criteriapane function
             criteriaPane.setUpdateUI(false);
         }
+    }
 
+    @Override
+    protected Dimension createFloatingSize(final Frame window, final String mode) {
+        return new Dimension(600, 350);
+    }
+
+    @Override
+    protected Point createFloatingLocation(final Frame window, final String mode, final Dimension size) {
+        final Frame mainWindow = WindowManager.getDefault().getMainWindow();
+        return super.createFloatingLocation(mainWindow, "", super.createFloatingSize(mainWindow, ""));
+    }
+
+    @Override
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_FindViewTopComponent(), Boolean.TRUE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "output";
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -262,7 +269,6 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
