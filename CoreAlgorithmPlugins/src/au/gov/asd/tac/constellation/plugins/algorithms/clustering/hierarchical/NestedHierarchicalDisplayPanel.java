@@ -144,15 +144,15 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
         @Override
         public int compareTo(final GroupTreeNode other) {
-            return mergeStep == other.mergeStep ? compare(vertNum, other.vertNum) : compare(mergeStep, other.mergeStep);
-        }
-
-        // TODO: copied from JDK1.7 so compareTo() will work in JDK1.6 - fix when possible.
-        public static int compare(final int x, final int y) {
-            if (x < y) {
+            if (mergeStep < other.mergeStep) {
+                return -1;
+            } else if (mergeStep > other.mergeStep) {
+                return 1;
+            } else if (vertNum < other.vertNum) {
                 return -1;
             }
-            return (x == y) ? 0 : 1;
+            
+            return vertNum > other.vertNum ? 1 : 0;
         }
     }
 
@@ -165,9 +165,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         private GroupTreeNode n;
     }
 
-    // Calculates the relative sizes and positions of the rectangles based on the connected component information stored in the KTrussState.
-    // Note that this method does not calculate actual pixel values, but the relative information stored in the rectangles field. See the declaration for more information
-    public void calculateLines() {
+    /** 
+     * Calculates the relative sizes and positions of the rectangles based on the connected component information stored in the KTrussState.
+     * Note that this method does not calculate actual pixel values, but the relative information stored in the rectangles field. See the declaration for more information
+     */
+    private void calculateLines() {
         if (state == null) {
             lines = null;
             sortedNodes = null;
@@ -222,9 +224,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         positionLines();
 
     }
-
-    // Calculate the relative positioning of the lines in the diagram
-    public void positionLines() {
+    
+    /**
+     * Calculate the relative positioning of the lines in the diagram.
+     */
+    private void positionLines() {
         if (sortedNodes == null) {
             return;
         }
