@@ -104,12 +104,14 @@ public final class MemoryManagerTopComponent extends AbstractTopComponent implem
 
     @Override
     public void componentOpened() {
+        super.componentOpened();
         MemoryManager.addMemoryManagerListener(this);
         updateObjectCounts();
     }
 
     @Override
     public void componentClosed() {
+        super.componentClosed();
         MemoryManager.removeMemoryManagerListener(this);
     }
 

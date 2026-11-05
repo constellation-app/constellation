@@ -315,12 +315,14 @@ public final class PlaneManagerTopComponent extends AbstractTopComponent impleme
 
     @Override
     protected void componentOpened() {
+        super.componentOpened();
         result.addLookupListener(this);
         resultChanged(null);
     }
 
     @Override
     protected void componentClosed() {
+        super.componentClosed();
         result.removeLookupListener(this);
         setNode(null);
     }

@@ -147,12 +147,14 @@ public final class HistogramTopComponent extends AbstractTopComponent implements
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
+        super.componentOpened();
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     @Override
     public void componentClosed() {
+        super.componentClosed();
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
         // Remove Listeners when Histogram View is closed.
