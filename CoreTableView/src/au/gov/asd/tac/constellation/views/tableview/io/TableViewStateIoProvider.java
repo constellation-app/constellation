@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewConcept;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.openide.NotifyDescriptor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -80,10 +82,15 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
                 while (attributeIterator.hasNext()) {
                     final JsonNode attributeNode = attributeIterator.next();
                     final String attributePrefix = attributeNode.get(ATTRIBUTE_PREFIX).asText();
-                    final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
-                            GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
-                            attributeNode.get(ATTRIBUTE_NAME).asText()));
-                    vertexColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+                    try {
+                        final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
+                                GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
+                                attributeNode.get(ATTRIBUTE_NAME).asText()));
+                        vertexColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        // attribute no longer exists
+                        NotifyDisplayer.display("Attribute no longer exists:" + attributeNode.get(ATTRIBUTE_NAME).asText(), NotifyDescriptor.ERROR_MESSAGE);
+                    }
                 }
             }
 
