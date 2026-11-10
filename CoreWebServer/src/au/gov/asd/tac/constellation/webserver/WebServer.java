@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.webserver;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.gui.ScreenWindowsHelper;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -80,6 +81,7 @@ import org.openide.util.NbPreferences;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.NotifyDescriptor;
 
 /**
  * A Web Server.
@@ -256,6 +258,11 @@ public class WebServer {
             webserver.start();
 
             running = true;
+        } catch (final IOException e) {
+            NotifyDisplayer.display(
+                    "REST directory path not found, please review path",
+                    NotifyDescriptor.WARNING_MESSAGE                                        
+                );
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
