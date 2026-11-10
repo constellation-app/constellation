@@ -422,6 +422,8 @@ public class TableNGTest {
         final TableViewState tableViewState = new TableViewState();
         tableViewState.setElementType(GraphElementType.TRANSACTION);
         tableViewState.setColumnAttributes(new ArrayList<>());
+        tableViewState.setElementType(GraphElementType.VERTEX);
+        tableViewState.setColumnAttributes(new ArrayList<>());
 
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);
@@ -513,11 +515,12 @@ public class TableNGTest {
 
         // This is used by the sort comparator. This will order the columnIndex
         // in a certain way that we can then verify below
-        tableViewState.setColumnAttributes(List.of(
-                Tuple.create("source.", attribute1),
-                Tuple.create("transaction.", attribute3),
-                Tuple.create("destination.", attribute2)
-        ));
+        final List newAttributes = new ArrayList<>();
+        newAttributes.add(Tuple.create("source.", attribute1));
+        newAttributes.add(Tuple.create("transaction.", attribute3));
+        newAttributes.add(Tuple.create("destination.", attribute2));
+        
+        tableViewState.setColumnAttributes(newAttributes);
 
         try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);

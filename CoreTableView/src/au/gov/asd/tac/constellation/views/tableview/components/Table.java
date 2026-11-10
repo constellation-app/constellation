@@ -229,11 +229,15 @@ public class Table {
                 } else {
                     // remove state column attributes that no longer exist
                     List<Tuple<String, Attribute>> stateColumnAttributes = state.getTransactionColumnAttributes();
-                    stateColumnAttributes.removeIf(tupleItem -> attrNameRemoveList.contains(tupleItem.getFirst() + tupleItem.getSecond().getName()));
-                    state.setTransactionColumnAttributes(stateColumnAttributes);
+                    if (stateColumnAttributes != null && !stateColumnAttributes.isEmpty()) {
+                        stateColumnAttributes.removeIf(tupleItem -> attrNameRemoveList.contains(tupleItem.getFirst() + tupleItem.getSecond().getName()));
+                        state.setTransactionColumnAttributes(stateColumnAttributes);
+                    }
                     stateColumnAttributes = state.getVertexColumnAttributes();
-                    stateColumnAttributes.removeIf(tupleItem -> attrNameRemoveList.contains(tupleItem.getFirst() + tupleItem.getSecond().getName()));
-                    state.setVertexColumnAttributes(stateColumnAttributes);
+                    if (stateColumnAttributes != null && !stateColumnAttributes.isEmpty()) {
+                        stateColumnAttributes.removeIf(tupleItem -> attrNameRemoveList.contains(tupleItem.getFirst() + tupleItem.getSecond().getName()));
+                        state.setVertexColumnAttributes(stateColumnAttributes);
+                    }
                     
                     // remove attributes from columnReferenceMap that no longer exist
                     attrNameRemoveList.forEach(attrName -> {

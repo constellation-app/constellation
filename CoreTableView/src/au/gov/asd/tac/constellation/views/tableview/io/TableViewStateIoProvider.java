@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.NotifyDescriptor;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,6 +55,8 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
     private static final String TRANSACTION_COLUMN_ATTRIBUTES = "transactionColumnAttributes";
     private static final String VERTEX_COLUMN_ATTRIBUTES = "vertexColumnAttributes";
 
+    private static final Logger LOGGER = Logger.getLogger(TableViewStateIoProvider.class.getName());
+    
     @Override
     public String getName() {
         return TableViewConcept.MetaAttribute.TABLE_VIEW_STATE.getName();
@@ -87,9 +92,9 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
                                 GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
                                 attributeNode.get(ATTRIBUTE_NAME).asText()));
                         vertexColumnAttributes.add(Tuple.create(attributePrefix, attribute));
-                    } catch (ArrayIndexOutOfBoundsException ex) {
+                    } catch (final ArrayIndexOutOfBoundsException ex) {
                         // attribute no longer exists
-                        NotifyDisplayer.display("Attribute no longer exists:" + attributeNode.get(ATTRIBUTE_NAME).asText(), NotifyDescriptor.ERROR_MESSAGE);
+                       LOGGER.log(Level.WARNING, "Attribute no longer exists:" + attributeNode.get(ATTRIBUTE_NAME).asText());                       
                     }
                 }
             }
