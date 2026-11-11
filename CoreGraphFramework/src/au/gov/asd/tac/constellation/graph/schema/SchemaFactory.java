@@ -54,7 +54,7 @@ import org.openide.util.Lookup;
 public abstract class SchemaFactory {
 
     private static final ConstellationColor ICON_COLOR = ConstellationColor.AZURE;
-    private static final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.DEFAULT;
+    private static final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
     private static final ConstellationIcon ICON_BACKGROUND_MODIFIED = DefaultIconProvider.EDGE_SQUARE;
     private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
 

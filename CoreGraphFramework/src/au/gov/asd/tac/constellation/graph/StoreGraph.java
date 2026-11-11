@@ -438,12 +438,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
                     // If the element was not unique then attempt a merge
                 } else {
-                    // Swap the element order for transactions because of the undo interaction handled in reAddTransaction
-                    // which moves the existing elements to the back of the removedFromKeys ElementList
-                    if (allowMerging && graphElementMerger != null
-                            && (elementType == GraphElementType.VERTEX
-                                    ? graphElementMerger.mergeElement(this, elementType, existingElement, element)
-                                    : graphElementMerger.mergeElement(this, elementType, element, existingElement))) {
+                    if (allowMerging && graphElementMerger != null && graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
                         continue;
                     }
 
@@ -1055,62 +1050,15 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     @Override
     public void setTransactionSourceVertex(final int transaction, final int newSourceVertex) {
-        final int oldSourceVertex = getTransactionSourceVertex(transaction);
-        final int oldDestinationVertex = getTransactionDestinationVertex(transaction);
-        final boolean directed = getTransactionDirection(transaction) != Graph.UNDIRECTED;
-
-        validateTransactionVertex(transaction, newSourceVertex, "source");
-
-        reAddTransaction(transaction, newSourceVertex, oldDestinationVertex, directed);
-
-        if (graphEdit != null) {
-            graphEdit.setTransactionSourceVertex(transaction, oldSourceVertex, newSourceVertex, !directed && newSourceVertex > oldDestinationVertex);
-        }
-    }
-
-    @Override
-    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
-        final int oldSourceVertex = getTransactionSourceVertex(transaction);
-        final int oldDestinationVertex = getTransactionDestinationVertex(transaction);
-        final boolean directed = getTransactionDirection(transaction) != Graph.UNDIRECTED;
-
-        validateTransactionVertex(transaction, newDestinationVertex, "destination");
-
-        reAddTransaction(transaction, oldSourceVertex, newDestinationVertex, directed);
-
-        if (graphEdit != null) {
-            graphEdit.setTransactionDestinationVertex(transaction, oldDestinationVertex, newDestinationVertex, !directed && oldSourceVertex > newDestinationVertex);
-        }
-    }
-
-    private void validateTransactionVertex(final int transaction, final int vertex, final String vertexType) {
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
-            throw new IllegalArgumentException("Attempt to set the " + vertexType
-                    + " vertex of a transaction that does not exist: " + transaction);
+            throw new IllegalArgumentException("Attempt to set the source vertex of a transaction that does not exist: " + transaction);
         }
 
         // Ensure that the source vertex exists
-        if (!vStore.elementExists(vertex)) {
-            throw new IllegalArgumentException("Attempt to set the " + vertexType
-                    + " vertex of a transaction to a vertex that does not exist: " + vertex);
+        if (!vStore.elementExists(newSourceVertex)) {
+            throw new IllegalArgumentException("Attempt to set the source vertex of a transaction to a vertex that does not exist: " + newSourceVertex);
         }
-
-    }
-
-    private void reAddTransaction(final int transaction, final int sourceVertex, final int destinationVertex, final boolean directed) {
-        // Fix a nasty interaction with undo. (See also setTransactionSourceVertex().)
-        // When undirected transactions are added, addTransaction() ensures that the source vertex id
-        // is <= the destination id so undirected transaction always go uphill. (The details of why this is so
-        // are currently lost to us.)
-        // However, this mucks up when an undo happens, because the original addTransaction() did the
-        // end swapping, but the undo isn't aware that the vertex ids were swapped: this is because
-        // at this point, the graphEdit has deliberately been turned off (see below), so the
-        // removeTransaction() + addTransaction (see below) can be done atomically with respect to
-        // the undo/redo.
-        // The apparent solution is to manually swap the source and destination vertex ids to be in the "correct"
-        // uphill order before we do the out-of-edit remove/add, so no swapping occurs.
-        // This fix affects the merging logic in validateKey
 
         final GraphEdit savedGraphEdit = graphEdit;
         graphEdit = null;
@@ -1120,11 +1068,67 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             operationMode = GraphOperationMode.REDO;
         }
 
+        final int oldSourceVertex = getTransactionSourceVertex(transaction);
+        final int oldDestinationVertex = getTransactionDestinationVertex(transaction);
+        final boolean directed = getTransactionDirection(transaction) != Graph.UNDIRECTED;
+
+        // Fix a nasty interaction with undo. (See also setTransactionDestinationVertex().)
+        // For the full story, see the comment inside setTransactionDestinationVertex().
         removeTransaction(transaction);
-        addTransaction(sourceVertex, destinationVertex, directed);
+        addTransaction(newSourceVertex, oldDestinationVertex, directed);
+        
+        graphEdit = savedGraphEdit;
+        operationMode = savedOperationMode;
+
+        if (graphEdit != null) {
+            graphEdit.setTransactionSourceVertex(transaction, oldSourceVertex, newSourceVertex, !directed && newSourceVertex > oldDestinationVertex);
+        }
+    }
+
+    @Override
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
+        // Ensure that the transaction exists
+        if (!tStore.elementExists(transaction)) {
+            throw new IllegalArgumentException("Attempt to set the destination vertex of a transaction that does not exist: " + transaction);
+        }
+
+        // Ensure that the source vertex exists
+        if (!vStore.elementExists(newDestinationVertex)) {
+            throw new IllegalArgumentException("Attempt to set the destination vertex of a transaction to a vertex that does not exist: " + newDestinationVertex);
+        }
+
+        final GraphEdit savedGraphEdit = graphEdit;
+        graphEdit = null;
+
+        final GraphOperationMode savedOperationMode = operationMode;
+        if (operationMode == GraphOperationMode.EXECUTE) {
+            operationMode = GraphOperationMode.REDO;
+        }
+
+        final int oldSourceVertex = getTransactionSourceVertex(transaction);
+        final int oldDestinationVertex = getTransactionDestinationVertex(transaction);
+        final boolean directed = getTransactionDirection(transaction) != Graph.UNDIRECTED;
+
+        // Fix a nasty interaction with undo. (See also setTransactionSourceVertex().)
+        // When undirected transactions are added, addTransaction() ensures that the source vertex id
+        // is <= the destination id so undirected transaction always go uphill. (The details of why this is so
+        // are currently lost to us.)
+        // However, this mucks up when an undo happens, because the original addTransaction() did the
+        // end swapping, but the undo isn't aware that the vertex ids were swapped: this is because
+        // at this point, the graphEdit has deliberately been turned off (see above), so the
+        // removeTransaction() + addTransaction (see below) can be done atomically with respect to
+        // the undo/redo.
+        // The apparent solution is to manually swap the source and destination vertex ids to be in the "correct"
+        // uphill order before we do the out-of-edit remove/add, so no swapping occurs.
+        removeTransaction(transaction);
+        addTransaction(oldSourceVertex, newDestinationVertex, directed);
 
         graphEdit = savedGraphEdit;
         operationMode = savedOperationMode;
+
+        if (graphEdit != null) {
+            graphEdit.setTransactionDestinationVertex(transaction, oldDestinationVertex, newDestinationVertex, !directed && oldSourceVertex > newDestinationVertex);
+        }
     }
 
     @Override

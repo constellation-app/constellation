@@ -36,7 +36,7 @@ public final class IconAttributeDescription extends AbstractObjectAttributeDescr
 
     public static final String ATTRIBUTE_NAME = "icon";
     public static final Class<ConstellationIcon> NATIVE_CLASS = ConstellationIcon.class;
-    public static final ConstellationIcon DEFAULT_VALUE = DefaultIconProvider.DEFAULT;
+    public static final ConstellationIcon DEFAULT_VALUE = DefaultIconProvider.EMPTY;
 
     public IconAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);

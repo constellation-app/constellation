@@ -241,21 +241,18 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
             if (type != null && (!modifiedDefaultVtxType && (type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId))
                     && !Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
-                graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon());
+                graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon().getExtendedName());
             }
 
             if (type != null && ((!modifiedDefaultVtxType && type != SchemaVertexTypeUtilities.getDefaultType()) || graph.isDefaultValue(vertexForegroundIconAttribute, vertexId))) {
                 if (!SchemaVertexTypeUtilities.getDefaultType().getForegroundIcon().equals(type.getForegroundIcon())) {
                     if (!Objects.equals(type.getForegroundIcon(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
-                        graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.getForegroundIcon());
+                        graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.getForegroundIcon().getExtendedName());
                     } 
                 } else if (IconManager.iconExists(type.toString()) 
                         && !Objects.equals(type.toString(), graph.getObjectValue(vertexForegroundIconAttribute, vertexId))) {
                     graph.setObjectValue(vertexForegroundIconAttribute, vertexId, type.toString());
                 } 
-            }
-            if (graph.isDefaultValue(vertexForegroundIconAttribute, vertexId)) {
-                graph.setObjectValue(vertexForegroundIconAttribute, vertexId, SchemaVertexTypeUtilities.getDefaultType().getForegroundIcon());
             }
 
             // analytic attribute cleanup

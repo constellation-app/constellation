@@ -43,7 +43,7 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
 
     public static final String ATTRIBUTE_NAME = "color";
     public static final Class<ConstellationColor> NATIVE_CLASS = ConstellationColor.class;
-    public static final ConstellationColor DEFAULT_VALUE = ConstellationColor.GREY;
+    public static final ConstellationColor DEFAULT_VALUE = null;
 
     public ColorAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
