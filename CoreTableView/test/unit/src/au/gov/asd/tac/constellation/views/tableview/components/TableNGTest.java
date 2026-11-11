@@ -515,7 +515,7 @@ public class TableNGTest {
 
         // This is used by the sort comparator. This will order the columnIndex
         // in a certain way that we can then verify below
-        final List newAttributes = new ArrayList<>();
+        final List<Tuple<String,Attribute>> newAttributes = new ArrayList<>();
         newAttributes.add(Tuple.create("source.", attribute1));
         newAttributes.add(Tuple.create("transaction.", attribute3));
         newAttributes.add(Tuple.create("destination.", attribute2));

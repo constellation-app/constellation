@@ -23,10 +23,8 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewConcept;
 import au.gov.asd.tac.constellation.views.tableview.state.TableViewState;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -38,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.NotifyDescriptor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -83,7 +80,7 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
 
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // attribute no longer exists
-                        LOGGER.log(Level.WARNING, "Attribute not found:" + attributeNode.get(ATTRIBUTE_NAME).asText());
+                        LOGGER.log(Level.WARNING, "Attribute not found: {0}", attributeNode.get(ATTRIBUTE_NAME).asText());
                     }
                 }
             }
@@ -100,7 +97,7 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
                         vertexColumnAttributes.add(Tuple.create(attributePrefix, attribute));
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // attribute no longer exists
-                       LOGGER.log(Level.WARNING, "Attribute not found:" + attributeNode.get(ATTRIBUTE_NAME).asText());                       
+                        LOGGER.log(Level.WARNING, "Attribute not found: {0}", attributeNode.get(ATTRIBUTE_NAME).asText());
                     }
                 }
             }
