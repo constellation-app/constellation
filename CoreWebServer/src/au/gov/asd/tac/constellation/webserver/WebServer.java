@@ -260,7 +260,7 @@ public class WebServer {
             running = true;
         } catch (final IOException e) {
             NotifyDisplayer.display(
-                    "REST directory path not found, please review path",
+                    "REST Directory path not found, please review path in Setup -> Options -> CONSTELLATION -> Application -> REST Directory",
                     NotifyDescriptor.WARNING_MESSAGE                                        
                 );
         } catch (final Exception e) {
