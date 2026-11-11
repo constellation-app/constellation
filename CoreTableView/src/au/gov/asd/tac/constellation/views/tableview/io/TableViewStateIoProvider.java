@@ -83,7 +83,7 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
 
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // attribute no longer exists
-                        LOGGER.log(Level.WARNING, "Attribute no longer exists:" + attributeNode.get(ATTRIBUTE_NAME).asText());
+                        LOGGER.log(Level.WARNING, "Attribute not found:" + attributeNode.get(ATTRIBUTE_NAME).asText());
                     }
                 }
             }
@@ -100,7 +100,7 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
                         vertexColumnAttributes.add(Tuple.create(attributePrefix, attribute));
                     } catch (final ArrayIndexOutOfBoundsException ex) {
                         // attribute no longer exists
-                       LOGGER.log(Level.WARNING, "Attribute no longer exists:" + attributeNode.get(ATTRIBUTE_NAME).asText());                       
+                       LOGGER.log(Level.WARNING, "Attribute not found:" + attributeNode.get(ATTRIBUTE_NAME).asText());                       
                     }
                 }
             }
