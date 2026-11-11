@@ -74,11 +74,17 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
                 final Iterator<JsonNode> attributeIterator = jnode.get(TRANSACTION_COLUMN_ATTRIBUTES).iterator();
                 while (attributeIterator.hasNext()) {
                     final JsonNode attributeNode = attributeIterator.next();
-                    final String attributePrefix = attributeNode.get(ATTRIBUTE_PREFIX).asText();
-                    final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
-                            GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
-                            attributeNode.get(ATTRIBUTE_NAME).asText()));
-                    transactionColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+                    try {
+                        final String attributePrefix = attributeNode.get(ATTRIBUTE_PREFIX).asText();
+                        final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
+                                GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
+                                attributeNode.get(ATTRIBUTE_NAME).asText()));
+                        transactionColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+
+                    } catch (final ArrayIndexOutOfBoundsException ex) {
+                        // attribute no longer exists
+                        LOGGER.log(Level.WARNING, "Attribute no longer exists:" + attributeNode.get(ATTRIBUTE_NAME).asText());
+                    }
                 }
             }
             final List<Tuple<String, Attribute>> vertexColumnAttributes = new ArrayList<>();
