@@ -18,9 +18,6 @@ package au.gov.asd.tac.constellation.views;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Point;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -55,7 +52,7 @@ public class AbstractTopComponentNGTest {
         // Test for bottom opening floating top components.
         final Dimension actual = instance.createFloatingSize(landscapeWindowMock, "output");
         final Dimension expected = new Dimension(
-                landscapeWindowMock.getWidth(),
+                Math.round(landscapeWindowMock.getWidth() * 0.8F),
                 Math.round(landscapeWindowMock.getHeight() * 0.3F)
         );
 
@@ -65,7 +62,7 @@ public class AbstractTopComponentNGTest {
         final Dimension landscapeActual = instance.createFloatingSize(landscapeWindowMock, "");
         final Dimension landscapeExpected = new Dimension(
                 Math.round(landscapeWindowMock.getWidth() * 0.3F),
-                Math.round(landscapeWindowMock.getHeight() * 0.892F)
+                Math.round(landscapeWindowMock.getHeight() * 0.8F)
         );
 
         assertEquals(landscapeActual, landscapeExpected);
@@ -74,40 +71,10 @@ public class AbstractTopComponentNGTest {
         final Dimension portraitActual = instance.createFloatingSize(portraitWindowMock, "");
         final Dimension portraitExpected = new Dimension(
                 Math.round(portraitWindowMock.getWidth() * 0.3F),
-                Math.round(portraitWindowMock.getHeight() * 0.94F)
+                Math.round(portraitWindowMock.getHeight() * 0.8F)
         );
 
         assertEquals(portraitActual, portraitExpected);
-    }
-
-    /**
-     * Test of createFloatingLocation method, of class AbstractTopComponent.
-     */
-    @Test
-    public void testCreateFloatingLocation() {
-        System.out.println("createFloatingLocation");
-
-        final AbstractTopComponent instance = new TestTopComponent();
-
-        final Frame windowMock = mock(Frame.class);
-        when(windowMock.getX()).thenReturn(0);
-        when(windowMock.getY()).thenReturn(0);
-        when(windowMock.getWidth()).thenReturn(1920);
-        when(windowMock.getHeight()).thenReturn(1080);
-
-        final Dimension size = new Dimension(600, 350);
-
-        // Test for right side opening floating top components.
-        final Point rightActual = instance.createFloatingLocation(windowMock, "commonpalette", size);
-        final Point rightExpected = new Point(1320, 730);
-
-        assertEquals(rightActual, rightExpected);
-
-        // Test for left side opening floating top components.
-        final Point leftActual = instance.createFloatingLocation(windowMock, "", size);
-        final Point leftExpected = new Point(0, 730);
-
-        assertEquals(leftActual, leftExpected);
     }
 
     /**

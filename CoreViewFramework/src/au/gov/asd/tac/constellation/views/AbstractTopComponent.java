@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Point;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -115,11 +114,34 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                 for (final Window window : Window.getWindows()) {
                     if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
                         final Frame mainWindow = windowManager.getMainWindow();
-                        final String mode = this.getModeName();
-                        final Dimension size = this.createFloatingSize(mainWindow, mode);
-                        final Point location = this.createFloatingLocation(mainWindow, mode, size);
+                        final Dimension size = this.createFloatingSize(mainWindow, this.getModeName());
                         window.setSize(size);
-                        window.setLocation(location);
+                        window.setLocationRelativeTo(mainWindow);
+
+                        int floatingCount = 1;
+
+                        int locationX = window.getX();
+                        int locationY = window.getY();
+
+                        // For every floating top component that is currently opened,
+                        // apply an offset to the opening location of this top component.
+                        for (final TopComponent tc : TopComponent.getRegistry().getOpened()) {
+                            if (windowManager.isTopComponentFloating(tc)) {
+                                // Maximum 5 offsets before returning to original location to avoid opening offscreen.
+                                final int offsetMax = 5;
+                                final int offsetMultiplier = floatingCount % offsetMax >= 0 ? floatingCount % offsetMax : floatingCount;
+
+                                final int offsetX = mainWindow.getWidth() / 50;
+                                final int offsetY = mainWindow.getHeight() / 50;
+
+                                locationX = window.getX() + (offsetMultiplier * offsetX);
+                                locationY = window.getY() + (offsetMultiplier * offsetY);
+
+                                floatingCount++;
+                            }
+                        }
+
+                        window.setLocation(locationX, locationY);
                     }
                 }
 
@@ -224,39 +246,17 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         switch (mode) {
             case "output", "bottomSlidingSide", "isSliding" -> // Bottom opening top components.
                 size = new Dimension(
-                        windowWidth,
+                        Math.round(windowWidth * 0.8F),
                         Math.round(windowHeight * 0.3F)
                 );
             default -> // Side opening top components; "leftSlidingSide", "explorer", "navigator", "commonpalette", "properties", "rightSlidingSide", and any other modes by default.
                 size = new Dimension(
                         Math.round(windowWidth * 0.3F),
-                        Math.round(windowHeight * (windowWidth > windowHeight ? 0.892F : 0.94F))
+                        Math.round(windowHeight * 0.8F)
                 );
         }
 
         return size;
-    }
-
-    /**
-     * Creates a point for the floating top component to open from based on the size of Constellation's window, and the
-     * mode and size of the top component.
-     *
-     * @param window
-     * @param mode
-     * @param size
-     * @return a point for the floating top component to open from.
-     */
-    protected Point createFloatingLocation(final Frame window, final String mode, final Dimension size) {
-        final int locationX;
-
-        switch (mode) {
-            case "commonpalette", "properties", "rightSlidingSide" -> // Right side opening top components.
-                locationX = window.getX() + window.getWidth() - size.width;
-            default -> // Left side opening top components; "leftSlidingSide", "explorer", "navigator", "output", "bottomSlidingSide", "isSliding", and any other modes by default.
-                locationX = window.getX();
-        }
-
-        return new Point(locationX, window.getY() + window.getHeight() - size.height);
     }
 
     public abstract Tuple<String, Boolean> getDefaultFloatingInfo();
