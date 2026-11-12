@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -23,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import static au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.Column;
@@ -175,8 +177,36 @@ public class Table {
                                         column -> column.getTableColumn(), (e1, e2) -> e1));
                 getColumnIndex().clear();
 
+                final List<String> attrNameRemoveList = new ArrayList<>();
+                   
                 // Update columnIndex based on graph attributes               
-                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {
+                try (final ReadableGraph readableGraph = graph.getReadableGraph()) {                                        
+                    final List<String> attributeNames = new ArrayList<>();
+                                        
+                    // get all current attribute names from graph for transactions and source, destination vertices
+                    IntStream.range(0, readableGraph.getAttributeCount(GraphElementType.VERTEX)).forEach(attributePosition -> {
+                        final int attributeId = readableGraph.getAttribute(GraphElementType.VERTEX, attributePosition);
+                        final String attributeName = GraphRecordStoreUtilities.SOURCE + readableGraph.getAttributeName(attributeId);
+                        attributeNames.add(attributeName);
+                    });
+                    IntStream.range(0, readableGraph.getAttributeCount(GraphElementType.VERTEX)).forEach(attributePosition -> {
+                        final int attributeId = readableGraph.getAttribute(GraphElementType.VERTEX, attributePosition);
+                        final String attributeName = GraphRecordStoreUtilities.DESTINATION + readableGraph.getAttributeName(attributeId);
+                        attributeNames.add(attributeName);
+                    });
+                    IntStream.range(0, readableGraph.getAttributeCount(GraphElementType.TRANSACTION)).forEach(attributePosition -> {
+                        final int attributeId = readableGraph.getAttribute(GraphElementType.TRANSACTION, attributePosition);
+                        final String attributeName = GraphRecordStoreUtilities.TRANSACTION + readableGraph.getAttributeName(attributeId);
+                        attributeNames.add(attributeName);
+                    });
+                                        
+                    // get attributes that are in columnReferenceMap but are not attributes in the graph anymore
+                    columnReferenceMap.keySet().forEach(attrName -> {
+                        if (!attributeNames.contains(attrName)) {
+                            attrNameRemoveList.add(attrName);
+                        }                         
+                    });
+                            
                     // Creates "source." columns from vertex attributes
                     getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                             GraphRecordStoreUtilities.SOURCE, columnReferenceMap));
@@ -196,6 +226,25 @@ public class Table {
                 if (state.getColumnAttributes() == null) {
                     openColumnVisibilityMenu();
                     return;
+                } else {
+                    // remove state column attributes that no longer exist
+                    List<Tuple<String, Attribute>> stateColumnAttributes = state.getTransactionColumnAttributes();
+                    if (stateColumnAttributes != null && !stateColumnAttributes.isEmpty()) {
+                        stateColumnAttributes.removeIf(tupleItem -> attrNameRemoveList.contains(tupleItem.getFirst() + tupleItem.getSecond().getName()));
+                        state.setTransactionColumnAttributes(stateColumnAttributes);
+                    }
+                    stateColumnAttributes = state.getVertexColumnAttributes();
+                    if (stateColumnAttributes != null && !stateColumnAttributes.isEmpty()) {
+                        stateColumnAttributes.removeIf(tupleItem -> attrNameRemoveList.contains(tupleItem.getFirst() + tupleItem.getSecond().getName()));
+                        state.setVertexColumnAttributes(stateColumnAttributes);
+                    }
+                    
+                    // remove attributes from columnReferenceMap that no longer exist
+                    attrNameRemoveList.forEach(attrName -> {
+                        if (columnReferenceMap.containsKey(attrName)) {
+                            columnReferenceMap.remove(attrName);
+                        }
+                    });
                 }
 
                 // Sort columns in columnIndex by state, prefix and attribute name
