@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -50,6 +52,8 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
     private static final String TRANSACTION_COLUMN_ATTRIBUTES = "transactionColumnAttributes";
     private static final String VERTEX_COLUMN_ATTRIBUTES = "vertexColumnAttributes";
 
+    private static final Logger LOGGER = Logger.getLogger(TableViewStateIoProvider.class.getName());
+    
     @Override
     public String getName() {
         return TableViewConcept.MetaAttribute.TABLE_VIEW_STATE.getName();
@@ -67,11 +71,17 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
                 final Iterator<JsonNode> attributeIterator = jnode.get(TRANSACTION_COLUMN_ATTRIBUTES).iterator();
                 while (attributeIterator.hasNext()) {
                     final JsonNode attributeNode = attributeIterator.next();
-                    final String attributePrefix = attributeNode.get(ATTRIBUTE_PREFIX).asText();
-                    final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
-                            GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
-                            attributeNode.get(ATTRIBUTE_NAME).asText()));
-                    transactionColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+                    try {
+                        final String attributePrefix = attributeNode.get(ATTRIBUTE_PREFIX).asText();
+                        final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
+                                GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
+                                attributeNode.get(ATTRIBUTE_NAME).asText()));
+                        transactionColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+
+                    } catch (final ArrayIndexOutOfBoundsException ex) {
+                        // attribute no longer exists
+                        LOGGER.log(Level.WARNING, "Attribute not found: {0}", attributeNode.get(ATTRIBUTE_NAME).asText());
+                    }
                 }
             }
             final List<Tuple<String, Attribute>> vertexColumnAttributes = new ArrayList<>();
@@ -80,10 +90,15 @@ public class TableViewStateIoProvider extends AbstractGraphIOProvider {
                 while (attributeIterator.hasNext()) {
                     final JsonNode attributeNode = attributeIterator.next();
                     final String attributePrefix = attributeNode.get(ATTRIBUTE_PREFIX).asText();
-                    final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
-                            GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
-                            attributeNode.get(ATTRIBUTE_NAME).asText()));
-                    vertexColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+                    try {
+                        final Attribute attribute = new GraphAttribute(graph, graph.getAttribute(
+                                GraphElementType.valueOf(attributeNode.get(ATTRIBUTE_ELEMENT_TYPE).asText()),
+                                attributeNode.get(ATTRIBUTE_NAME).asText()));
+                        vertexColumnAttributes.add(Tuple.create(attributePrefix, attribute));
+                    } catch (final ArrayIndexOutOfBoundsException ex) {
+                        // attribute no longer exists
+                        LOGGER.log(Level.WARNING, "Attribute not found: {0}", attributeNode.get(ATTRIBUTE_NAME).asText());
+                    }
                 }
             }
 
