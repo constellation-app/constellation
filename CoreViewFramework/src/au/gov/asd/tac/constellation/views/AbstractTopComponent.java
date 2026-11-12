@@ -24,6 +24,7 @@ import java.awt.Point;
 import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
@@ -123,6 +124,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                 }
 
                 this.setRequestFocusEnabled(true);
+            } else {
+                windowManager.setTopComponentMinimized(this, List.of("leftSlidingSide", "bottomSlidingSide", "rightSlidingSide", "isSliding").contains(this.getModeName()));
             }
         }
 
