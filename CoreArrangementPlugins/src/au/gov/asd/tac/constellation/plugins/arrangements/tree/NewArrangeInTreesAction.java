@@ -49,7 +49,6 @@ import org.openide.util.NbBundle.Messages;
 public final class NewArrangeInTreesAction extends AbstractAction {
 
     private final GraphNode context;
-    private static final Dimension size = new Dimension(750, 300);
 
     public NewArrangeInTreesAction(final GraphNode context) {
         this.context = context;
@@ -62,16 +61,6 @@ public final class NewArrangeInTreesAction extends AbstractAction {
         final PluginParameters params = plugin.createParameters();
         final Graph graph = context.getGraph();
         plugin.updateParameters(graph, params);
-
-//        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_NewArrangeInTreesAction(), params);
-//        dialog.setSize(size);
-//        dialog.showAndWait();
-//        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-//            PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
-//                    .set(params)
-//                    .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-//                    .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
-//        }
 
         PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
                 .set(params)

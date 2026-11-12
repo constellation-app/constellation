@@ -67,7 +67,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     public static final String SPLIT_INTO_TREES_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "split_into_trees");
     private static final String SPLIT_INTO_TREES_PARAMETER_ID_NAME = "Split into Trees";
     private static final String SPLIT_INTO_TREES_PARAMETER_ID_DESCRIPTION = "Arrange the whole graph, or first split into subgraphs";
-    private static final boolean SPLIT_INTO_TREES_DEFAULT = false;
+    private static final boolean SPLIT_INTO_TREES_DEFAULT = true;
 
     public static final String DIM_OR_HIDE_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "dim_or_hide");
     private static final String DIM_OR_HIDE_PARAMETER_ID_NAME = "Dim or Hide Cross-subgraph transactions";
