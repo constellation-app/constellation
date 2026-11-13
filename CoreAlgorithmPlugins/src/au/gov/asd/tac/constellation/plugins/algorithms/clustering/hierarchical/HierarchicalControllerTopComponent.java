@@ -35,6 +35,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.views.AbstractTopComponent;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import java.awt.Component;
 import java.awt.Container;
@@ -52,6 +54,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -86,12 +89,13 @@ import org.openide.windows.TopComponent;
     "CTL_HierarchicalControllerTopComponent=Hierarchical",
     "HINT_HierarchicalControllerTopComponent=Use this window to view communities of interest in the graph"
 })
+@ServiceProvider(service = AbstractTopComponent.class)
 public final class HierarchicalControllerTopComponent extends SwingTopComponent<NestedHierarchicalDisplayPanel> {
 
     private static final String INFO_STRING = "%s clusters";
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
     private static final String TOGGLE_ENABLED = "Toggle Interactive: Enabled";
-    
+
     private GraphNode graphNode;
     private Graph graph;
     private HierarchicalState state;
@@ -99,7 +103,7 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
     private boolean interactivityPermitted = true;
 
     private NestedHierarchicalDisplayPanel dp = null;
-    
+
     public HierarchicalControllerTopComponent() {
         initComponents();
         initNestedDisplay();
@@ -143,7 +147,7 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
             }
         });
     }
-    
+
     @Override
     protected NestedHierarchicalDisplayPanel createContent() {
         return dp;
@@ -505,7 +509,7 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
         }
         setNode(null);
     }
-    
+
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (graph != null) {
@@ -611,10 +615,10 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
         if (graph == null) {
             return;
         }
-        
+
         long smc;
         final long mc;
-        
+
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             // Retrieve the COI state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.HIERARCHICAL_CLUSTERING_STATE.get(rg);
@@ -689,6 +693,16 @@ public final class HierarchicalControllerTopComponent extends SwingTopComponent<
         }
 
         setGroups(false);
+    }
+
+    @Override
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_HierarchicalControllerTopComponent(), Boolean.FALSE);
+    }
+
+    @Override
+    protected String getModeName() {
+        return "output";
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})

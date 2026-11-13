@@ -16,7 +16,18 @@
 package au.gov.asd.tac.constellation.views;
 
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLogger;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.views.preferences.ViewOptionsPanelController;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Window;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.Map;
+import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -30,12 +41,12 @@ import org.openide.windows.WindowManager;
 public abstract class AbstractTopComponent<P> extends TopComponent {
 
     protected P content;
-
     private boolean isVisible;
+    private PropertyChangeListener pcl;
+    private final Preferences prefs = NbPreferences.forModule(ViewOptionsPanelController.class);
 
     /**
-     * Checks if the view will need an update when a graph changes based on if
-     * the view is visible currently.
+     * Checks if the view will need an update when a graph changes based on if the view is visible currently.
      *
      * @return true if the view is visible and needs updating
      */
@@ -48,15 +59,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     }
 
     /**
-     * Builds and initialises the content for this top component. You should
-     * call this method in the constructor of your TopComponent implementation
-     * after calling the initComponents() method.
+     * Builds and initialises the content for this top component. You should call this method in the constructor of your
+     * TopComponent implementation after calling the initComponents() method.
      */
     protected abstract void initContent();
 
     /**
-     * This is where you pass in content which will be rendered within the
-     * AbstractTopComponent.
+     * This is where you pass in content which will be rendered within the AbstractTopComponent.
      *
      * @return
      */
@@ -82,7 +91,65 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentOpened() {
+        final WindowManager windowManager = WindowManager.getDefault();
+        final ViewOptionsPanelController controller = new ViewOptionsPanelController();
+
+        pcl = (final PropertyChangeEvent evt) -> { // Fires when a view is floated or docked manually via the context menu.
+            prefs.putBoolean(this.getName(), windowManager.isTopComponentFloating(this));
+            controller.update();
+        };
+
+        this.addPropertyChangeListener(pcl);
         super.componentOpened();
+
+        final Map<String, Boolean> defaultPrefs = controller.getPanel().getDefaultPrefs();
+
+        if (defaultPrefs.containsKey(this.getName())) {
+            final boolean isFloating = prefs.getBoolean(this.getName(), defaultPrefs.get(this.getName()));
+            windowManager.setTopComponentFloating(this, isFloating);
+
+            if (isFloating) {
+                // This loops through all the current windows and compares this top component's top level ancestor
+                // with the window's parent. Sets the size and location for the floating component if a match is found.
+                for (final Window window : Window.getWindows()) {
+                    if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
+                        final Frame mainWindow = windowManager.getMainWindow();
+                        final Dimension size = this.createFloatingSize(mainWindow, this.getModeName());
+                        window.setSize(size);
+                        window.setLocationRelativeTo(mainWindow);
+
+                        int floatingCount = 1;
+
+                        int locationX = window.getX();
+                        int locationY = window.getY();
+
+                        // For every floating top component that is currently opened,
+                        // apply an offset to the opening location of this top component.
+                        for (final TopComponent tc : TopComponent.getRegistry().getOpened()) {
+                            if (windowManager.isTopComponentFloating(tc)) {
+                                // Maximum 5 offsets before returning to original location to avoid opening offscreen.
+                                final int offsetMax = 5;
+                                final int offsetMultiplier = floatingCount % offsetMax >= 0 ? floatingCount % offsetMax : floatingCount;
+
+                                final int offsetX = mainWindow.getWidth() / 50;
+                                final int offsetY = mainWindow.getHeight() / 50;
+
+                                locationX = window.getX() + (offsetMultiplier * offsetX);
+                                locationY = window.getY() + (offsetMultiplier * offsetY);
+
+                                floatingCount++;
+                            }
+                        }
+
+                        window.setLocation(locationX, locationY);
+                    }
+                }
+
+                this.setRequestFocusEnabled(true);
+            } else {
+                windowManager.setTopComponentMinimized(this, List.of("leftSlidingSide", "bottomSlidingSide", "rightSlidingSide", "isSliding").contains(this.getModeName()));
+            }
+        }
 
         isVisible = true;
         ConstellationLogger.getDefault().viewStarted(this);
@@ -90,6 +157,7 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentClosed() {
+        this.removePropertyChangeListener(pcl);
         super.componentClosed();
 
         isVisible = false;
@@ -160,4 +228,38 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     public final HelpCtx getHelpCtx() {
         return new HelpCtx(getClass().getName());
     }
+
+    /**
+     * Creates a dimension for the floating top component based on the size of Constellation's window and the mode of
+     * the top component.
+     *
+     * @param window
+     * @param mode
+     * @return a dimension for the floating top component.
+     */
+    protected Dimension createFloatingSize(final Frame window, final String mode) {
+        final int windowWidth = window.getWidth();
+        final int windowHeight = window.getHeight();
+
+        final Dimension size;
+
+        switch (mode) {
+            case "output", "bottomSlidingSide", "isSliding" -> // Bottom opening top components.
+                size = new Dimension(
+                        Math.round(windowWidth * 0.8F),
+                        Math.round(windowHeight * 0.3F)
+                );
+            default -> // Side opening top components; "leftSlidingSide", "explorer", "navigator", "commonpalette", "properties", "rightSlidingSide", and any other modes by default.
+                size = new Dimension(
+                        Math.round(windowWidth * 0.3F),
+                        Math.round(windowHeight * 0.8F)
+                );
+        }
+
+        return size;
+    }
+
+    public abstract Tuple<String, Boolean> getDefaultFloatingInfo();
+
+    protected abstract String getModeName();
 }
