@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.awt.Dimension;
 import java.awt.Frame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 

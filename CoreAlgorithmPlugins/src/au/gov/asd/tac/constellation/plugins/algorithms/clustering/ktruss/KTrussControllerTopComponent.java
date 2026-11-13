@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.views.AbstractTopComponent;
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -49,8 +49,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.Utilities;
-import org.openide.util.lookup.ServiceProvider;
 import org.openide.windows.TopComponent;
 
 /**
@@ -85,22 +83,21 @@ import org.openide.windows.TopComponent;
     "CTL_KTrussControllerTopComponent=K-Truss",
     "HINT_KTrussControllerTopComponent=K-Truss"
 })
-@ServiceProvider(service = AbstractTopComponent.class)
-public final class KTrussControllerTopComponent extends AbstractTopComponent implements LookupListener, GraphChangeListener, ComponentListener {
+public final class KTrussControllerTopComponent extends SwingTopComponent<NestedKTrussDisplayPanel> implements ComponentListener {
 
     private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
     private static final String TOGGLE_ENABLED = "Toggle Interactive: Enabled";
-    
+
     private static final int NESTED_TRUSSES_HEIGHT = 500;
-    
+
     private GraphNode graphNode;
     private Graph graph;
     private KTrussState state;
     private boolean isAdjusting;
     private boolean nestedPanelIsVisible;
-    
+
     private NestedKTrussDisplayPanel dp;
-    
+
     public KTrussControllerTopComponent() {
         initComponents();
         setName(Bundle.CTL_KTrussControllerTopComponent());
@@ -108,6 +105,11 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
         isAdjusting = false;
         nestedPanelIsVisible = false;
         updateInteractiveButton(interactiveButton.getText().equals(TOGGLE_DISABLED));
+    }
+
+    @Override
+    protected NestedKTrussDisplayPanel createContent() {
+        return dp;
     }
 
     /**
@@ -417,25 +419,11 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentOpened() {
-        result.addLookupListener(this);
-        resultChanged(null);
-        super.componentOpened();
-    }
-
-    @Override
-    public void setEnabled(final boolean enabled) {
-        super.setEnabled(enabled);
-        revalidateParents(this);
-    }
-
-    @Override
-    public void requestActive() {
-        super.requestActive();
+    protected void handleComponentOpened() {
         revalidateParents(this);
         setGroups(false);
     }
-    
+
     @Override
     protected void handleComponentClosed() {
         // If interactive was enabled when component closed, clear this state so that
@@ -448,7 +436,7 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
         }
         setNode(null);
     }
-    
+
     @Override
     protected void handleNewGraph(final Graph graph) {
         if (graph != null) {
@@ -458,7 +446,7 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
             }
         }
     }
-    
+
     @Override
     public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
@@ -475,7 +463,7 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
         if (!nestedPanelIsVisible) {
             return;
         }
-        
+
         final int sizeDifference = NESTED_TRUSSES_HEIGHT - nestedTrussButton.getHeight();
 
         nestedTrussPane.setSize(200, 0);
@@ -508,7 +496,7 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
         if (nestedPanelIsVisible) {
             return;
         }
-        
+
         final int sizeDifference = NESTED_TRUSSES_HEIGHT - nestedTrussButton.getHeight();
 
         nestedTrussPane.setSize(200, NESTED_TRUSSES_HEIGHT);
@@ -605,10 +593,10 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
         if (graph == null) {
             return;
         }
-        
+
         long smc;
         final long mc;
-        
+
         try (final ReadableGraph rg = graph.getReadableGraph()) {
             // Retrieve the k-truss state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.get(rg);
@@ -783,13 +771,13 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
     }
 
     @Override
-    protected void initContent() {
-        // Required for AbstractTopComponent, intentionally left blank.
+    public Tuple<String, Boolean> getDefaultFloatingInfo() {
+        return Tuple.create(Bundle.CTL_KTrussControllerTopComponent(), Boolean.FALSE);
     }
 
     @Override
-    protected Object createContent() {
-        return dp;
+    protected String getModeName() {
+        return "output";
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
@@ -827,7 +815,7 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
             final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
             final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.ensure(graph);
             final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.ensure(graph);
-            ClusterUtilities.setColorRef(graph, ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.getName(), 
+            ClusterUtilities.setColorRef(graph, ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.getName(),
                     ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.getName());
 
             final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5F, 0.95F);
@@ -1015,16 +1003,6 @@ public final class KTrussControllerTopComponent extends AbstractTopComponent imp
 
     void readProperties(final java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
-    }
-
-    @Override
-    public Tuple<String, Boolean> getDefaultFloatingInfo() {
-        return Tuple.create(Bundle.CTL_KTrussControllerTopComponent(), Boolean.FALSE);
-    }
-
-    @Override
-    protected String getModeName() {
-        return "output";
     }
 
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
