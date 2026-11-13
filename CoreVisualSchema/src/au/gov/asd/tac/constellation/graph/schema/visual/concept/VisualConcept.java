@@ -207,6 +207,7 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute COLOR = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "color")
                 .setDescription("The color of the vertex")
+                .setDefaultValue(ConstellationColor.GREY)
                 .create()
                 .build();
         public static final SchemaAttribute COLORBLIND_LAYER = new SchemaAttribute.Builder(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "colorblind_layer")
