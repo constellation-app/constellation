@@ -87,6 +87,15 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     private static final String SCALE_PARAMETER_ID_DESCRIPTION = "The distance between each layer of the arranged graph";
     private static final int SCALE_PARAMETER_ID_DEFAULT = 10;
 
+    public static final String ALGO_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "algo");
+    private static final String ALGO_PARAMETER_ID_NAME = "Algorithm";
+    private static final String ALGO_PARAMETER_ID_DESCRIPTION = "What algorithm to use";
+    private static final String ALGO_1 = "Algorithm 1";
+    private static final String ALGO_2 = "Algorithm 2";
+    private static final String ALGO_3 = "Algorithm 3";
+    private static final List<String> ALGO_PARAM_VALUES = Arrays.asList(ALGO_1, ALGO_2, ALGO_3);
+    private static final String ALGO_PARAMETER_ID_DEFAULT = ALGO_1;
+
     private static final SecureRandom random = new SecureRandom();
 
     @Override
@@ -122,6 +131,13 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         IntegerParameterType.setMinimum(scaleParam, 1);
         parameters.addParameter(scaleParam);
 
+        final PluginParameter<SingleChoiceParameterValue> algoParam = SingleChoiceParameterType.build(ALGO_PARAMETER_ID);
+        algoParam.setName(ALGO_PARAMETER_ID_NAME);
+        algoParam.setDescription(ALGO_PARAMETER_ID_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(algoParam, ALGO_PARAM_VALUES);
+        SingleChoiceParameterType.setChoice(algoParam, ALGO_PARAMETER_ID_DEFAULT);
+        parameters.addParameter(algoParam);
+
         return parameters;
     }
 
@@ -143,8 +159,20 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
         radiusSetter.setRadii();
 
+        final String algorithm = parameters.getParameters().get(ALGO_PARAMETER_ID).getStringValue();
+        final Arranger treeArranger = switch (algorithm) {
+            case ALGO_1 ->
+                new NewTreeArranger(scale);
+            case ALGO_2 ->
+                new NewTreeArranger2(scale);
+            case ALGO_3 ->
+                new NewTreeArranger3(scale);
+            default ->
+                new NewTreeArranger(scale);
+        };
         //final Arranger treeArranger = new NewTreeArranger(scale);
-        final Arranger treeArranger = new NewTreeArranger2(scale);
+        //final Arranger treeArranger = new NewTreeArranger2(scale);
+        //final Arranger treeArranger = new NewTreeArranger3(scale);
         final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
 
         final GraphTaxonomyArranger arranger2 = splitIntoTrees ? new TreeTaxonArranger(treeArranger, middle) : new GraphComponentArranger(treeArranger, middle, Connections.LINKS);
