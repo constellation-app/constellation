@@ -144,7 +144,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         radiusSetter.setRadii();
 
         //final Arranger treeArranger = new NewTreeArranger(scale);
-        final Arranger treeArranger = new NewTreeArrangerEDIT(scale);
+        final Arranger treeArranger = new NewTreeArranger2(scale);
         final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
 
         final GraphTaxonomyArranger arranger2 = splitIntoTrees ? new TreeTaxonArranger(treeArranger, middle) : new GraphComponentArranger(treeArranger, middle, Connections.LINKS);
