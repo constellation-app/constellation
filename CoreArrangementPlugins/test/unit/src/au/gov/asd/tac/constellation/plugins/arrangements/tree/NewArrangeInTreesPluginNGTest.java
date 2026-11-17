@@ -90,7 +90,7 @@ public class NewArrangeInTreesPluginNGTest {
 
         final Map<String, PluginParameter<?>> params = result.getParameters();
 
-        assertEquals(params.size(), 4);
+        assertEquals(params.size(), 5);
         assertTrue(params.containsKey(NewArrangeInTreesPlugin.SPLIT_INTO_TREES_PARAMETER_ID));
         assertTrue(params.containsKey(NewArrangeInTreesPlugin.DIM_OR_HIDE_PARAMETER_ID));
         assertTrue(params.containsKey(NewArrangeInTreesPlugin.COLOUR_SUBGRAPHS_PARAMETER_ID));
@@ -139,6 +139,7 @@ public class NewArrangeInTreesPluginNGTest {
         final PluginParameter dimParam = mock(PluginParameter.class);
         final PluginParameter colorParam = mock(PluginParameter.class);
         final PluginParameter scaleParam = mock(PluginParameter.class);
+        final PluginParameter algoParam = mock(PluginParameter.class);
 
         when(parameters.getParameters()).thenReturn(mockParams);
 
@@ -146,11 +147,13 @@ public class NewArrangeInTreesPluginNGTest {
         when(mockParams.get(NewArrangeInTreesPlugin.DIM_OR_HIDE_PARAMETER_ID)).thenReturn(dimParam);
         when(mockParams.get(NewArrangeInTreesPlugin.COLOUR_SUBGRAPHS_PARAMETER_ID)).thenReturn(colorParam);
         when(mockParams.get(NewArrangeInTreesPlugin.SCALE_PARAMETER_ID)).thenReturn(scaleParam);
+        when(mockParams.get(NewArrangeInTreesPlugin.ALGO_PARAMETER_ID)).thenReturn(algoParam);
 
         when(splitParam.getBooleanValue()).thenReturn(true);
         when(dimParam.getStringValue()).thenReturn("Dim");
         when(colorParam.getBooleanValue()).thenReturn(true);
         when(scaleParam.getIntegerValue()).thenReturn(10);
+        when(algoParam.getStringValue()).thenReturn("Algorithm 1");
 
         final GraphTaxonomy mockTreeTax = mock(GraphTaxonomy.class);
         final MutableIntObjectMap<MutableIntSet> taxa = createExpectedTaxa();
