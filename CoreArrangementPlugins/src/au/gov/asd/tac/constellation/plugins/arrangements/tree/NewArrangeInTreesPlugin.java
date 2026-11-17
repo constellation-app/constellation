@@ -75,7 +75,8 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     private static final String DIM_OR_HIDE_PARAMETER_ID_DESCRIPTION = "What to do with transactions that connect subgraphs";
     private static final String NOTHING = "Nothing";
     private static final String DIM = "Dim";
-    private static final List<String> DIM_OR_HIDE_PARAM_VALUES = Arrays.asList(NOTHING, DIM, "Hide");
+    private static final String HIDE = "Hide";
+    private static final List<String> DIM_OR_HIDE_PARAM_VALUES = Arrays.asList(NOTHING, DIM, HIDE);
     private static final String DIM_OR_HIDE_PARAMETER_ID_DEFAULT = NOTHING;
 
     public static final String COLOUR_SUBGRAPHS_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "colour_subgraphs");
@@ -204,9 +205,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
             colourSubGraphs(graph, TreeTaxonArranger.getTreeTaxonomy(graph, true));
         }
 
-        if (!NOTHING.equals(dimHideChoice)) {
-            dimOrHideTransactions(graph, arranger2.getTaxonomy(graph), DIM.equals(dimHideChoice));
-        }
+        dimOrHideTransactions(graph, arranger2.getTaxonomy(graph), dimHideChoice);
 
         interaction.setProgress(1, 0, "Finished", true);
     }
@@ -237,7 +236,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
      * @param taxonomy The taxonomy that will be checked for transactions between sub graphs
      * @param dimTrans If true transactions will be dimmed, if false they will be hidden
      */
-    private void dimOrHideTransactions(final GraphWriteMethods graph, final GraphTaxonomy taxonomy, final boolean dimTrans) {
+    private void dimOrHideTransactions(final GraphWriteMethods graph, final GraphTaxonomy taxonomy, final String dimTrans) {
         final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
         final int transactionDimmedAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
         final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
@@ -264,11 +263,11 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
 
                     // If neighbour is not in subgraph, dim/hide
                     final int txId = graph.getVertexTransaction(vxId, i); // This assumes that transaction position matches neighbour position
-                    if (dimTrans) {
-                        graph.setBooleanValue(transactionDimmedAttribute, txId, true);
-                    } else {
-                        graph.setFloatValue(transactionVisibilityAttribute, txId, -2.0F);
-                    }
+                    final boolean isDimmed = dimTrans.equals(DIM);
+                    final float hideValue = dimTrans.equals(HIDE) ? -2.0F : 2.0F;
+
+                    graph.setBooleanValue(transactionDimmedAttribute, txId, isDimmed);
+                    graph.setFloatValue(transactionVisibilityAttribute, txId, hideValue);
                 }
             }
         }
