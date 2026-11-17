@@ -30,6 +30,8 @@ import org.testng.annotations.Test;
  */
 public class NewTreeArrangerNGTest {
 
+    private StoreGraph graph;
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Left Intentially Blank
@@ -42,18 +44,53 @@ public class NewTreeArrangerNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
-        // Left Intentially Blank
+        graph = new StoreGraph();
+
+        final int vx0 = graph.addVertex();
+
+        final int vx1 = graph.addVertex();
+        final int vx2 = graph.addVertex();
+        final int vx3 = graph.addVertex();
+
+        final int vx4 = graph.addVertex();
+        final int vx5 = graph.addVertex();
+        final int vx6 = graph.addVertex();
+
+        final int vx7 = graph.addVertex();
+        final int vx8 = graph.addVertex();
+        final int vx9 = graph.addVertex();
+
+        final int vx10 = graph.addVertex();
+        final int vx11 = graph.addVertex();
+        final int vx12 = graph.addVertex();
+
+        graph.addTransaction(vx0, vx1, true);
+        graph.addTransaction(vx0, vx2, true);
+        graph.addTransaction(vx0, vx3, true);
+
+        graph.addTransaction(vx1, vx4, true);
+        graph.addTransaction(vx1, vx5, true);
+        graph.addTransaction(vx1, vx6, true);
+
+        graph.addTransaction(vx2, vx7, true);
+        graph.addTransaction(vx2, vx8, true);
+        graph.addTransaction(vx2, vx9, true);
+
+        graph.addTransaction(vx3, vx10, true);
+        graph.addTransaction(vx3, vx11, true);
+        graph.addTransaction(vx3, vx12, true);
+
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
-        // Left Intentially Blank
+        graph = null;
     }
 
     @Test
     public void testArrange() throws Exception {
         System.out.println("arrange");
-        final StoreGraph graph = createTestGraph();
         final float nodeDistance = 10F;
         final int x = VisualConcept.VertexAttribute.X.ensure(graph);
         final int y = VisualConcept.VertexAttribute.Y.ensure(graph);
@@ -81,48 +118,6 @@ public class NewTreeArrangerNGTest {
             assertEquals(distance, nodeDistance * 2, 0.1F);
         }
 
-    }
-
-    private StoreGraph createTestGraph() {
-        final StoreGraph storeGraph = new StoreGraph();
-
-        final int vx0 = storeGraph.addVertex();
-
-        final int vx1 = storeGraph.addVertex();
-        final int vx2 = storeGraph.addVertex();
-        final int vx3 = storeGraph.addVertex();
-
-        final int vx4 = storeGraph.addVertex();
-        final int vx5 = storeGraph.addVertex();
-        final int vx6 = storeGraph.addVertex();
-
-        final int vx7 = storeGraph.addVertex();
-        final int vx8 = storeGraph.addVertex();
-        final int vx9 = storeGraph.addVertex();
-
-        final int vx10 = storeGraph.addVertex();
-        final int vx11 = storeGraph.addVertex();
-        final int vx12 = storeGraph.addVertex();
-
-        storeGraph.addTransaction(vx0, vx1, true);
-        storeGraph.addTransaction(vx0, vx2, true);
-        storeGraph.addTransaction(vx0, vx3, true);
-
-        storeGraph.addTransaction(vx1, vx4, true);
-        storeGraph.addTransaction(vx1, vx5, true);
-        storeGraph.addTransaction(vx1, vx6, true);
-
-        storeGraph.addTransaction(vx2, vx7, true);
-        storeGraph.addTransaction(vx2, vx8, true);
-        storeGraph.addTransaction(vx2, vx9, true);
-
-        storeGraph.addTransaction(vx3, vx10, true);
-        storeGraph.addTransaction(vx3, vx11, true);
-        storeGraph.addTransaction(vx3, vx12, true);
-
-        VisualConcept.VertexAttribute.SELECTED.ensure(storeGraph);
-
-        return storeGraph;
     }
 
 }

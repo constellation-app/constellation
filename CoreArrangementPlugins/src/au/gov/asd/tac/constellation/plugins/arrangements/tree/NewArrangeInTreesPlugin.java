@@ -58,6 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  * @author sol
+ * @author Quasar985
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("NewArrangeInTreesPlugin=Arrange in Trees")
@@ -170,9 +171,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
             default ->
                 new NewTreeArranger(scale);
         };
-        //final Arranger treeArranger = new NewTreeArranger(scale);
-        //final Arranger treeArranger = new NewTreeArranger2(scale);
-        //final Arranger treeArranger = new NewTreeArranger3(scale);
+
         final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
 
         final GraphTaxonomyArranger arranger2 = splitIntoTrees ? new TreeTaxonArranger(treeArranger, middle) : new GraphComponentArranger(treeArranger, middle, Connections.LINKS);

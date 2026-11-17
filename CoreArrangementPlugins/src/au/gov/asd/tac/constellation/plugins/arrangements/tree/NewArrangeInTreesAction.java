@@ -35,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
 /**
  * Tree arrangement
  *
- * @author algol
+ * @author Quasar985
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.tree.NewArrangeInTreesAction")
 @ActionRegistration(

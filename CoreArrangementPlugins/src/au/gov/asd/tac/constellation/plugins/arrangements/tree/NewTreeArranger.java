@@ -20,9 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
@@ -31,9 +29,8 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
  *
  * @author Quasar985
  */
-public class NewTreeArranger implements Arranger {
+public class NewTreeArranger extends TreeArranger implements Arranger {
 
-    private GraphWriteMethods graph;
     private int xAttr;
     private int yAttr;
     private int zAttr;
@@ -109,64 +106,6 @@ public class NewTreeArranger implements Arranger {
         return rootVxId;
     }
 
-    // COPIED FROM CircTreeArranger
-    /**
-     * For each vertex, record its children in order of the number of their descendants.
-     * <p>
-     * Record result an AtomicQueue stored by parent in hash table. Returns number of children for vertex.
-     *
-     * Returns the number of children
-     */
-    private int orderChildren(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<List<VxInfo>> orderedChildren, final BitSet onlyChildren) {
-        final List<VxInfo> children = new ArrayList<>();
-
-        // For the specified vertex, get its children and record how many children they have.
-        for (int position = 0; position < graph.getVertexNeighbourCount(vxId); position++) {
-            final int nbId = graph.getVertexNeighbour(vxId, position);
-            if (vxsToGo.get(nbId)) {
-                children.add(new VxInfo(nbId, 0));
-                vxsToGo.clear(nbId);
-            }
-        }
-
-        if (children.isEmpty()) {
-            return 1;
-        }
-
-        if (children.size() == 1) {
-            onlyChildren.set(children.iterator().next().vxId);
-        }
-
-        // Remove these children from consideration.
-        removeChildren(vxsToGo, children);
-
-        int result = 1;
-        final List<VxInfo> numChildren = new ArrayList<>(); // TODO: rename
-        for (final VxInfo vxInfo : children) {
-            final int nChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
-            numChildren.add(new VxInfo(vxInfo.vxId, nChildren));
-            result += nChildren;
-        }
-
-        Collections.sort(numChildren);
-        orderedChildren.put(vxId, numChildren);
-
-        return result;
-    }
-
-    // COPIED FROM CircTreeArranger
-    /**
-     * Remove the children from the set of vertex ids.
-     *
-     * @param vxs
-     * @param children
-     */
-    private static void removeChildren(final BitSet vxs, final List<VxInfo> children) {
-        for (final VxInfo vxInfo : children) {
-            vxs.clear(vxInfo.vxId);
-        }
-    }
-
     /**
      * Executes the radial tree layout algorithm.
      *
@@ -230,28 +169,4 @@ public class NewTreeArranger implements Arranger {
         return count;
     }
 
-    // COPIED FROM CircTreeArranger
-    /**
-     * A vertex id and the number of children the vertex has.
-     */
-    private static class VxInfo implements Comparable<VxInfo> {
-
-        final int vxId;
-        final int nChildren;
-
-        public VxInfo(final int vxId, final int nChildren) {
-            this.vxId = vxId;
-            this.nChildren = nChildren;
-        }
-
-        @Override
-        public int compareTo(final VxInfo o) {
-            return nChildren - o.nChildren;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("VxInfo[vxId=%d,nChildren=%d]", vxId, nChildren);
-        }
-    }
 }

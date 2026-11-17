@@ -268,7 +268,6 @@ public class ArrangementUtilitiesNGTest {
     }
 
     private MutableIntObjectMap<MutableIntSet> createTestTaxa() {
-
         final MutableIntObjectMap<MutableIntSet> components = new IntObjectHashMap<>();
         final int singletonsComponentID = -1;
         final int doubletsComponentID = -2;
@@ -288,7 +287,7 @@ public class ArrangementUtilitiesNGTest {
         components.put(11, component11);
 
         // Singleton
-        components.get(singletonsComponentID).addAll(14);
+        components.get(singletonsComponentID).add(14);
 
         // Doublet
         components.get(doubletsComponentID).addAll(6, 7);
