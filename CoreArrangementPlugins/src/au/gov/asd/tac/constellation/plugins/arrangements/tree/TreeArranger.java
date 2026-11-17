@@ -61,15 +61,15 @@ public class TreeArranger {
         removeChildren(vxsToGo, children);
 
         int result = 1;
-        final List<VxInfo> numChildren = new ArrayList<>(); // TODO: rename
+        final List<VxInfo> vxInfoList = new ArrayList<>();
         for (final VxInfo vxInfo : children) {
-            final int nChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
-            numChildren.add(new VxInfo(vxInfo.vxId, nChildren));
-            result += nChildren;
+            final int numChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
+            vxInfoList.add(new VxInfo(vxInfo.vxId, numChildren));
+            result += numChildren;
         }
 
-        Collections.sort(numChildren);
-        orderedChildren.put(vxId, numChildren);
+        Collections.sort(vxInfoList);
+        orderedChildren.put(vxId, vxInfoList);
 
         return result;
     }
