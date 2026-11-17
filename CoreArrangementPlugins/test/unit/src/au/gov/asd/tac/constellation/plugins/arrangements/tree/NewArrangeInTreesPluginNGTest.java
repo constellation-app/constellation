@@ -176,7 +176,7 @@ public class NewArrangeInTreesPluginNGTest {
         verify(interaction).setProgress(1, 0, "Finished", true);
 
         // Verify params were gotten
-        verify(parameters, times(4)).getParameters();
+        verify(parameters, times(5)).getParameters();
 
         //Verify particular transactions were dimmed
         final int[] expectedDimmedTransIds = {0, 1, 12};
