@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +32,8 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
  *
  * @author Quasar985
  */
-public class NewTreeArranger3 implements Arranger {
+public class NewTreeArranger3 extends TreeArranger implements Arranger {
 
-    private GraphWriteMethods graph;
     private int xAttr;
     private int yAttr;
     private int zAttr;
@@ -109,47 +107,6 @@ public class NewTreeArranger3 implements Arranger {
         }
 
         return rootVxId;
-    }
-
-    private int orderChildren(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<List<VxInfo>> orderedChildren, final BitSet onlyChildren) {
-        final List<VxInfo> children = new ArrayList<>();
-
-        for (int position = 0; position < graph.getVertexNeighbourCount(vxId); position++) {
-            final int nbId = graph.getVertexNeighbour(vxId, position);
-            if (vxsToGo.get(nbId)) {
-                children.add(new VxInfo(nbId, 0));
-                vxsToGo.clear(nbId);
-            }
-        }
-
-        if (children.isEmpty()) {
-            return 1;
-        }
-
-        if (children.size() == 1) {
-            onlyChildren.set(children.iterator().next().vxId);
-        }
-
-        removeChildren(vxsToGo, children);
-
-        int result = 1;
-        final List<VxInfo> numChildren = new ArrayList<>();
-        for (final VxInfo vxInfo : children) {
-            final int nChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
-            numChildren.add(new VxInfo(vxInfo.vxId, nChildren));
-            result += nChildren;
-        }
-
-        Collections.sort(numChildren);
-        orderedChildren.put(vxId, numChildren);
-
-        return result;
-    }
-
-    private static void removeChildren(final BitSet vxs, final List<VxInfo> children) {
-        for (final VxInfo vxInfo : children) {
-            vxs.clear(vxInfo.vxId);
-        }
     }
 
     /**
@@ -333,27 +290,4 @@ public class NewTreeArranger3 implements Arranger {
         }
     }
 
-    /**
-     * A vertex ID and the number of descendants.
-     */
-    private static class VxInfo implements Comparable<VxInfo> {
-
-        final int vxId;
-        final int nChildren;
-
-        public VxInfo(final int vxId, final int nChildren) {
-            this.vxId = vxId;
-            this.nChildren = nChildren;
-        }
-
-        @Override
-        public int compareTo(final VxInfo o) {
-            return nChildren - o.nChildren;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("VxInfo[vxId=%d,nChildren=%d]", vxId, nChildren);
-        }
-    }
 }

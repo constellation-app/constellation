@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
@@ -31,9 +30,8 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
  *
  * @author Quasar985
  */
-public class NewTreeArranger2 implements Arranger {
+public class NewTreeArranger2 extends TreeArranger implements Arranger {
 
-    private GraphWriteMethods graph;
     private int xAttr;
     private int yAttr;
     private int zAttr;
@@ -107,47 +105,6 @@ public class NewTreeArranger2 implements Arranger {
         }
 
         return rootVxId;
-    }
-
-    private int orderChildren(final int vxId, final BitSet vxsToGo, final MutableIntObjectMap<List<VxInfo>> orderedChildren, final BitSet onlyChildren) {
-        final List<VxInfo> children = new ArrayList<>();
-
-        for (int position = 0; position < graph.getVertexNeighbourCount(vxId); position++) {
-            final int nbId = graph.getVertexNeighbour(vxId, position);
-            if (vxsToGo.get(nbId)) {
-                children.add(new VxInfo(nbId, 0));
-                vxsToGo.clear(nbId);
-            }
-        }
-
-        if (children.isEmpty()) {
-            return 1;
-        }
-
-        if (children.size() == 1) {
-            onlyChildren.set(children.iterator().next().vxId);
-        }
-
-        removeChildren(vxsToGo, children);
-
-        int result = 1;
-        final List<VxInfo> numChildren = new ArrayList<>();
-        for (final VxInfo vxInfo : children) {
-            final int nChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
-            numChildren.add(new VxInfo(vxInfo.vxId, nChildren));
-            result += nChildren;
-        }
-
-        Collections.sort(numChildren);
-        orderedChildren.put(vxId, numChildren);
-
-        return result;
-    }
-
-    private static void removeChildren(final BitSet vxs, final List<VxInfo> children) {
-        for (final VxInfo vxInfo : children) {
-            vxs.clear(vxInfo.vxId);
-        }
     }
 
     /**
@@ -295,62 +252,6 @@ public class NewTreeArranger2 implements Arranger {
         return radii;
     }
 
-    /*
-    private double[] calculateLayerRadii(final List<List<NodePosition>> layers, final float layerDistance) {
-        final double[] radii = new double[layers.size()];
-        final double minimumDistance = Math.max(0, nodeDistance);
-
-        double previousRadius = 0;
-        for (int depth = 1; depth < layers.size(); depth++) {
-            final List<NodePosition> layer = layers.get(depth);
-
-            if (layer.isEmpty()) {
-                continue;
-            }
-
-            // Sort nodes into their circular angular order.
-            layer.sort((a, b) -> Double.compare(a.angle, b.angle));
-
-            // Preserve the original layer spacing where possible.
-            final double normalRadius = depth * layerDistance;
-
-            // Ensure sufficient radial separation from the
-            // previous layer.
-            final double minimumRadius = previousRadius + minimumDistance;
-
-            double requiredRadius = normalRadius;
-
-            // Calculate the minimum angular gap between nodes.
-            if (layer.size() > 1 && minimumDistance > 0) {
-                double minimumAngleGap = Double.MAX_VALUE;
-
-                for (int i = 0; i < layer.size(); i++) {
-                    final double currentAngle = layer.get(i).angle;
-                    final double nextAngle = (i + 1 < layer.size()) ? layer.get(i + 1).angle : layer.get(0).angle + 2 * Math.PI;
-                    final double angleGap = nextAngle - currentAngle;
-
-                    minimumAngleGap = Math.min(minimumAngleGap, angleGap);
-                }
-
-                // Chord distance = 2 * radius * sin(angle / 2).
-                // Calculate the radius needed to maintain
-                // the requested minimum node distance.
-                final double sinHalfGap = Math.sin(minimumAngleGap / 2.0);
-
-                if (sinHalfGap > 0) {
-                    final double spacingRadius = minimumDistance / (2.0 * sinHalfGap);
-                    requiredRadius = Math.max(requiredRadius, spacingRadius);
-                }
-            }
-
-            // Use whichever radius provides sufficient spacing.
-            radii[depth] = Math.max(requiredRadius, minimumRadius);
-            previousRadius = radii[depth];
-        }
-
-        return radii;
-    }
-     */
     private int getLeafCount(final int vxId, final MutableIntObjectMap<List<VxInfo>> orderedChildren) {
         final List<VxInfo> children = orderedChildren.get(vxId);
         if (children == null || children.isEmpty()) {
@@ -379,27 +280,4 @@ public class NewTreeArranger2 implements Arranger {
         }
     }
 
-    /**
-     * A vertex ID and the number of descendants.
-     */
-    private static class VxInfo implements Comparable<VxInfo> {
-
-        final int vxId;
-        final int nChildren;
-
-        public VxInfo(final int vxId, final int nChildren) {
-            this.vxId = vxId;
-            this.nChildren = nChildren;
-        }
-
-        @Override
-        public int compareTo(final VxInfo o) {
-            return nChildren - o.nChildren;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("VxInfo[vxId=%d,nChildren=%d]", vxId, nChildren);
-        }
-    }
 }
