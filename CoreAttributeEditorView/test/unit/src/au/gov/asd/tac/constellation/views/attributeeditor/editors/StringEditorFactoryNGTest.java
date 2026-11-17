@@ -22,6 +22,10 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.StringEditorFa
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
@@ -38,7 +42,7 @@ import org.testng.annotations.Test;
  * @author antares
  */
 public class StringEditorFactoryNGTest {
-    
+
     private static final Logger LOGGER = Logger.getLogger(StringEditorFactoryNGTest.class.getName());
 
     @BeforeClass
@@ -73,13 +77,13 @@ public class StringEditorFactoryNGTest {
     @Test
     public void testCreateEditor() {
         System.out.println("createEditor");
-        
+
         final StringEditorFactory instance = new StringEditorFactory();
         final AbstractEditor<String> result = instance.createEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
         // could be different abstract editors for the string type but we want to make sure it's the right one
         assertTrue(result instanceof StringEditor);
     }
-    
+
     /**
      * Test of getAttributeType method, of class StringEditorFactory.
      */
@@ -87,28 +91,35 @@ public class StringEditorFactoryNGTest {
     public void testGetAttributeType() {
         System.out.println("getAttributeType");
 
-        final StringEditorFactory instance = new StringEditorFactory();        
+        final StringEditorFactory instance = new StringEditorFactory();
         assertEquals(instance.getAttributeType(), StringAttributeDescription.ATTRIBUTE_NAME);
     }
-    
+
     /**
      * Test of updateControlsWithValue method, of class StringEditor.
      */
     @Test
     public void testUpdateControlsWithValue() {
         System.out.println("updateControlsWithValue");
-        
-        final StringEditorFactory instance = new StringEditorFactory();
-        final StringEditor editor = instance.new StringEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
-        
-        // need to run in order for editor controls to be instantiated
-        editor.createEditorControls();
-        
-        // default values from instantiation
-        // field is blank which should return null
-        assertNull(editor.getValueFromControls());
-        
-        editor.updateControlsWithValue("a test string");
-        assertEquals(editor.getValueFromControls(), "a test string");
+
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Make runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+            final StringEditorFactory instance = new StringEditorFactory();
+            final StringEditor editor = instance.new StringEditor("Test", null, ValueValidator.getAlwaysSucceedValidator(), null, null);
+
+            // need to run in order for editor controls to be instantiated
+            editor.createEditorControls();
+
+            // default values from instantiation
+            // field is blank which should return null
+            assertNull(editor.getValueFromControls());
+
+            editor.updateControlsWithValue("a test string");
+            assertEquals(editor.getValueFromControls(), "a test string");
+        }
     }
 }
