@@ -27,6 +27,7 @@ import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 /**
+ * Arranges a graph into a radial tree layout
  *
  * @author Quasar985
  */

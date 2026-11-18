@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 
 /**
+ * Base class for tree arrangers
  *
  * @author Quasar985
  */
