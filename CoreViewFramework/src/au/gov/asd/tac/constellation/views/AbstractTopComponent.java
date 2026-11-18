@@ -140,8 +140,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
                         thisWindow.addComponentListener(cl);
 
-                        thisWindow.setSize(lastSize != null ? lastSize : this.createFloatingSize(mainWindow, getModeName()));
-                        thisWindow.setLocation(lastLocation != null ? lastLocation : this.createFloatingLocation(mainWindow, thisWindow, getModeName()));
+                        thisWindow.setSize(lastSize != null ? lastSize : createFloatingSize(mainWindow, getModeName()));
+                        thisWindow.setLocation(lastLocation != null ? lastLocation : createFloatingLocation(mainWindow, thisWindow));
                     }
                 }
 
@@ -267,21 +267,20 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     }
 
     /**
-     * Creates a location point for the floating top component based on the size of Constellation's window and the mode
-     * of the top component.
+     * Creates a location point for the floating top component based on the size of Constellation's window and already
+     * opened top components.
      *
      * @param mainWindow
-     * @param window
-     * @param mode
+     * @param thisWindow
      * @return a location point for the floating top component.
      */
-    protected Point createFloatingLocation(final Frame mainWindow, final Window window, final String mode) {
-        window.setLocationRelativeTo(mainWindow);
+    protected Point createFloatingLocation(final Frame mainWindow, final Window thisWindow) {
+        thisWindow.setLocationRelativeTo(mainWindow);
 
         int floatingCount = 1;
 
-        int locationX = window.getX();
-        int locationY = window.getY();
+        int locationX = thisWindow.getX();
+        int locationY = thisWindow.getY();
 
         // For every floating top component that is currently opened,
         // apply an offset to the opening location of this top component.
@@ -293,8 +292,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
                 final int offsetX = mainWindow.getWidth() / 50;
                 final int offsetY = mainWindow.getHeight() / 50;
 
-                locationX = window.getX() + (offsetMultiplier * offsetX);
-                locationY = window.getY() + (offsetMultiplier * offsetY);
+                locationX = thisWindow.getX() + (offsetMultiplier * offsetX);
+                locationY = thisWindow.getY() + (offsetMultiplier * offsetY);
 
                 floatingCount++;
             }
