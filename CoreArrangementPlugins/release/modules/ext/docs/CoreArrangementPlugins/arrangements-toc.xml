@@ -6,6 +6,7 @@
         <tocitem text="Line" target="au.gov.asd.tac.constellation.plugins.arrangements.line"/>
         <tocitem text="Circle" target="au.gov.asd.tac.constellation.plugins.arrangements.circle"/>
         <tocitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
+        <tocitem text="New Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.newTree"/>
         <tocitem text="Proximity" target="au.gov.asd.tac.constellation.plugins.arrangements.proximity"/>
         <tocitem text="Hierarchy" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchy"/>
         <tocitem text="Node Attribute" target="au.gov.asd.tac.constellation.plugins.arrangements.nodeAttribute"/>
