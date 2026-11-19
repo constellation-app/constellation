@@ -68,7 +68,7 @@ import org.openide.windows.TopComponent;
 })
 public final class SimpleGraphTopComponent extends CloneableTopComponent implements GraphChangeListener, UndoRedo.Provider {
 
-    private final InstanceContent content;
+    private final InstanceContent instanceContent;
     private final Graph graph;
     private final GraphNode graphNode;
 
@@ -85,12 +85,12 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         final GraphDataObject gdo = GraphObjectUtilities.createMemoryDataObject("graph", true);
         graph = new DualGraph(null);
         graphNode = new GraphNode(graph, gdo, this, null);
-        content = new InstanceContent();
-        content.add(getActionMap());
-        content.add(graphNode.getDataObject());
-        content.add(graph);
-        content.add(graphNode);
-        associateLookup(new AbstractLookup(content));
+        instanceContent = new InstanceContent();
+        instanceContent.add(getActionMap());
+        instanceContent.add(graphNode.getDataObject());
+        instanceContent.add(graph);
+        instanceContent.add(graphNode);
+        associateLookup(new AbstractLookup(instanceContent));
         setActivatedNodes(new Node[]{
             graphNode
         });
@@ -112,13 +112,13 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
 
         graphNode = new GraphNode(graph, gdo, this, null);
 
-        content = new InstanceContent();
-        content.add(getActionMap());
-        content.add(graphNode.getDataObject());
-        content.add(graph);
-        content.add(graphNode);
+        instanceContent = new InstanceContent();
+        instanceContent.add(getActionMap());
+        instanceContent.add(graphNode.getDataObject());
+        instanceContent.add(graph);
+        instanceContent.add(graphNode);
 
-        associateLookup(new AbstractLookup(content));
+        associateLookup(new AbstractLookup(instanceContent));
 
         setActivatedNodes(new Node[]{
             graphNode
@@ -362,16 +362,16 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void componentClosed() {
+    protected void componentClosed() {
         super.componentClosed();
 
         setActivatedNodes(new Node[]{});
 
         graph.removeGraphChangeListener(this);
 
-        content.remove(graphNode.getDataObject());
-        content.remove(graph);
-        content.remove(graphNode);
+        instanceContent.remove(graphNode.getDataObject());
+        instanceContent.remove(graph);
+        instanceContent.remove(graphNode);
 
         graphNode.destroy();
     }
