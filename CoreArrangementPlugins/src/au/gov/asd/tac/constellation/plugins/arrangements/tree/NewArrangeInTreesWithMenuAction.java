@@ -51,7 +51,7 @@ import org.openide.util.NbBundle.Messages;
 public final class NewArrangeInTreesWithMenuAction extends AbstractAction {
 
     private final GraphNode context;
-    private static final Dimension size = new Dimension(750, 300);
+    private static final Dimension size = new Dimension(750, 150);
 
     public NewArrangeInTreesWithMenuAction(final GraphNode context) {
         this.context = context;
