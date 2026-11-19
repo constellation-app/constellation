@@ -81,6 +81,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor VIOLET = new ConstellationColor("Violet", 0.75F, 0.0F, 1.0F, 1.0F);
     public static final ConstellationColor WHITE = new ConstellationColor("White", Color.WHITE);
     public static final ConstellationColor YELLOW = new ConstellationColor("Yellow", Color.YELLOW);
+    public static final ConstellationColor DEFAULT_NODE_COLOR = new ConstellationColor("Grey", Color.GRAY);
 
     public static final List<ConstellationColor> NAMED_COLOR_LIST = Collections.unmodifiableList(
             Arrays.asList(

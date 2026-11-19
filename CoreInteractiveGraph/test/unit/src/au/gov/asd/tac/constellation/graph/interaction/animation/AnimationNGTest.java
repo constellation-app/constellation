@@ -207,16 +207,18 @@ public class AnimationNGTest {
         int vxId0 = wg.addVertex();
         int vxId1 = wg.addVertex();
         int txId0 = wg.addTransaction(vxId0, vxId1, false);
-                
+
         int attributeId = VisualConcept.VertexAttribute.COLOR.ensure(wg);
         int attributeTxId = VisualConcept.TransactionAttribute.COLOR.ensure(wg);
         Object result0 = wg.getObjectValue(attributeId, vxId0);
         Object result1 = wg.getObjectValue(attributeId, vxId1);
         Object result2 = wg.getObjectValue(attributeTxId, txId0);
 
-        // originally they will be set to null
-        assertTrue(result0 == null);
-        assertTrue(result1 == null);
+        // originally Node colour will be set to default value
+        assertEquals(result0, ConstellationColor.DEFAULT_NODE_COLOR);
+        assertEquals(result1, ConstellationColor.DEFAULT_NODE_COLOR);
+
+        // originally Transaction colour will be set to null
         assertTrue(result2 == null);
 
         // set to initial colors

@@ -931,8 +931,8 @@ public class CompareGraphPluginNGTest {
             labelAttribute = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.LABEL.getName());
             assertEquals(rg.getStringValue(labelAttribute, vx0), "vx0");
             assertEquals(rg.getStringValue(labelAttribute, vx1), "vx1");
-            assertEquals(rg.getTransactionSourceVertex(tx0), vx0);
-            assertEquals(rg.getTransactionSourceVertex(tx1), vx1);
+            assertEquals(rg.getTransactionSourceVertex(tx0), vx1);
+            assertEquals(rg.getTransactionSourceVertex(tx1), vx0);
         }
 
         SaveGraphUtilities.saveGraphToTemporaryDirectory(originalGraph, "originalGraph");
