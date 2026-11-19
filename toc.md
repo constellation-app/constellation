@@ -104,6 +104,8 @@
 <div id="Import" class="collapse" aria-labelledby="Import" data-parent="#Import"> <div class="card-body">        <a href="../ext\docs\CoreDataAccessView\extract-types-from-text.md">Extract Types from Text</a><br/>
         <a href="../ext\docs\CoreDataAccessView\extract-words-from-text.md">Extract Words from Text</a><br/>
         <a href="../ext\docs\CoreDataAccessView\import-graph-file.md">Import Graph File</a><br/>
+        <a href="../ext\docs\AdaptorsDataAccessPlugins\import-entities-from-gdelt.md">Import Entities From GDELT</a><br/>
+        <a href="../ext\docs\AdaptorsDataAccessPlugins\import-relationships-from-gdelt.md">Import Relationships From GDELT</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Clean" aria-expanded="false" aria-controls="Clean">Clean</button></h2></div>
 <div id="Clean" class="collapse" aria-labelledby="Clean" data-parent="#Clean"> <div class="card-body">        <a href="../ext\docs\CoreDataAccessView\merge-nodes.md">Merge Nodes</a><br/>
         <a href="../ext\docs\CoreDataAccessView\merge-transactions.md">Merge Transactions</a><br/>
@@ -117,6 +119,16 @@
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Utility" aria-expanded="false" aria-controls="Utility">Utility</button></h2></div>
 <div id="Utility" class="collapse" aria-labelledby="Utility" data-parent="#Utility"> <div class="card-body">        <a href="../ext\docs\CoreDataAccessView\select-all.md">Select All</a><br/>
         <a href="../ext\docs\CoreDataAccessView\select-top-n.md">Select Top N</a><br/>
+</a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Extend" aria-expanded="false" aria-controls="Extend">Extend</button></h2></div>
+<div id="Extend" class="collapse" aria-labelledby="Extend" data-parent="#Extend"> <div class="card-body">        <a href="../ext\docs\AdaptorsDataAccessPlugins\extend-from-pajek-file.md">Extend From Pajek File</a><br/>
+        <a href="../ext\docs\AdaptorsDataAccessPlugins\extend-from-graphml-file.md">Extend From GraphML File</a><br/>
+        <a href="../ext\docs\AdaptorsDataAccessPlugins\extend-from-gml-file.md">Extend From GML File</a><br/>
+        <a href="../ext\docs\AdaptorsDataAccessPlugins\extend-from-gdelt.md">Extend From GDELT Knowledge Graph</a><br/>
+</a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Enrichment" aria-expanded="false" aria-controls="Enrichment">Enrichment</button></h2></div>
+<div id="Enrichment" class="collapse" aria-labelledby="Enrichment" data-parent="#Enrichment"> <div class="card-body">        <a href="../ext\docs\AdaptorsDataAccessPlugins\enrich-from-graphml-file.md">Enrich From GraphML File</a><br/>
+        <a href="../ext\docs\AdaptorsDataAccessPlugins\enrich-from-gml-file.md">Enrich From GML File</a><br/>
+</a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Example" aria-expanded="false" aria-controls="Example">Example</button></h2></div>
+<div id="Example" class="collapse" aria-labelledby="Example" data-parent="#Example"> <div class="card-body">        <a href="../ext\docs\AdaptorsDataAccessPlugins\query-from-gaffer.md">Gaffer Simple Query Options</a><br/>
 </a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#ErrorReportView" aria-expanded="false" aria-controls="ErrorReportView">Error Report View</button></h2></div>
 <div id="ErrorReportView" class="collapse" aria-labelledby="ErrorReportView" data-parent="#ErrorReportView"> <div class="card-body">      <a href="../ext\docs\CoreErrorReportView\error-report.md">Error Report</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#FindView" aria-expanded="false" aria-controls="FindView">Find View</button></h2></div>
