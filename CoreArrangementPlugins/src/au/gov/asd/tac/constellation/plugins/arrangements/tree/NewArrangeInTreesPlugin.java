@@ -173,7 +173,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
                 new NewTreeArranger(scale);
         };
 
-        final Arranger middle = new MdsArranger(MDSChoiceParameters.getDefaultParameters());
+        final Arranger middle = new MdsArranger(new MDSChoiceParameters(LinkWeight.USE_EXTENTS, 1, 20, 8, 1, true, 10));
 
         final GraphTaxonomyArranger arranger2 = splitIntoTrees ? new TreeTaxonArranger(treeArranger, middle) : new GraphComponentArranger(treeArranger, middle, Connections.LINKS);
         arranger2.setInteraction(interaction);

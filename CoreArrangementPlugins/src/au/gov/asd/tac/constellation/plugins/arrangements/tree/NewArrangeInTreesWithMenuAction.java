@@ -59,7 +59,6 @@ public final class NewArrangeInTreesWithMenuAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-
         final Plugin plugin = PluginRegistry.get(ArrangementPluginRegistry.NEW_TREES);
         final PluginParameters params = plugin.createParameters();
         final Graph graph = context.getGraph();
@@ -72,7 +71,7 @@ public final class NewArrangeInTreesWithMenuAction extends AbstractAction {
             PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
                     .set(params)
                     .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                    .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
+                    .executeWriteLater(context.getGraph(), Bundle.CTL_NewArrangeInTreesAction());
         }
     }
 }

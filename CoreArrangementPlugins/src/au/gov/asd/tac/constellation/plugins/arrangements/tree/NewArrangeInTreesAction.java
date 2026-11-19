@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -56,7 +55,6 @@ public final class NewArrangeInTreesAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-
         final Plugin plugin = PluginRegistry.get(ArrangementPluginRegistry.NEW_TREES);
         final PluginParameters params = plugin.createParameters();
         final Graph graph = context.getGraph();
@@ -65,6 +63,6 @@ public final class NewArrangeInTreesAction extends AbstractAction {
         PluginExecutor.startWith(ArrangementPluginRegistry.NEW_TREES)
                 .set(params)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInTreesAction());
+                .executeWriteLater(context.getGraph(), Bundle.CTL_NewArrangeInTreesAction());
     }
 }
