@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -26,7 +25,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphComponentArranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
@@ -42,14 +40,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.collections.api.iterator.MutableIntIterator;
-import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
-import org.eclipse.collections.api.set.primitive.MutableIntSet;
-import org.eclipse.collections.api.tuple.primitive.IntObjectPair;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -70,20 +62,6 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     private static final String SPLIT_INTO_TREES_PARAMETER_ID_DESCRIPTION = "Arrange the whole graph, or first split into subgraphs";
     private static final boolean SPLIT_INTO_TREES_DEFAULT = true;
 
-    public static final String DIM_OR_HIDE_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "dim_or_hide");
-    private static final String DIM_OR_HIDE_PARAMETER_ID_NAME = "Dim or Hide Cross-subgraph transactions";
-    private static final String DIM_OR_HIDE_PARAMETER_ID_DESCRIPTION = "What to do with transactions that connect subgraphs";
-    private static final String NOTHING = "Nothing";
-    private static final String DIM = "Dim";
-    private static final String HIDE = "Hide";
-    private static final List<String> DIM_OR_HIDE_PARAM_VALUES = Arrays.asList(NOTHING, DIM, HIDE);
-    private static final String DIM_OR_HIDE_PARAMETER_ID_DEFAULT = NOTHING;
-
-    public static final String COLOUR_SUBGRAPHS_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "colour_subgraphs");
-    private static final String COLOUR_SUBGRAPHS_PARAMETER_ID_NAME = "Colour Subgraphs";
-    private static final String COLOUR_SUBGRAPHS_PARAMETER_ID_DESCRIPTION = "Give each subgraph a unique colour";
-    private static final boolean COLOUR_SUBGRAPHS_DEFAULT = false;
-
     public static final String SCALE_PARAMETER_ID = PluginParameter.buildId(NewArrangeInTreesPlugin.class, "scale");
     private static final String SCALE_PARAMETER_ID_NAME = "Distance Between Layers";
     private static final String SCALE_PARAMETER_ID_DESCRIPTION = "The distance between each layer of the arranged graph";
@@ -98,8 +76,6 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
     private static final List<String> ALGO_PARAM_VALUES = Arrays.asList(ALGO_1, ALGO_2, ALGO_3);
     private static final String ALGO_PARAMETER_ID_DEFAULT = ALGO_1;
 
-    private static final SecureRandom random = new SecureRandom();
-
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -109,22 +85,6 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
         splitIntoTreesParam.setDescription(SPLIT_INTO_TREES_PARAMETER_ID_DESCRIPTION);
         splitIntoTreesParam.setBooleanValue(SPLIT_INTO_TREES_DEFAULT);
         parameters.addParameter(splitIntoTreesParam);
-
-        final PluginParameter<SingleChoiceParameterValue> dimOrHideParam = SingleChoiceParameterType.build(DIM_OR_HIDE_PARAMETER_ID);
-        dimOrHideParam.setName(DIM_OR_HIDE_PARAMETER_ID_NAME);
-        dimOrHideParam.setDescription(DIM_OR_HIDE_PARAMETER_ID_DESCRIPTION);
-        SingleChoiceParameterType.setOptions(dimOrHideParam, DIM_OR_HIDE_PARAM_VALUES);
-        SingleChoiceParameterType.setChoice(dimOrHideParam, DIM_OR_HIDE_PARAMETER_ID_DEFAULT);
-        dimOrHideParam.setEnabled(SPLIT_INTO_TREES_DEFAULT); // Conditional on splitIntoTreesParam being checked
-        parameters.addParameter(dimOrHideParam);
-
-        splitIntoTreesParam.addListener((oldValue, newValue) -> dimOrHideParam.setEnabled(splitIntoTreesParam.getBooleanValue()));
-
-        final PluginParameter<BooleanParameterValue> colourSubgraphsParam = BooleanParameterType.build(COLOUR_SUBGRAPHS_PARAMETER_ID);
-        colourSubgraphsParam.setName(COLOUR_SUBGRAPHS_PARAMETER_ID_NAME);
-        colourSubgraphsParam.setDescription(COLOUR_SUBGRAPHS_PARAMETER_ID_DESCRIPTION);
-        colourSubgraphsParam.setBooleanValue(COLOUR_SUBGRAPHS_DEFAULT);
-        parameters.addParameter(colourSubgraphsParam);
 
         final PluginParameter<IntegerParameterType.IntegerParameterValue> scaleParam = IntegerParameterType.build(SCALE_PARAMETER_ID);
         scaleParam.setName(SCALE_PARAMETER_ID_NAME);
@@ -154,8 +114,6 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
 
         // Params
         final boolean splitIntoTrees = parameters.getParameters().get(SPLIT_INTO_TREES_PARAMETER_ID).getBooleanValue();
-        final String dimHideChoice = parameters.getParameters().get(DIM_OR_HIDE_PARAMETER_ID).getStringValue();
-        final boolean colorNodesByGroup = parameters.getParameters().get(COLOUR_SUBGRAPHS_PARAMETER_ID).getBooleanValue();
         final int scale = parameters.getParameters().get(SCALE_PARAMETER_ID).getIntegerValue();
 
         final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
@@ -201,76 +159,7 @@ public class NewArrangeInTreesPlugin extends SimpleEditPlugin {
 
         selectedGraph.retrieveCoords();
 
-        if (colorNodesByGroup) {
-            colourSubGraphs(graph, TreeTaxonArranger.getTreeTaxonomy(graph, true));
-        }
-
-        dimOrHideTransactions(graph, arranger2.getTaxonomy(graph), dimHideChoice);
-
         interaction.setProgress(1, 0, "Finished", true);
-    }
-
-    private void colourSubGraphs(final GraphWriteMethods graph, final GraphTaxonomy tax) {
-        if (tax == null) {
-            return;
-        }
-
-        final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(graph);
-        final int colorAttr = VisualConcept.VertexAttribute.COLOR.ensure(graph);
-
-        // Color each subgraph
-        tax.getTaxa().forEachValue(subgraph -> {
-            final ConstellationColor color = ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1F);
-            subgraph.forEach(vxId -> {
-                graph.setStringValue(bgiconAttr, vxId, "Background.Round Circle");
-                graph.setObjectValue(colorAttr, vxId, color);
-            });
-        });
-    }
-
-    /**
-     * Function that finds all transactions between sub graphs defined in the taxonomy, and then either dims or hides
-     * them
-     *
-     * @param graph The graph to dim or hide transactions of
-     * @param taxonomy The taxonomy that will be checked for transactions between sub graphs
-     * @param dimTrans If true transactions will be dimmed, if false they will be hidden
-     */
-    private void dimOrHideTransactions(final GraphWriteMethods graph, final GraphTaxonomy taxonomy, final String dimTrans) {
-        final MutableIntObjectMap<MutableIntSet> taxa = taxonomy.getTaxa();
-        final int transactionDimmedAttribute = VisualConcept.TransactionAttribute.DIMMED.ensure(graph);
-        final int transactionVisibilityAttribute = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
-
-        // For each subgraph, check each node's neighbour
-        for (final IntObjectPair<MutableIntSet> keyValue : taxa.keyValuesView()) {
-            final MutableIntSet subGraphIds = keyValue.getTwo();
-            // For each node
-            final MutableIntIterator iterator = subGraphIds.intIterator();
-            while (iterator.hasNext()) {
-                final int vxId = iterator.next();
-
-                final int neighbourCount = graph.getVertexNeighbourCount(vxId);
-                if (neighbourCount < 1) {
-                    continue;
-                }
-
-                // For each neighbour
-                for (int i = 0; i < neighbourCount; i++) {
-                    final int nxId = graph.getVertexNeighbour(vxId, i);
-                    if (subGraphIds.contains(nxId)) {
-                        continue;
-                    }
-
-                    // If neighbour is not in subgraph, dim/hide
-                    final int txId = graph.getVertexTransaction(vxId, i); // This assumes that transaction position matches neighbour position
-                    final boolean isDimmed = dimTrans.equals(DIM);
-                    final float hideValue = dimTrans.equals(HIDE) ? -2.0F : 2.0F;
-
-                    graph.setBooleanValue(transactionDimmedAttribute, txId, isDimmed);
-                    graph.setFloatValue(transactionVisibilityAttribute, txId, hideValue);
-                }
-            }
-        }
     }
 
 }

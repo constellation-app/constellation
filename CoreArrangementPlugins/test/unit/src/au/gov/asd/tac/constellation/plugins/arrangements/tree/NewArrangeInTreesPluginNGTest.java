@@ -92,8 +92,6 @@ public class NewArrangeInTreesPluginNGTest {
 
         assertEquals(params.size(), 5);
         assertTrue(params.containsKey(NewArrangeInTreesPlugin.SPLIT_INTO_TREES_PARAMETER_ID));
-        assertTrue(params.containsKey(NewArrangeInTreesPlugin.DIM_OR_HIDE_PARAMETER_ID));
-        assertTrue(params.containsKey(NewArrangeInTreesPlugin.COLOUR_SUBGRAPHS_PARAMETER_ID));
         assertTrue(params.containsKey(NewArrangeInTreesPlugin.SCALE_PARAMETER_ID));
     }
 
@@ -144,8 +142,6 @@ public class NewArrangeInTreesPluginNGTest {
         when(parameters.getParameters()).thenReturn(mockParams);
 
         when(mockParams.get(NewArrangeInTreesPlugin.SPLIT_INTO_TREES_PARAMETER_ID)).thenReturn(splitParam);
-        when(mockParams.get(NewArrangeInTreesPlugin.DIM_OR_HIDE_PARAMETER_ID)).thenReturn(dimParam);
-        when(mockParams.get(NewArrangeInTreesPlugin.COLOUR_SUBGRAPHS_PARAMETER_ID)).thenReturn(colorParam);
         when(mockParams.get(NewArrangeInTreesPlugin.SCALE_PARAMETER_ID)).thenReturn(scaleParam);
         when(mockParams.get(NewArrangeInTreesPlugin.ALGO_PARAMETER_ID)).thenReturn(algoParam);
 
