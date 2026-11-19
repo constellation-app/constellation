@@ -36,8 +36,6 @@ The root nodes are determined by which node has the greatest sum of neighbours a
 
 **Options:**
 - Split into Trees: The graph will be split into multiple subgraphs, each of which is a tree. If unchecked the whole graph will be treated as one big tree
-- Dim or Hide Cross-subgraph Transactions: If chosen to split into trees, transactions that connect different trees can be dimmed, hidden or left unchanged
-- Color Subgraphs: Each tree wil be assigned a random color, every node in the tree will be assigned that color. Does not require graph to be split into trees
 - Distance Between Layers: The distance between the different layers of the tree
 
 **Example New Tree Arrangement:**
