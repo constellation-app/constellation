@@ -189,6 +189,7 @@
     <a href="../ext\docs\CoreArrangementPlugins\line-arrangement.md">Line</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\circle-arrangement.md">Circle</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\tree-arrangement.md">Tree</a><br/>
+    <a href="../ext\docs\CoreArrangementPlugins\new-tree-arrangement.md">New Tree</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\proximity-arrangement.md">Proximity</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\hierarchy-arrangement.md">Hierarchy</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\node-attribute-arrangement.md">Node Attribute</a><br/>
