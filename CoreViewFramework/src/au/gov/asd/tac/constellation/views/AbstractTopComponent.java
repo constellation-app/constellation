@@ -109,13 +109,11 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
             windowManager.setTopComponentFloating(this, isFloating);
 
             pcl = (final PropertyChangeEvent e) -> {
-                if (!e.getPropertyName().equals("ancestor")) {
-                    prefs.putBoolean(getName(), windowManager.isTopComponentFloating(this));
-                    controller.update();
-                }
+                prefs.putBoolean(getName(), windowManager.isTopComponentFloating(this));
+                controller.update();
             };
 
-            this.addPropertyChangeListener(pcl);
+            addPropertyChangeListener(pcl);
 
             if (isFloating) {
                 // This loops through all the current windows and compares this top component's top level ancestor
@@ -159,8 +157,6 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentClosed() {
-        this.removePropertyChangeListener(pcl);
-
         if (thisWindow != null) {
             thisWindow.removeComponentListener(cl);
         }
@@ -169,6 +165,12 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
         isVisible = false;
         ConstellationLogger.getDefault().viewStopped(this);
+    }
+
+    @Override
+    public boolean canClose() {
+        removePropertyChangeListener(pcl);
+        return super.canClose();
     }
 
     @Override
