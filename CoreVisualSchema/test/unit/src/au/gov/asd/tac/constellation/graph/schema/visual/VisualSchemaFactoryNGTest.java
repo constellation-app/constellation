@@ -211,7 +211,7 @@ public class VisualSchemaFactoryNGTest {
         
         assertNull(graph.getStringValue(vertexIdentifierAttribute, vxId));
         assertNull(graph.getStringValue(vertexLabelAttribute, vxId));
-        assertNull(graph.getStringValue(vertexColorAttribute, vxId));
+        assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.DEFAULT_NODE_COLOR);
         
         schema.newVertex(graph, vxId);
         

@@ -153,6 +153,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         }
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.graph = graph;
+        attribute.defaultValue = getDefault();
 
         return attribute;
     }
