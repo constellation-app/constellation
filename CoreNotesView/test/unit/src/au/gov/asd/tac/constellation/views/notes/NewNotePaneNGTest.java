@@ -20,10 +20,15 @@ import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -38,7 +43,7 @@ import org.testng.annotations.Test;
 public class NewNotePaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(NewNotePaneNGTest.class.getName());
-    
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         // Not currently required
@@ -118,22 +123,31 @@ public class NewNotePaneNGTest {
         assertTrue(instance.isApplySelected());
     }
 
-
     /**
      * Test of clearTextFields method, of class NewNotePane.
      */
     @Test
     public void testClearTextFields() {
         System.out.println("clearTextFields");
-        final NewNotePane instance = new NewNotePane("#000000");
 
-        instance.getTitleField().setText("Random Text");
-        instance.getContentField().setText("Random text");
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Make runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+            final NewNotePane instance = new NewNotePane("#000000");
 
-        assertTrue(!instance.getTitleField().getText().isBlank() && !instance.getContentField().getText().isBlank());
+            instance.getTitleField().setText("Random Text");
+            instance.getContentField().setText("Random text");
 
-        instance.clearTextFields();
+            assertFalse(instance.getTitleField().getText().isBlank());
+            assertFalse(instance.getContentField().getText().isBlank());
 
-        assertTrue(instance.getTitleField().getText().isBlank() && instance.getContentField().getText().isBlank());
+            instance.clearTextFields();
+
+            assertTrue(instance.getTitleField().getText().isBlank());
+            assertTrue(instance.getContentField().getText().isBlank());
+        }
     }
 }

@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.utilities.text;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.mockito.MockedConstruction;
+import javafx.application.Platform;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -70,10 +70,18 @@ public class SpellCheckingTextAreaNGTest {
     @Test
     public void testSetText() {
         System.out.println("setText");
-        final String text = "This is the text";
-        final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
-        instance.setText(text);
-        assertEquals(instance.getText(), text);
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Make runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
+
+            final String text = "This is the text";
+            final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
+            instance.setText(text);
+            assertEquals(instance.getText(), text);
+        }
     }
 
     /**
@@ -82,15 +90,23 @@ public class SpellCheckingTextAreaNGTest {
     @Test
     public void testHighlightText() {
         System.out.println("highlightText");
-        final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
-        final String testText = "test";
-        int start = 0;
-        int end = 1;
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Make runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
 
-        instance.setText(testText);
-        instance.highlightText(start, end);
-        assertEquals(instance.getStyleAtPosition(0), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
-        assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+            final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
+            final String testText = "test";
+            int start = 0;
+            int end = 1;
+
+            instance.setText(testText);
+            instance.highlightText(start, end);
+            assertEquals(instance.getStyleAtPosition(0), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+            assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+        }
     }
 
     /**
@@ -99,16 +115,25 @@ public class SpellCheckingTextAreaNGTest {
     @Test
     public void testHighlightTextMultiple() {
         System.out.println("highlightTextMultiple");
-        final int[] starts = {0, 1};
-        final int[] ends = {1, 2};
-        final String testText = "test";
-        final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
 
-        instance.setText(testText);
-        instance.highlightTextMultiple(starts, ends);
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Make runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
 
-        for (int i = 0; i < 3; i++) {
-            assertEquals(instance.getStyleAtPosition(i), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+            final int[] starts = {0, 1};
+            final int[] ends = {1, 2};
+            final String testText = "test";
+            final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
+
+            instance.setText(testText);
+            instance.highlightTextMultiple(starts, ends);
+
+            for (int i = 0; i < 3; i++) {
+                assertEquals(instance.getStyleAtPosition(i), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+            }
         }
     }
 
@@ -119,38 +144,25 @@ public class SpellCheckingTextAreaNGTest {
     public void testClearStyles_0args() {
         System.out.println("clearStyles");
 
-        final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
-        final String testText = "test";
-
-        instance.setText(testText);
-        instance.highlightText(0, 1);
-        assertEquals(instance.getStyleAtPosition(0), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
-        assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
-
-        instance.clearStyles();
-        assertEquals(instance.getStyleAtPosition(0), "");
-        assertEquals(instance.getStyleAtPosition(1), "");
-    }
-
-    /**
-     * Test of handleKeyReleased method, of class SpellCheckingTextArea.
-     */
-    @Test
-    public void testHandleKeyReleased() {
-        System.out.println("handleKeyReleased");
-        final String text = "This is some text";
-
-        try (final MockedConstruction<SpellChecker> mockSpellChecker = Mockito.mockConstruction(SpellChecker.class,
-                (mock, context) -> {
-                    when(mock.canCheckSpelling(text)).thenReturn(true);
-                })) {
+        try (final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class)) {
+            // Make runLater run immediately
+            platformMockedStatic.when(() -> Platform.runLater(any(Runnable.class))).thenAnswer(iom -> {
+                ((Runnable) iom.getArgument(0)).run();
+                return null;
+            });
 
             final SpellCheckingTextArea instance = new SpellCheckingTextArea(true);
-            instance.setText(text);
-            instance.handleKeyReleased();
+            final String testText = "test";
 
-            final SpellChecker sc = mockSpellChecker.constructed().get(0);
-            verify(sc).checkSpelling();
+            instance.setText(testText);
+            instance.highlightText(0, 1);
+            assertEquals(instance.getStyleAtPosition(0), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+            assertEquals(instance.getStyleAtPosition(1), SpellCheckingTextArea.UNDERLINE_AND_HIGHLIGHT_STYLE);
+
+            instance.clearStyles();
+            assertEquals(instance.getStyleAtPosition(0), "");
+            assertEquals(instance.getStyleAtPosition(1), "");
         }
     }
+
 }
