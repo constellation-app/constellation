@@ -316,6 +316,7 @@ public final class MultiChoiceInput<C extends Object> extends ChoiceInputField<L
                         }
                     });
                     item.setSelected(choices.contains(choice));
+                    item.setMnemonicParsing(false);
                     boxes.add(item);
 
                     if (!getIcons().isEmpty()) {

@@ -230,7 +230,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         robotOptions.setDescription("A list of robots to choose from");
 
         // Use the helper method to add string options.
-        SingleChoiceParameterType.setOptions(robotOptions, Arrays.asList("Bender", "Gort", "Maximillian", "Robbie", "Tom Servo"));
+        SingleChoiceParameterType.setOptions(robotOptions, Arrays.asList("Bender_1", "Gort", "Maximillian", "Robbie", "Tom Servo"));
         SingleChoiceParameterType.setIcons(robotOptions, Arrays.asList(new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON), new Image(ALIEN_ICON)));
 
         // Create a ParameterValue of the underlying type (in this case, String) to set the default choice.
@@ -246,7 +246,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<MultiChoiceParameterValue> planetOptions = MultiChoiceParameterType.build(PLANETS_PARAMETER_ID);
         planetOptions.setName("Planets");
         planetOptions.setDescription("Some planets");
-        MultiChoiceParameterType.setOptions(planetOptions, Arrays.asList("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Coruscant"));
+        MultiChoiceParameterType.setOptions(planetOptions, Arrays.asList("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Coruscant", "Pluto_1"));
         final List<String> checked = new ArrayList<>();
         checked.add("Earth");
         MultiChoiceParameterType.setChoices(planetOptions, checked);
