@@ -90,13 +90,14 @@ public class SaveTemplatePlugin extends SimplePlugin {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
 
+        final String strippedTemplateName = templateName.strip();
         final File templateDir = new File(userDir, TEMPLATE_DIR);
-        final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(templateName) + File.separator + templateName);
+        final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(strippedTemplateName) + File.separator + strippedTemplateName);
         if (oldTemplate.exists()) {
             try {
                 Files.delete(Path.of(oldTemplate.getPath()));
             } catch (final IOException ex) {
-                //TODO: Handle case where file not successfully deleted
+                throw new PluginException(this, PluginNotificationLevel.ERROR, "Failed to delete template, can't create new template with the same name", ex);
             }
         }
 
@@ -121,7 +122,7 @@ public class SaveTemplatePlugin extends SimplePlugin {
             return;
         }
 
-        final File saveFile = new File(schemaDir, templateName);
+        final File saveFile = new File(schemaDir, strippedTemplateName);
 
         try {
             new GraphJsonWriter().writeTemplateToZip(graph, saveFile.getPath(), new HandleIoProgress("Saving Template..."));
