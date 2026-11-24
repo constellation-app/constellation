@@ -59,7 +59,8 @@ public class CompositeUtilitiesNGTest {
     private int identifierVertexAttribute;
     private int compositeStateVertexAttribute;
     private int identifierTransactionAttribute;
-    
+    private int directedTransactionAttribute;
+
     private CompositeNodeState contractedState;
     private CompositeNodeState expandedState1;
     private CompositeNodeState expandedState2;
@@ -94,6 +95,7 @@ public class CompositeUtilitiesNGTest {
         VisualConcept.VertexAttribute.Y.ensure(graph);
         VisualConcept.VertexAttribute.Z.ensure(graph);
         identifierTransactionAttribute = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        directedTransactionAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
         
         graph.setStringValue(identifierVertexAttribute, vxId1, "composite node");
         graph.setStringValue(identifierVertexAttribute, vxId2, "normal node");
@@ -102,6 +104,9 @@ public class CompositeUtilitiesNGTest {
         
         graph.setStringValue(identifierTransactionAttribute, tId1, "connected to composite");
         graph.setStringValue(identifierTransactionAttribute, tId2, "connected to expanded");
+        // need to set directed as this is a factor in composites
+        graph.setBooleanValue(directedTransactionAttribute, tId1, true);
+        graph.setBooleanValue(directedTransactionAttribute, tId2, true);
         
         final RecordStore constituentNodeStore = new GraphRecordStore();
         constituentNodeStore.add();
