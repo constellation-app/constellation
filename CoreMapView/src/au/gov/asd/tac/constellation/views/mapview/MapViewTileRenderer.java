@@ -329,8 +329,7 @@ public class MapViewTileRenderer extends PApplet {
     @Override
     public void exit() {
         // Prevent PApplet from calling System.exit(0) (which triggers an illegal exit call)
-        // Only need to dispose() of contents/objects created in this PApplet.
-        dispose();
+        // No need to dispose() of contents here, as the Top Component calls dispose() when needed.
     }
  
     @Override
