@@ -327,6 +327,18 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     @Override
+    public void exit() {
+        // Prevent PApplet from calling System.exit(0) (which triggers an illegal exit call)
+        // Only need to dispose() of contents/objects created in this PApplet.
+        dispose();
+    }
+ 
+    @Override
+    public void exitActual() {
+        // No-op so NetBeans TopSecurityManager doesn't report an illegal exit call.
+    }
+    
+    @Override
     public void settings() {
         size(parent.getContentWidth(), parent.getContentHeight(), PConstants.P2D);
     }
