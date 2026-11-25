@@ -52,9 +52,10 @@ import org.openide.util.NbPreferences;
 public class SpellCheckingTextArea extends InlineCssTextArea {
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    private final SpellChecker spellChecker = new SpellChecker(this);
-    private final Insets insets = new Insets(4, 8, 4, 8);
     public static final double EXTRA_HEIGHT = 3;
+    private static final Insets INSETS = new Insets(4, 8, 4, 8);
+
+    private final SpellChecker spellChecker = new SpellChecker(this);
 
     protected static final String UNDERLINE_AND_HIGHLIGHT_STYLE = "-rtfx-background-color:derive(yellow,-30%);"
             + "-rtfx-underline-color: red; "
@@ -63,8 +64,8 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             + "-fx-fill: black;";
 
     private Double scrollValue = Double.valueOf(0);
-    public static final int SCROLL_CHANGE_TIMER = 400;
-    public static final int KEYBOARD_CHANGE_TIMER = 600;
+    public static final int SCROLL_CHANGE_TIMER = 250;
+    public static final int KEYBOARD_CHANGE_TIMER = 250;
 
     private int prevClampedScrollValue = -1; // Prevents infinite loop
     public static final float EPSILON = 0.1F;
@@ -75,7 +76,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
         this.setAutoHeight(false);
         this.setWrapText(true);
-        this.setPadding(insets);
+        this.setPadding(INSETS);
         final String css = SpellCheckingTextArea.class.getResource("SpellChecker.css").toExternalForm();
         this.getStylesheets().add(css);
 
@@ -102,7 +103,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         // Setup highlighting to run after user stops scrolling
         estimatedScrollYProperty().addListener((obs, oldVal, newVal) -> {
             scrollValue = newVal;
-            timer.restart(); // Resets the 200ms countdown on every change
+            timer.restart(); // Resets the countdown on every change
         });
     }
 
@@ -130,7 +131,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         // Calculate what percent of the text box is currently viewable
         final float percentViewable = (float) height / textHeight;
 
-        if (percentViewable >= 1f) {
+        if (percentViewable >= 1F) {
             spellChecker.setVisibleIndices(0, length);
             return;
         }
@@ -161,17 +162,18 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         spellChecker.setVisibleIndices(firstVisibleIndex, lastVisibleIndex);
     }
 
-    protected void handleKeyReleased() {
-        spellChecker.checkSpelling();
-    }
-
     public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
         this(isSpellCheckEnabled);
         setText(text);
     }
 
     public final void setText(final String text) {
-        this.replaceText(text);
+        if (Platform.isFxApplicationThread()) {
+            replaceText(text);
+            return;
+        }
+
+        Platform.runLater(() -> replaceText(text));
     }
 
     /**
@@ -180,12 +182,12 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * @param start the index to start highlighting from
      * @param end the index to stop highlighting
      */
-    public void highlightText(final int start, final int end) {
+    protected void highlightText(final int start, final int end) {
         final String text = getText();
         if (StringUtils.isEmpty(text) || start > text.length() || end > text.length()) {
             return;
         }
-        this.setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
+        setStyle(start, end, UNDERLINE_AND_HIGHLIGHT_STYLE);
     }
 
     /**
@@ -195,21 +197,30 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * @param ends array of indexes to stop highlighting
      */
     public void highlightTextMultiple(final int[] starts, final int[] ends) {
-        createMultiChange(starts.length);
-        for (int i = 0; i < starts.length; i++) {
-            highlightText(starts[i], ends[i]);
+        if (Platform.isFxApplicationThread()) {
+            for (int i = 0; i < starts.length; i++) {
+                highlightText(starts[i], ends[i]);
+            }
+            return;
         }
+
+        Platform.runLater(() -> {
+            for (int i = 0; i < starts.length; i++) {
+                highlightText(starts[i], ends[i]);
+            }
+        });
     }
 
     /**
      * Clear any previous highlighting.
      */
     public void clearStyles() {
-        this.clearStyle(0, getLength());
-    }
+        if (Platform.isFxApplicationThread()) {
+            clearStyle(0, getLength());
+            return;
+        }
 
-    public boolean isWordUnderCursorHighlighted(final int index) {
-        return this.getStyleOfChar(index) != null && this.getStyleOfChar(index).equals(UNDERLINE_AND_HIGHLIGHT_STYLE);
+        Platform.runLater(() -> clearStyle(0, getLength()));
     }
 
     public final void setTooltip(final Tooltip tooltip) {

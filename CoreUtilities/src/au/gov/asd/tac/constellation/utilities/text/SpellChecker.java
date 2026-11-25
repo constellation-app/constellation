@@ -27,9 +27,6 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
@@ -66,8 +63,6 @@ public final class SpellChecker {
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
     private static final double MAX_SUGGESTIONS = 5;
     private static Object language = null;
-    private static final String NON_WORD_PATTERN = "[\\W]"; //excludes alphanumeric characters including the underscore
-    private static final Pattern NON_WORD_MATCHER = Pattern.compile(NON_WORD_PATTERN);
 
     protected static final CompletableFuture<Void> LANGTOOL_LOAD;
 
@@ -116,6 +111,9 @@ public final class SpellChecker {
                 return null;
             }
         }, Executors.newSingleThreadExecutor());
+
+        // First time running PrimitiveTuples.pair() causes a delay, so run it here first
+        CompletableFuture.runAsync(() -> PrimitiveTuples.pair(0, 0));
     }
 
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
@@ -131,9 +129,7 @@ public final class SpellChecker {
         firstVisible = first;
         lastVisible = last;
 
-        Platform.runLater(() -> {
-            refreshHighlights();
-        });
+        refreshHighlights();
     }
 
     private void handleMenuItem(final String text) {
@@ -246,11 +242,9 @@ public final class SpellChecker {
 
                 textArea.forceRefreshVisibleText();
 
-                Platform.runLater(() -> {
-                    prevParts = parts;
-                    prevPartsOffsets = partsOffsets;
-                    refreshHighlights();
-                });
+                prevParts = parts;
+                prevPartsOffsets = partsOffsets;
+                refreshHighlights();
 
             } catch (final IllegalAccessException ex) {
                 logAndDisplayErrorMessage("Error while checking spelling. It may not be functioning properly.", ex);
@@ -285,7 +279,6 @@ public final class SpellChecker {
                 partsOffsets.add(subStringStart);
 
                 partsSpans.add(PrimitiveTuples.pair(subStringStart, index));
-
                 subStringStart = i;
                 tokensRemaining = TOKENS_PER_PART;
             }
@@ -503,27 +496,6 @@ public final class SpellChecker {
                 return true;
             }
         }
-        return false;
-    }
-
-    /**
-     * Prevents highlighting while still typing. When a highlighted word is corrected manually it'll be marked as
-     * correct, similar to that in Microsoft Word.
-     *
-     * @param newText
-     * @return
-     */
-    public boolean canCheckSpelling(final String newText) {
-        final int caretPosition = textArea.getCaretPosition();
-        if (caretPosition == 0) {
-            return true;
-        }
-
-        if (caretPosition <= newText.length()) {
-            final Matcher nonWordMatcher = NON_WORD_MATCHER.matcher(Character.toString(textArea.getText().charAt(caretPosition - 1)));
-            return !newText.isEmpty() && (textArea.isWordUnderCursorHighlighted(caretPosition - 1) || nonWordMatcher.matches());
-        }
-
         return false;
     }
 
