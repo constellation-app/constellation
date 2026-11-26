@@ -150,7 +150,7 @@ public class DefaultIconProvider implements ConstellationIconProvider {
      * @param icon
      * @return 
      */
-    public static boolean isVisable(final ConstellationIcon icon){
+    public static boolean isVisible(final ConstellationIcon icon){
         return icon != null && !EMPTY.getName().equals(icon.getName()) && !TRANSPARENT.getName().equals(icon.getName());
     }
 }

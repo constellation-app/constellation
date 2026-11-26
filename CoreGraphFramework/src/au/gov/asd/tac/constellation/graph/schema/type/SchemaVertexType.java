@@ -37,7 +37,7 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
     private static final SchemaVertexType UNKNOWN = new SchemaVertexType(
             "Unknown",
             "A node representing a type which is not currently part of the analytic schema",
-            ConstellationColor.GREY,
+            ConstellationColor.DEFAULT_NODE_COLOR,
             DefaultIconProvider.UNKNOWN,
             DefaultIconProvider.FLAT_SQUARE,
             null, null, null, null, null, false

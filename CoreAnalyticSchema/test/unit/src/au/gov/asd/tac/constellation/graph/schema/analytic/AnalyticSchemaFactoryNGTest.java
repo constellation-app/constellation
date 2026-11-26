@@ -159,9 +159,9 @@ public class AnalyticSchemaFactoryNGTest {
         
         assertNull(graph.getStringValue(vertexIdentifierAttribute, vxId));
         assertNull(graph.getStringValue(vertexLabelAttribute, vxId));
-        assertNull(graph.getStringValue(vertexColorAttribute, vxId));
         assertNull(graph.getStringValue(vertexTypeAttribute, vxId));
         assertNull(graph.getStringValue(vertexSourceAttribute, vxId));
+        assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.DEFAULT_NODE_COLOR);
         
         schema.newVertex(graph, vxId);
         
@@ -202,9 +202,9 @@ public class AnalyticSchemaFactoryNGTest {
         assertNull(graph.getStringValue(vertexLabelAttribute, vxId));
         assertNull(graph.getObjectValue(vertexTypeAttribute, vxId));
         assertEquals(graph.getObjectValue(vertexRawAttribute, vxId), new RawData(null, null));
-        assertNull(graph.getObjectValue(vertexColorAttribute, vxId));
+        assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.DEFAULT_NODE_COLOR);
         assertEquals(graph.getStringValue(vertexBackgroundIconAttribute, vxId), "Background.Flat Square");
-        assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "");
+        assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "Unknown");
         assertEquals(graph.getStringValue(vertexCountryAttribute, vxId), "Au");
         
         schema.completeVertex(graph, vxId);
@@ -213,7 +213,7 @@ public class AnalyticSchemaFactoryNGTest {
         assertEquals(graph.getStringValue(vertexLabelAttribute, vxId), "my vertex<Unknown>");
         assertNull(graph.getObjectValue(vertexTypeAttribute, vxId));
         assertEquals(graph.getObjectValue(vertexRawAttribute, vxId), new RawData("my vertex", "Unknown"));
-        assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.GREY);
+        assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.DEFAULT_NODE_COLOR);
         assertEquals(graph.getStringValue(vertexBackgroundIconAttribute, vxId), "Background.Flat Square");
         assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "Unknown");
         // Country digraph should autocomplete
@@ -247,9 +247,10 @@ public class AnalyticSchemaFactoryNGTest {
         assertNull(graph.getStringValue(vertexLabelAttribute, vxId));
         assertNull(graph.getObjectValue(vertexTypeAttribute, vxId));
         assertEquals(graph.getObjectValue(vertexRawAttribute, vxId), new RawData("my vertex", "Person"));
-        assertNull(graph.getObjectValue(vertexColorAttribute, vxId));
+        assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.DEFAULT_NODE_COLOR);
+
         assertEquals(graph.getStringValue(vertexBackgroundIconAttribute, vxId), "Background.Flat Square");
-        assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "");
+        assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "Unknown");
         
         schema.completeVertex(graph, vxId);
         
@@ -289,9 +290,10 @@ public class AnalyticSchemaFactoryNGTest {
         assertEquals(graph.getStringValue(vertexLabelAttribute, vxId), "my vertex<Event>");
         assertNull(graph.getObjectValue(vertexTypeAttribute, vxId));
         assertEquals(graph.getObjectValue(vertexRawAttribute, vxId), new RawData(null, null));
-        assertNull(graph.getObjectValue(vertexColorAttribute, vxId));
+        assertEquals(graph.getObjectValue(vertexColorAttribute, vxId), ConstellationColor.DEFAULT_NODE_COLOR);
+
         assertEquals(graph.getStringValue(vertexBackgroundIconAttribute, vxId), "Background.Flat Square");
-        assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "");
+        assertEquals(graph.getStringValue(vertexForegroundIconAttribute, vxId), "Unknown");
         
         schema.completeVertex(graph, vxId);
         

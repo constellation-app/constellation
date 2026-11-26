@@ -101,10 +101,10 @@ public class ClusterUtilitiesNGTest {
     public void testColorClusters() {
         System.out.println("colorClusters");
         
-        assertNull(graph.getObjectValue(colorVertexAttributeId, vxId1));
-        assertNull(graph.getObjectValue(colorVertexAttributeId, vxId2));
-        assertNull(graph.getObjectValue(colorVertexAttributeId, vxId3));
-        assertNull(graph.getObjectValue(colorVertexAttributeId, vxId4));
+        assertEquals(graph.getObjectValue(colorVertexAttributeId, vxId1), ConstellationColor.DEFAULT_NODE_COLOR);
+        assertEquals(graph.getObjectValue(colorVertexAttributeId, vxId2), ConstellationColor.DEFAULT_NODE_COLOR);
+        assertEquals(graph.getObjectValue(colorVertexAttributeId, vxId3), ConstellationColor.DEFAULT_NODE_COLOR);
+        assertEquals(graph.getObjectValue(colorVertexAttributeId, vxId4), ConstellationColor.DEFAULT_NODE_COLOR);
         
         assertNull(graph.getObjectValue(colorTransactionAttributeId, txId1));
         assertNull(graph.getObjectValue(colorTransactionAttributeId, txId2));

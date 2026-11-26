@@ -237,7 +237,7 @@ public class GenerateSVGNodesTask implements Runnable, SharedInteractionRunnable
     private SVGData getSVGIcon(final ConstellationIcon icon, final Color color){
         
         // Some common icons are not visable and should not be exported
-        if (!DefaultIconProvider.isVisable(icon)){
+        if (!DefaultIconProvider.isVisible(icon)){
             return null; 
 
         // Raster image reference should be used with linked image data
