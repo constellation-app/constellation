@@ -21,11 +21,14 @@ import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -282,4 +285,21 @@ public class GraphRecordStoreUtilitiesNGTest {
         assertEquals(vx1, newGraph.getTransactionSourceVertex(tx1));
     }
 
+    @Test
+    public void processRecordStoreJsonFromString() throws JsonProcessingException {
+        
+        final String testString = "Some random test string";
+        final String jsonString = "[{\"source.Identifier\": \"Thing 1\",\"source.Type\": \"Person\"},{\"source.Identifier\": \"Thing 2\",\"source.Type\": \"Person\"},{\"source.Identifier\": \"Thing 1\",\"source.Type\": \"Person\",\"destination.Identifier\": \"Thing 2\",\"destination.Type\": \"Person\",\"transaction.Identifier\": \"Unique ID 1\",\"transaction.Type\": \"Communication\"},{\"source.Identifier\": \"Thing 2\",\"source.Type\": \"Person\",\"destination.Identifier\": \"Thing 1\",\"destination.Type\": \"Person\",\"transaction.Identifier\": \"Unique ID 2\",\"transaction.Type\": \"Communication\"}]";
+                
+        assertThrows(JsonProcessingException.class, () -> GraphRecordStoreUtilities.fromRecordStoreJson(testString));
+        
+        GraphRecordStore fromJsonAlternativeGraph = GraphRecordStoreUtilities.fromRecordStoreJson(jsonString);
+        assertTrue(fromJsonAlternativeGraph.records.size() == 6);
+        assertTrue(fromJsonAlternativeGraph.records.containsKey("source.Identifier"));
+        assertTrue(fromJsonAlternativeGraph.records.containsKey("source.Type"));
+        assertTrue(fromJsonAlternativeGraph.records.containsKey("destination.Identifier"));
+        assertTrue(fromJsonAlternativeGraph.records.containsKey("destination.Type"));
+        assertTrue(fromJsonAlternativeGraph.records.containsKey("transaction.Identifier"));
+        assertTrue(fromJsonAlternativeGraph.records.containsKey("transaction.Type"));
+    }
 }

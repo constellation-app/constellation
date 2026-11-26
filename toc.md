@@ -180,6 +180,7 @@
     <a href="../ext\docs\CorePreferences\application-preferences.md">Application</a><br/>
     <a href="../ext\docs\CorePreferences\developer-preferences.md">Developer</a><br/>
     <a href="../ext\docs\CorePreferences\graph-preferences.md">Graph</a><br/>
+    <a href="../ext\docs\CoreViewFramework\views-preferences.md">View</a><br/>
     <a href="../ext\docs\CoreOpenGLDisplay\label-fonts-preferences.md">Label Fonts</a><br/>
     <a href="../ext\docs\CoreHelp\help-options.md">Online Help</a><br/>
     <a href="../ext\docs\CoreSecurity\proxy-preferences.md">Proxy</a><br/>
@@ -188,6 +189,7 @@
     <a href="../ext\docs\CoreArrangementPlugins\line-arrangement.md">Line</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\circle-arrangement.md">Circle</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\tree-arrangement.md">Tree</a><br/>
+    <a href="../ext\docs\CoreArrangementPlugins\new-tree-arrangement.md">New Tree</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\proximity-arrangement.md">Proximity</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\hierarchy-arrangement.md">Hierarchy</a><br/>
     <a href="../ext\docs\CoreArrangementPlugins\node-attribute-arrangement.md">Node Attribute</a><br/>

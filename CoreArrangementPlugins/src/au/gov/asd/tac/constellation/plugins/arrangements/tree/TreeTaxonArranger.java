@@ -41,20 +41,18 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
     }
 
     /**
-     * If true, singleton taxa (those that have only one vertex) are joined with
-     * others having the same set of neighbors; these are then arranged as
-     * larger groups.
+     * If true, singleton taxa (those that have only one vertex) are joined with others having the same set of
+     * neighbors; these are then arranged as larger groups.
      *
-     * @param putSingletonTaxaWithSameNeighborsTogether should singletons tax
-     * with the same neighbours be combined. Default value is true.
+     * @param putSingletonTaxaWithSameNeighborsTogether should singletons tax with the same neighbours be combined.
+     * Default value is true.
      *
      */
     public void setPutSingletonTaxaWithSameNeighborsTogether(final boolean putSingletonTaxaWithSameNeighborsTogether) {
         this.putSingletonTaxaWithSameNeighborsTogether = putSingletonTaxaWithSameNeighborsTogether;
     }
 
-    @Override
-    public GraphTaxonomy getTaxonomy(final GraphWriteMethods graph) {
+    public static GraphTaxonomy getTreeTaxonomy(final GraphWriteMethods graph, final boolean putSingletonTaxaWithSameNeighborsTogether) {
         final GraphTaxonomy taxByTrees = TaxFromTrees.getTaxonomy(graph, false);
 
         if (putSingletonTaxaWithSameNeighborsTogether) {
@@ -66,7 +64,7 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
                     singletons.add(vxRoot);
                 }
             });
-            
+
             // remove all of the singletons
             taxa.removeIf((key, value) -> singletons.contains(key));
 
@@ -75,5 +73,10 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
             taxByTrees.setArrangeRectangularly(taxByNeighbours.getTaxa().keySet());
         }
         return taxByTrees;
+    }
+
+    @Override
+    public GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
+        return getTreeTaxonomy(wg, putSingletonTaxaWithSameNeighborsTogether);
     }
 }

@@ -18,17 +18,17 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 /**
  * Execute the Fast Newman function which clusters the graph hierarchically by
@@ -39,13 +39,27 @@ import java.util.TreeSet;
  * @author sirius
  */
 public class FastNewman {
-
-    public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive) throws InterruptedException {
-        run(graph, interaction, interactive, new HashSet<>(), AnalyticConcept.VertexAttribute.WEIGHT.getName());
-    }
-
+    
+    /**
+     * 
+     * @param graph
+     * @param interaction
+     * @param interactive
+     * @param initialLinkIds
+     * @param weightAttribute
+     * @throws InterruptedException
+     * @deprecated in favour of a new implementation.
+     * @see #run(au.gov.asd.tac.constellation.graph.GraphWriteMethods, au.gov.asd.tac.constellation.plugins.PluginInteraction, boolean, org.eclipse.collections.api.set.primitive.MutableIntSet, java.lang.String) 
+     */
+    @Deprecated(since = "3.5", forRemoval = true)
     public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final Set<Integer> initialLinkIds, final String weightAttribute) throws InterruptedException {
-
+        final MutableIntSet initLinkIds = new IntHashSet();
+        initialLinkIds.forEach(initLinkIds::add);
+        
+        run(graph, interaction, interactive, initLinkIds, weightAttribute);
+    } 
+    
+    public static void run(final GraphWriteMethods graph, final PluginInteraction interaction, final boolean interactive, final MutableIntSet initialLinkIds, final String weightAttribute) throws InterruptedException {
         final int vertexCount = graph.getVertexCount();
         final int linkCount = graph.getLinkCount();
         final int transactionCount = graph.getTransactionCount();
@@ -128,7 +142,6 @@ public class FastNewman {
         boolean initialising = true;
 
         while (!links.isEmpty()) {
-
             interaction.setProgress(step, vertexCount - 1, "Merging groups...", true);
 
             // Get the link with the highest deltaQ and remove it from the link set
@@ -179,14 +192,12 @@ public class FastNewman {
 
             // Process each link that currently connects to the child...
             for (final Entry<Group, Link> childLinkEntry : child.links.entrySet()) {
-
                 final Group otherGroup = childLinkEntry.getKey();
                 final Link childLink = childLinkEntry.getValue();
                 final Link parentLink = parent.links.get(otherGroup);
 
                 // If the parent has no link to the other vertex then move the child link to the parent
                 if (parentLink == null) {
-
                     // Move the link from the child to the parent
                     if (childLink.highGroup == child) {
                         childLink.highGroup = parent;
@@ -204,7 +215,6 @@ public class FastNewman {
 
                     // If the parent also has a link to the other vertex then update the parent link and remove the child link
                 } else {
-
                     // Update the weight and deltaQ for the parent link
                     links.remove(parentLink);
                     parentLink.weight += childLink.weight;
@@ -244,7 +254,7 @@ public class FastNewman {
     public static class Group {
 
         private int vertex;
-        private float weight = 0.0F;
+        private float weight = 0F;
         private Group parent = null;
         private int mergeStep = Integer.MAX_VALUE;
         private Map<Group, Link> links = new HashMap<>();
@@ -296,8 +306,8 @@ public class FastNewman {
 
         private Group highGroup = null;
         private Group lowGroup = null;
-        private float weight = 0.0F;
-        private float deltaQ = 0.0F;
+        private float weight = 0F;
+        private float deltaQ = 0F;
         private boolean initial = false;
 
         @Override

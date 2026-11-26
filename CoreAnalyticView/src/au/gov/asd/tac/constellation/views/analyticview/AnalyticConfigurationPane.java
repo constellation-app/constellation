@@ -117,6 +117,10 @@ public class AnalyticConfigurationPane extends VBox {
 
         // set up the list of available analytic plugins
         Lookup.getDefault().lookupAll(AnalyticPlugin.class).forEach(plugin -> {
+            if (NAME_TO_SELECTABLE_PLUGIN_MAP.containsKey(plugin.getName())) {
+                return;
+            }
+            
             final SelectableAnalyticPlugin selectablePlugin = new SelectableAnalyticPlugin(plugin);
             SELECTABLE_PLUGINS.add(selectablePlugin);
             PLUGIN_TO_SELECTABLE_PLUGIN_MAP.put(plugin, selectablePlugin);

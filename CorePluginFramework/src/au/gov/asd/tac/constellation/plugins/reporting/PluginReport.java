@@ -360,7 +360,7 @@ public class PluginReport {
      *
      * @return the newly created PluginReport that represents the plugin.
      */
-    public PluginReport addChildReport(final Plugin plugin) {
+    public synchronized PluginReport addChildReport(final Plugin plugin) {
         PluginReport childReport = new PluginReport(graphReport, plugin);
         childReports.add(childReport);
         listeners.stream().forEach(listener -> listener.addedChildReport(this, childReport));

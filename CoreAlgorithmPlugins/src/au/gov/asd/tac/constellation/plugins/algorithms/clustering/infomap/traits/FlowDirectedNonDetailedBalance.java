@@ -26,10 +26,10 @@ public class FlowDirectedNonDetailedBalance implements FlowBase {
     private double exitFlow;
 
     public FlowDirectedNonDetailedBalance() {
-        this(1, 1);
+        this(1);
     }
 
-    public FlowDirectedNonDetailedBalance(final double flow, final double teleportWeight) {
+    public FlowDirectedNonDetailedBalance(final double flow) {
         this.flow = flow;
         this.enterFlow = 0;
         this.exitFlow = 0;

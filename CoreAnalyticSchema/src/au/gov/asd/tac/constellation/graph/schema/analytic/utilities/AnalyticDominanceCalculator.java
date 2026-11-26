@@ -38,11 +38,11 @@ public class AnalyticDominanceCalculator extends VertexDominanceCalculator<Schem
         priority.add(AnalyticConcept.VertexType.USER_NAME);
         priority.add(AnalyticConcept.VertexType.ONLINE_IDENTIFIER);
         priority.add(AnalyticConcept.VertexType.URL);
-        priority.add(AnalyticConcept.VertexType.HOST_NAME);
         priority.add(AnalyticConcept.VertexType.ONLINE_LOCATION);
         priority.add(AnalyticConcept.VertexType.MACHINE_IDENTIFIER);
         priority.add(AnalyticConcept.VertexType.IPV6);
         priority.add(AnalyticConcept.VertexType.IPV4);
+        priority.add(AnalyticConcept.VertexType.HOST_NAME);
         priority.add(AnalyticConcept.VertexType.NETWORK_IDENTIFIER);
         priority.add(AnalyticConcept.VertexType.PERSON);
         priority.add(AnalyticConcept.VertexType.ORGANISATION);

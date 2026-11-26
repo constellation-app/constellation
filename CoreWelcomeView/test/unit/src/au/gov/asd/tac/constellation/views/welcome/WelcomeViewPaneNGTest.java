@@ -84,6 +84,7 @@ public class WelcomeViewPaneNGTest {
 
         verify(button).setMaxSize(150, 150);
         verify(button).setContentDisplay(ContentDisplay.TOP);
+        verify(button).setMnemonicParsing(false);
     }
 
     /**
@@ -99,6 +100,7 @@ public class WelcomeViewPaneNGTest {
         verify(button).setMaxSize(175, 175);
         verify(button).setId("recent-button");
         verify(button).setContentDisplay(ContentDisplay.TOP);
+        verify(button).setMnemonicParsing(false);
     }
 
     /**

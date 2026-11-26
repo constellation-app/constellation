@@ -288,6 +288,7 @@ public class WelcomeViewPane extends BorderPane {
         button.setMaxSize(150, 150);
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
+        button.setMnemonicParsing(false);
     }
 
     /**
@@ -301,6 +302,7 @@ public class WelcomeViewPane extends BorderPane {
         button.setId("recent-button");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
+        button.setMnemonicParsing(false);
     }
 
     /**
@@ -314,6 +316,7 @@ public class WelcomeViewPane extends BorderPane {
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
+        button.setMnemonicParsing(false);
     }
 
     /**

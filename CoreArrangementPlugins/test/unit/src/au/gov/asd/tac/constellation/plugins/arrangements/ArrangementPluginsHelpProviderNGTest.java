@@ -36,7 +36,7 @@ public class ArrangementPluginsHelpProviderNGTest {
         final ArrangementPluginsHelpProvider instance = new ArrangementPluginsHelpProvider();
         final Map<String, String> helpMap = instance.getHelpMap();
 
-        assertEquals(helpMap.size(), 18);
+        assertEquals(helpMap.size(), 19);
         //not going to go through and assert the existence of each specific item in the map 
         //but will assert they're all correctly located within the arrangements package
         final String packageStart = "au.gov.asd.tac.constellation.plugins.arrangements.";

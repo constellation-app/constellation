@@ -16,22 +16,14 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,38 +53,16 @@ public final class InfoMapGeneralAction implements ActionListener {
     public void actionPerformed(final ActionEvent ev) {
         final Plugin plugin = PluginRegistry.get(AlgorithmPluginRegistry.CLUSTER_INFO_MAP);
         final PluginParameters params = plugin.createParameters();
-        final Graph graph = context.getGraph();
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_InfoMapGeneralAction(), params, HELP_LOCATION);
         dialog.setSize(SIZE);
         dialog.showAndWait();
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+            final Graph graph = context.getGraph();
             PluginExecutor.startWith(plugin)
                     .set(params)
-                    .followedBy(new InfoMapGeneralPlugin())
+                    .followedBy(AlgorithmPluginRegistry.CLUSTER_INFO_MAP_CLEANUP)
                     .executeWriteLater(graph);
         }
-    }
-
-    /**
-     * Color the clusters and arrange graph after clustering has been performed.
-     */
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static class InfoMapGeneralPlugin extends SimpleEditPlugin {
-
-        @Override
-        public String getName() {
-            return "Info Map: General";
-        }
-
-        @Override
-        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            final int clusterId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(graph);
-            final int vxColorId = ClusteringConcept.VertexAttribute.INFOMAP_COLOR.ensure(graph);
-            final int txColorId = ClusteringConcept.TransactionAttribute.INFOMAP_COLOR.ensure(graph);
-            ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
-            ClusterUtilities.explodeGraph(graph, clusterId);
-        }
-
     }
 }

@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
+package au.gov.asd.tac.constellation.views.preferences;
+
+import java.util.Map;
 
 /**
+ * Class to provide the default floating preferences for each view.
  *
- * @author algol
+ * @author sol695510
  */
-public class EdgeData {
+public abstract class ViewOptionsProvider {
 
-    public final double weight;
-    public final double flow;
-
-    public EdgeData(final double weight) {
-        this.weight = weight;
-        this.flow = weight;
-    }
-
-    public EdgeData(final double weight, final double flow) {
-        this.weight = weight;
-        this.flow = flow;
-    }
+    public abstract Map<String, Boolean> getDefaultFloatingPreferences();
 }

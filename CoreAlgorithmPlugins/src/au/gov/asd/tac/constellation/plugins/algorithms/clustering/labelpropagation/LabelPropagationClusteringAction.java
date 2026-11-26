@@ -68,7 +68,7 @@ public class LabelPropagationClusteringAction extends AbstractAction {
      * Color the clusters and arrange graph after clustering has been performed.
      */
     @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
-    public static class LabelPropagationClusteringCleanupPlugin extends SimpleEditPlugin {
+    protected static class LabelPropagationClusteringCleanupPlugin extends SimpleEditPlugin {
 
         @Override
         public String getName() {
@@ -84,6 +84,5 @@ public class LabelPropagationClusteringAction extends AbstractAction {
             ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
             ClusterUtilities.explodeGraph(graph, clusterId);
         }
-
     }
 }

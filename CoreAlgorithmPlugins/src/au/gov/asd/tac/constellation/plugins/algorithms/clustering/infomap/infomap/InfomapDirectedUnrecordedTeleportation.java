@@ -34,11 +34,6 @@ public class InfomapDirectedUnrecordedTeleportation extends InfomapGreedy {
     }
 
     @Override
-    protected boolean isDirected() {
-        return true;
-    }
-
-    @Override
     protected boolean hasDetailedBalance() {
         return false;
     }
@@ -49,12 +44,7 @@ public class InfomapDirectedUnrecordedTeleportation extends InfomapGreedy {
     }
 
     public static class NodeFactoryDirectedUnrecordedTeleportation implements NodeFactoryBase {
-
-        @Override
-        public NodeBase createNode() {
-            return createNode("", 0, 0);
-        }
-
+        
         @Override
         public NodeBase createNode(final String name, final double flow, final double teleportWeight) {
             final FlowDirectedNonDetailedBalanceWithTeleportation data = new FlowDirectedNonDetailedBalanceWithTeleportation(flow, teleportWeight);

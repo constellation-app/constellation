@@ -134,6 +134,10 @@ public final class GraphJsonReader {
                             // prepare a link to an icon entry in the star/zip file
                             boolean saveCustomFile = true;
                             final File file = new File(directoryPath + iconName);
+                            if (!file.getCanonicalPath().startsWith(new File(directoryPath).getCanonicalPath())) {
+                                LOGGER.log(Level.WARNING, "Bad Icon name: \"{0}\".  Not processing icon further.", entry.getName());
+                                continue;
+                            }
                             if (file.exists()) {
                                 if (entry.getLastModifiedTime().toMillis() < file.lastModified()) {
                                     // do not overwrite current icon with an older icon

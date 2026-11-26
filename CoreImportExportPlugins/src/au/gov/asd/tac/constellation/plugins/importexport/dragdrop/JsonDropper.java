@@ -57,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
-@ServiceProvider(service = GraphDropper.class, position = 1)
+@ServiceProvider(service = GraphDropper.class, position = 10)
 public class JsonDropper implements GraphDropper {
     
     private static final Logger LOGGER = Logger.getLogger(JsonDropper.class.getName());

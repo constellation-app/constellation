@@ -105,7 +105,6 @@ public class KTruss {
 
         @Override
         public void finalise(final int highestK, final BitSet currentLinksCopy) {
-
             // Record an array of which values of k caused changes in the graph,
             // ie. those values of k for which the graph contained k-1 trusses that were not k-trusses.
             final boolean[] extantKTrusses = new boolean[highestK + 2];
@@ -130,10 +129,9 @@ public class KTruss {
             // Set the information about the connected components of the k-trusses in the KTrussState
             // to facilitate nested k-truss visulisation.
             state.setComponentInformation(nodeToComponent, linkToComponent, componentTree, componentSizes, currentComponentNum, graph.getVertexCount(), totalVertsInTrusses);
-            state.strucModificationCount = graph.getStructureModificationCounter();
+            state.setStrucModificationCount(graph.getStructureModificationCounter());
             state.setInteractive(interactive);
             graph.setObjectValue(kTrussStateAttr, 0, state);
-
         }
         
         /**
@@ -186,7 +184,6 @@ public class KTruss {
             links.clear(initialLinkPosition);
 
             while (!linksToHopFrom.isEmpty()) {
-
                 final int linkPosition = linksToHopFrom.pop();
                 final int link = graph.getLink(linkPosition);
                 final int lowVertex = graph.getLinkLowVertex(link);
@@ -267,7 +264,6 @@ public class KTruss {
 
                 // If the vertex does not have enough surviving links then cull the vertex and all its links
                 if (survivingLinkCount < currentK - 1) {
-
                     vertices.clear(vertexPosition);
                     modified = true;
                     resultHandler.recordVertexCluster(vxID, lastK);

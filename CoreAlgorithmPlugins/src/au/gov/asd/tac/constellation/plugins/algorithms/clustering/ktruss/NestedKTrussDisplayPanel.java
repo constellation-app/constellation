@@ -78,7 +78,6 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
     @Override
     public void paintComponent(final Graphics g) {
-
         if (!state.isNestedTrussesVisible()) {
             return;
         }
@@ -87,11 +86,7 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
         // Draw each rectangle.
         for (int i = 0; i < rectangles.length; i++) {
-            if (selectedRectangles.contains(i)) {
-                g2.setColor(Color.red);
-            } else {
-                g2.setColor(Color.blue);
-            }
+            g2.setColor(selectedRectangles.contains(i) ? Color.red : Color.blue);
             g2.fillRect(rectX(i), rectY(i), RECTANGLE_WIDTH, rectHeight(i));
         }
     }
@@ -105,8 +100,13 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         }
         repaint();
     }
-
-    // Returns the x position on this panel of the given rectangle.
+    
+    /**
+     * Returns the x position on this panel of the given rectangle.
+     * 
+     * @param rectangleNum
+     * @return 
+     */
     private int rectX(final int rectangleNum) {
         if (rectangles[rectangleNum][0] == 0) {
             return BORDER_SIZE - rectangleOffset;
@@ -122,21 +122,33 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         return ((sliderLabeledWidth * columnNumber) / totalColumns) + (BORDER_SIZE - rectangleOffset);
     }
 
-    // Returns the y position on this panel of the given rectangle.
+    /**
+     * Returns the y position on this panel of the given rectangle.
+     * 
+     * @param rectangleNum
+     * @return 
+     */
     private int rectY(final int rectangleNum) {
         final int y = rectangles[rectangleNum][2];
         return (expandHeight && totalNeededHeight != 0) ? (y * PREFERRED_HEIGHT) / totalNeededHeight : y;
     }
 
-    // Returns the height in this panel of the given rectangle
+    /**
+     * Returns the height in this panel of the given rectangle.
+     * 
+     * @param rectangleNum
+     * @return 
+     */
     private int rectHeight(final int rectangleNum) {
         final int h = rectangles[rectangleNum][1];
         return (expandHeight && totalNeededHeight != 0) ? (h * PREFERRED_HEIGHT) / totalNeededHeight : h;
     }
-
-    // Calculates the relative sizes and positions of the rectangles based on the connected component information stored in the
-    // KTrussState. Note that this method does not calculate actual pixel values, but the relative information stored in the
-    // rectangles field. See the declaration for more information
+    
+    /**
+     * Calculates the relative sizes and positions of the rectangles based on the connected component information stored in the
+     * KTrussState. Note that this method does not calculate actual pixel values, but the relative information stored in the
+     * rectangles field. See the declaration for more information.
+     */
     public void calculateRectangles() {
         final MutableIntIntMap numDescendants = new IntIntHashMap();
         childMapper = new IntObjectHashMap<>();
@@ -189,11 +201,9 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
         }
         final Dimension size = new Dimension(getWidth(), expandHeight ? PREFERRED_HEIGHT : totalNeededHeight);
         setSize(size);
-
-        /**
-         *  Each rectangle will be of the form: {rectangle column, rectangle relative height, rectangle relative y-position}
-         *  All 'relative' values are integers between 0 and 1000 where 1000 represents the full vertical size of this display panel.
-         */
+        
+        // Each rectangle will be of the form: {rectangle column, rectangle relative height, rectangle relative y-position}
+        // All 'relative' values are integers between 0 and 1000 where 1000 represents the full vertical size of this display panel.
         rectangles = new int[state.getNumComponents()][];
 
         // The cumulative height of the first column - used to determine the relative y-position of components in the frist column
